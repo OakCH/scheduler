@@ -19,6 +19,7 @@
 # Ignore emacs and vim temporary files
 *~
 *.swp
+*.swo
 \#*\#
 
 # Ignore OS files
