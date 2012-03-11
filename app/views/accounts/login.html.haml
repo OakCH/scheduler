@@ -1,0 +1,13 @@
+#form
+  = form_tag do
+    .left
+      = label :account, :username, 'Username'
+      = text_field :account, 'username'
+
+      = label :account, :password, 'Password'
+      = text_field :account, 'password'
+
+    .right
+      = submit_tag 'LOGIN', :class=>'submit'
+    .clear
+
