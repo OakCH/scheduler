@@ -15,15 +15,15 @@ body {
   background-image:url('mascot.png');
   background-position: right bottom;
   background-repeat: no-repeat;
-  background-size: 200px;
-  margin: 150px auto;
-  width: 850px;
-  height: 600px;
+  background-size: 150px;
+  margin: 120px auto 0 auto;
+  width: 800px;
+  height: 400px;
 }
   
 
 #login #header { 
-  font-size: 54px;
+  font-size: 50px;
   text-align: center;
   color: #FFFFFF;
   text-align: left;
@@ -48,6 +48,8 @@ body {
   margin: 10px 5px 10px 5px;
   border-radius: 3px;
   color: #FFFFFF;
+  padding-left: 7px;
+  padding-right: 7px;
 }
 
 #login input.submit {
