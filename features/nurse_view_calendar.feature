@@ -13,29 +13,11 @@ Background:
 
   I am on the Nurse Calendar page
 
-Scenario: Viewing calendar when it's not my turn
-  When it is not my turn
-  Then I should not be able to select a date
-
-Scenario: Selecting blacked out time
-  When it is my turn
-  I should not be able to select "January" 17
-
-Scenario: Selecting vacation times
-  When it is my turn
-  And I select "May" from "Months"
-  And I select "10"
-  And I select "17" 
-  Then "10" through "17" should be black
-  And I should see "May 10-17"
-  And I should see "Two more weeks of vacation left"
-
-Scenario: Finish selecting times
-  When it is my turn
-  And I press "Done"
-  Then I should see "Vacation times selected"
-  
-
-
-
-  
+Scenario: Viewing calendar
+  When I select "January" from "Months"
+  Then I should see "Jane Doe"
+  When I select "February" from "Months"
+  Then I should see "John Doe"
+  When I select "March" from "Months"
+  Then I should see "Jane Doe" 
+  Then I should see "John Doe"
