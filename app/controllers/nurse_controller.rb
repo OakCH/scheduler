@@ -1,0 +1,3 @@
+class NurseController < ApplicationController
+
+end
