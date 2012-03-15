@@ -6,7 +6,7 @@ class InitialSchema < ActiveRecord::Migration
       t.string :shift
       t.references :unit
       t.integer :seniority
-      t.integer :weeks_off
+      t.integer :num_weeks_off
     end
     
     create_table :admins do |t|
