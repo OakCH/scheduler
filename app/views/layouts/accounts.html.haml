@@ -13,8 +13,9 @@
           NURSE SCHEDULER
         #content.container
           #welcome
-            Sign in to schedule your vacation hours. If you don't know
-            your login/password, please contact your nurse manager.
+            %p
+              Sign in to schedule your vacation hours. If you don't know
+              your login/password, please contact your nurse manager.
           - if flash[:notice]
             #notice.message= flash[:notice]
           - elsif flash[:warning]
