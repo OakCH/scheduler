@@ -44,3 +44,4 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 gem 'haml'
+gem 'roo', '~> 1.2.3'
