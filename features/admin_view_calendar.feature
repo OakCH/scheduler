@@ -17,7 +17,7 @@ Scenario: Viewing calendar by Day Time shift
   When I select "Surgery" from "Unit"
   And I select "Day" from "Shift"
   And I select "January" from "Months"
-  And I press submit
+  And I press "Submit"
   Then I should see "Jane Doe"
   When I select "February" from "Months"
   Then I should see "John Doe"
