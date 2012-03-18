@@ -56,16 +56,7 @@ module NurseBulkUploader
     
     def set_column_positions
       initialize_columns
-      start_col = sheet.first_column
-      end_col = sheet.last_column
-      
-      if start_col and end_col      
-        start_col.upto (end_col) do |col|
-          associate_column(sheet.first_row, col)
-          break if all_cols_associated # avoid going through extra columns
-        end
-      end
-      
+      iterate_columns(sheet.first_column, sheet.last_column)
       if !necessary_cols_associated
         error_missing_headers
         false
@@ -117,6 +108,14 @@ module NurseBulkUploader
       keys = [:name, :years_worked, :num_weeks_off]
       self.cols = Hash[*keys.zip([nil]*keys.size).flatten]
     end
+    
+    def iterate_columns(start_col, end_col)
+      return if !start_col or !end_col
+      start_col.upto (end_col) do |col|
+        associate_column(sheet.first_row, col)
+        break if all_cols_associated # avoid going through extra columns
+      end
+    end 
     
     def associate_column(row, col)
       cell = @sheet.cell(row, col)
