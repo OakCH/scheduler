@@ -21,6 +21,12 @@ Scenario: Forget to enter in a shift
   And I press "Upload File"
   Then I should see "Error: Forgot to specify shift"
 
+Scenario: Forget to enter in a unit
+  When I select "Day Time" from "Shift"
+  And when I fill in upload with "nurseslists.xls"
+  And I press "Upload File"
+  Then I should see "Error: Forgot to specify unit"
+  
 Scenario: Upload an invalid schedule
   When I select "Day Time" from "Shift"
   And when I select "Surgery" from "Unit"
