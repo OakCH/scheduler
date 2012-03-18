@@ -8,12 +8,12 @@ describe NurseBulkUploader do
   
   before(:each) do
     @unit = Unit.create!(:name => 'testing') # replace with factory
-    @uploader = NurseBulkUploader::Uploader.new(@unit, 'am')
+    @uploader = NurseBulkUploader::Uploader.new(@unit, 'PMs')
   end
   
   describe 'replace from spreadsheet method of the Uploader class' do
     before(:each) do
-      @orig_nurse = Nurse.create!(:name => 'nurse1', :seniority => 1, :shift => 'am',
+      @orig_nurse = Nurse.create!(:name => 'nurse1', :seniority => 1, :shift => 'PMs',
                                   :unit => @unit, :num_weeks_off => 2)
     end
     
@@ -46,7 +46,7 @@ describe NurseBulkUploader do
         Nurse.find_by_id(@orig_nurse.id).should == nil
       end
       it 'should have added nurses to the database' do
-        @unit.nurses.where(:shift => 'am').size.should == 3
+        @unit.nurses.where(:shift => 'PMs').size.should == 3
       end
       subject { @uploader.parsing_errors }
       its ([:database_changed]) { should == true }
@@ -59,7 +59,7 @@ describe NurseBulkUploader do
     subject { @uploader }
     
     its (:unit) { should == @unit }
-    its (:shift) { should =='am' }
+    its (:shift) { should =='PMs' }
     its ('parsing_errors.class') { should == Hash }
   end
   
@@ -89,10 +89,10 @@ describe NurseBulkUploader do
         @uploader.parsing_errors[:messages].should be_empty
       end
     end
-      
+    
     context 'with a xlsx' do
       before { @ret = @uploader.load_from_file(path_helper("basic_spreadsheet.xlsx")) }
-        
+      
       it 'should return true to indicate file was successfully loaded' do
         @ret.should == true
       end
@@ -103,7 +103,7 @@ describe NurseBulkUploader do
         @uploader.parsing_errors[:messages].should be_empty
       end
     end
-      
+    
   end
   
   describe 'checking for header row in spreadsheet' do
@@ -134,7 +134,7 @@ describe NurseBulkUploader do
         @uploader.sheet = Excel.new path_helper("missing_name_header.xls") 
         @ret = @uploader.set_column_positions
       end
-        
+      
       it 'should return false to indicate headers could not be found' do
         @ret.should == false
       end
@@ -228,9 +228,9 @@ describe NurseBulkUploader do
       @uploader.parsing_errors[:database_changed] == true
     end
     it 'should remove the nurses that match shift/unit' do
-      rem_nurse = @unit.nurses.create!(:name => 'nurse to stay', :shift => 'pm',
+      rem_nurse = @unit.nurses.create!(:name => 'nurse to stay', :shift => 'Days',
                                        :seniority => 1, :num_weeks_off => 2)
-      gone_nurse = @unit.nurses.create!(:name => 'nurse to remove', :shift => 'am',
+      gone_nurse = @unit.nurses.create!(:name => 'nurse to remove', :shift => 'PMs',
                                         :seniority => 2, :num_weeks_off => 5)
       @uploader.destroy_original_nurses
       @unit.reload
@@ -254,14 +254,14 @@ describe NurseBulkUploader do
         @uploader.sheet = Excel.new path_helper('one_row.xls')
         @uploader.cols = {:name => 1, :years_worked => 2, :num_weeks_off => 3}
         @uploader.create_nurses
-        @nurse = @unit.nurses.find_by_shift('am')
+        @nurse = @unit.nurses.find_by_shift('PMs')
       end
       
       it 'should only create one nurse' do
-        @unit.nurses.where(:shift => 'am').size.should == 1
+        @unit.nurses.where(:shift => 'PMs').size.should == 1
       end
       
-      expected_vals = { :seniority => 1, :unit_id => 1, :shift => 'am', :name => 'only nurse',
+      expected_vals = { :seniority => 1, :unit_id => 1, :shift => 'PMs', :name => 'only nurse',
         :num_weeks_off => 3, :years_worked => 1 }
       expected_vals.each do |key, val|
         it "should set the attribute #{key} to #{val}" do
@@ -278,7 +278,7 @@ describe NurseBulkUploader do
       
       it 'should create a new nurse record for each row in the spreadsheet' do
         @uploader.create_nurses
-        @unit.nurses.where(:shift => 'am').size.should == 3
+        @unit.nurses.where(:shift => 'PMs').size.should == 3
       end
     end
     
