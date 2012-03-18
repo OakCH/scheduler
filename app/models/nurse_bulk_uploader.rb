@@ -77,11 +77,13 @@ module NurseBulkUploader
     end
     
     def create_nurse(row, count)
+      years_worked = (cols[:years_worked])? sheet.cell(row, cols[:years_worked]) : nil
       nurse = Nurse.new(:seniority => count,
                         :unit => self.unit,
                         :shift => self.shift,
                         :name => sheet.cell(row, cols[:name]),
-                        :num_weeks_off => sheet.cell(row, cols[:num_weeks_off]))
+                        :num_weeks_off => sheet.cell(row, cols[:num_weeks_off]),
+                        :years_worked => years_worked)
       nurse.save
       set_creation_errors(row, nurse.errors)
     end

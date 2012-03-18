@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120314222702) do
+ActiveRecord::Schema.define(:version => 20120318021431) do
 
   create_table "admins", :force => true do |t|
     t.string "name"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20120314222702) do
     t.integer "unit_id"
     t.integer "seniority"
     t.integer "num_weeks_off"
+    t.integer "years_worked"
   end
 
   create_table "nurses_vacation_days", :id => false, :force => true do |t|

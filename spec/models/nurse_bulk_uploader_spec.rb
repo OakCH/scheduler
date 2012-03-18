@@ -54,17 +54,17 @@ describe NurseBulkUploader do
     end
       
   end
-    
+  
   describe 'initialization of uploader object' do
     subject { @uploader }
-      
+    
     its (:unit) { should == @unit }
     its (:shift) { should =='am' }
     its ('parsing_errors.class') { should == Hash }
   end
-    
+  
   describe 'load spreadsheet from file' do
-      
+    
     context 'with a file format that is not xls or xlsx' do
       before { @ret = @uploader.load_from_file(path_helper("not_a_spreadsheet.txt")) }
         
@@ -75,10 +75,10 @@ describe NurseBulkUploader do
       its ([:database_changed]) { should == false }
       its ([:messages]) { should include 'File to parse was not a valid xls or xlsx' }
     end
-      
+    
     context 'with a xls' do
       before { @ret = @uploader.load_from_file(path_helper("basic_spreadsheet.xls")) }
-        
+      
       it 'should return true to indicate file was successfully loaded' do
         @ret.should == true
       end
@@ -105,7 +105,7 @@ describe NurseBulkUploader do
     end
       
   end
-    
+  
   describe 'checking for header row in spreadsheet' do
       
     context 'with a blank spreadsheet' do
@@ -113,7 +113,7 @@ describe NurseBulkUploader do
         @uploader.sheet = Excel.new path_helper("blank.xls") # removes dependence from load_from_file
         @ret = @uploader.set_column_positions
       end
-        
+      
       it 'should return false to indicate headers could not be found' do
         @ret.should == false
       end
@@ -162,7 +162,7 @@ describe NurseBulkUploader do
         @uploader.sheet = Excel.new path_helper("basic_spreadsheet.xls") 
         @ret = @uploader.set_column_positions
       end
-
+      
       it 'should return true to indicate required headers could be found' do
         @ret.should == true
       end
@@ -255,12 +255,12 @@ describe NurseBulkUploader do
         @nurse = @unit.nurses.find_by_shift('am')
       end
       
-      it 'should only creat one nurse' do
+      it 'should only create one nurse' do
         @unit.nurses.where(:shift => 'am').size.should == 1
       end
       
       expected_vals = { :seniority => 1, :unit_id => 1, :shift => 'am', :name => 'only nurse',
-        :num_weeks_off => 3 }
+        :num_weeks_off => 3, :years_worked => 1 }
       expected_vals.each do |key, val|
         it "should set the attribute #{key} to #{val}" do
           @nurse.send(key).should == val
@@ -295,7 +295,7 @@ describe NurseBulkUploader do
       @uploader.parsing_errors[:messages].should include(expected_error1)
     end   
   end
-   
+  
   describe 'using the replace from spreadsheet method of the interface' do
     class Temp; extend NurseBulkUploader; end
     
