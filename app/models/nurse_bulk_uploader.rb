@@ -1,10 +1,10 @@
 module NurseBulkUploader
   
   attr_reader :parsing_errors
-
+  
   PossibleColumns = [:name, :num_weeks_off, :years_worked]
   RequiredColumns = [:name, :num_weeks_off]
-  
+
   def replace_from_spreadsheet(file_path, unit, shift)
     uploader = Uploader.new(unit, shift)
     uploader.replace_from_spreadsheet(file_path)
@@ -22,8 +22,10 @@ module NurseBulkUploader
     end
     
     def replace_from_spreadsheet(file_path)
-      load_from_file(file_path)
-      set_column_positions 
+      return if !load_from_file(file_path)
+      return if !set_column_positions
+      destroy_original_nurses
+      create_nurses
     end
     
     def load_from_file(file_path)
@@ -33,8 +35,10 @@ module NurseBulkUploader
       end
       if type
         @sheet = type.new(file_path)
+        true # indicator if method call was success
       else
         error_invalid_type
+        false
       end
     end
     
@@ -52,7 +56,39 @@ module NurseBulkUploader
       
       if !necessary_cols_associated
         error_missing_headers
+        false
+      else
+        true
       end
+    end
+    
+    def destroy_original_nurses     
+      self.parsing_errors[:database_changed] = true
+      @unit.nurses.where(:shift => self.shift).destroy_all
+    end
+    
+    def create_nurses
+      start_row = sheet.first_row + 1 # skip header row
+      seniority_counter = 1
+      start_row.upto(sheet.last_row) do |row|
+        create_nurse(row, seniority_counter)
+        seniority_counter += 1
+      end
+    end
+    
+    def create_nurse(row, count)
+      nurse = Nurse.new(:seniority => count,
+                        :unit => self.unit,
+                        :shift => self.shift,
+                        :name => sheet.cell(row, cols[:name]),
+                        :num_weeks_off => sheet.cell(row, cols[:num_weeks_off]))
+      nurse.save
+      set_creation_errors(row, nurse.errors)
+    end
+    
+    def set_creation_errors(row, errors)
+      nurse_errors = errors.full_messages.map {|message| "Nurse in row #{row}: " + message}
+      self.parsing_errors[:messages] = (self.parsing_errors[:messages] << nurse_errors).flatten
     end
     
     def associate_column(row, col)
@@ -111,7 +147,7 @@ module NurseBulkUploader
         self.parsing_errors[:messages] << missing_header_message(term) if !cols[term]
       end
     end
-
+    
     def missing_header_message(sym)
       "Header row is missing the #{nice_col_name(sym)} column"
     end
@@ -121,5 +157,5 @@ module NurseBulkUploader
     end
     
   end
-
+  
 end

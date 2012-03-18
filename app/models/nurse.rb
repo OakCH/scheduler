@@ -3,5 +3,7 @@ class Nurse < ActiveRecord::Base
   belongs_to :unit
   
   validates_uniqueness_of :seniority, :scope => [:shift, :unit_id]
+
+  extend NurseBulkUploader
   
 end
