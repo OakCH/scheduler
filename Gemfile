@@ -44,3 +44,4 @@ gem 'jquery-rails'
 # gem 'capistrano'
 
 gem 'haml'
+gem 'event-calendar', :require => 'event_calendar'

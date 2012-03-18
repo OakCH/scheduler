@@ -1,0 +1,37 @@
+= stylesheet_link_tag "event_calendar"
+= stylesheet_link_tag "jquery-ui-1.8.18.custom"
+%script{:type=>"type/javascript", :src => "jquery-1.7.1.min"}
+%script{:type=>"type/javascript", :src => "jquery-ui-1.8.18.custom.min"}
+%script{:type=>"type/javascript", :src => "event_calendar"}
+
+:javascript
+  $(function() {
+    var dates = $( "#event_start_at, #event_end_at" ).datepicker({
+      defaultDate: "+1w",
+      changeMonth: true,
+      numberOfMonths: 3,
+      onSelect: function( selectedDate ) {
+        var option = this.id == "from" ? "minDate" : "maxDate",
+        instance = $( this ).data( "datepicker" ),
+        date = $.datepicker.parseDate(
+          instance.settings.dateFormat ||
+          $.datepicker._defaults.dateFormat,
+          selectedDate, instance.settings );
+        dates.not( this ).datepicker( "option", option, date );
+      }
+    });
+  });
+
+%h1 Calendar
+
+#form
+  = form_tag do
+    = label :event, :start_at, 'From'
+    = text_field :event, 'start_at'
+
+    = label :account, :end_at, 'To'
+    = text_field :event, 'end_at'
+
+    = submit_tag 'SUBMIT', :class=>'submit'
+
+= raw(event_calendar) 
