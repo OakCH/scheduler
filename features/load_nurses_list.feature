@@ -32,7 +32,7 @@ Scenario: Upload an invalid schedule
   And when I select "Surgery" from "Unit"
   And when I fill in upload with ""
   And I press "Upload File"
-  THen I should see "Error: Invalid file"
+  Then I should see "Error: Invalid file"
 
 
 

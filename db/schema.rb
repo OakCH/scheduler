@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(:version => 20120314222702) do
     t.string  "shift"
     t.integer "unit_id"
     t.integer "seniority"
-    t.integer "weeks_off"
+    t.integer "num_weeks_off"
   end
 
   create_table "nurses_vacation_days", :id => false, :force => true do |t|
