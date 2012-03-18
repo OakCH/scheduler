@@ -4,11 +4,23 @@ module NurseBulkUploader
   
   PossibleColumns = [:name, :num_weeks_off, :years_worked]
   RequiredColumns = [:name, :num_weeks_off]
-
+  
   def replace_from_spreadsheet(file_path, unit, shift)
     uploader = Uploader.new(unit, shift)
     uploader.replace_from_spreadsheet(file_path)
     @parsing_errors = uploader.parsing_errors
+  end
+
+  def nice_col_name(sym)
+    sym.to_s.split('_').map{ |word| word.capitalize }.join(' ')
+  end
+
+  def optional_columns
+    (PossibleColumns - RequiredColumns).map { |sym| nice_col_name(sym)}
+  end
+  
+  def required_columns
+    RequiredColumns.map { |sym| nice_col_name(sym) }
   end
   
   class Uploader
@@ -43,7 +55,7 @@ module NurseBulkUploader
     end
     
     def set_column_positions
-      self.initialize_columns
+      initialize_columns
       start_col = sheet.first_column
       end_col = sheet.last_column
       
@@ -76,6 +88,13 @@ module NurseBulkUploader
       end
     end
     
+    def initialize_error_messages
+      self.parsing_errors = {}
+      self.parsing_errors[:database_changed] = false
+      self.parsing_errors[:messages] = []
+    end
+    
+    # helper methods for create_nurses
     def create_nurse(row, count)
       years_worked = (cols[:years_worked])? sheet.cell(row, cols[:years_worked]) : nil
       nurse = Nurse.new(:seniority => count,
@@ -91,6 +110,12 @@ module NurseBulkUploader
     def set_creation_errors(row, errors)
       nurse_errors = errors.full_messages.map {|message| "Nurse in row #{row}: " + message}
       self.parsing_errors[:messages] = (self.parsing_errors[:messages] << nurse_errors).flatten
+    end
+    
+    # helper methods for set_column_positions
+    def initialize_columns
+      keys = [:name, :years_worked, :num_weeks_off]
+      self.cols = Hash[*keys.zip([nil]*keys.size).flatten]
     end
     
     def associate_column(row, col)
@@ -129,17 +154,7 @@ module NurseBulkUploader
       return true
     end
     
-    def initialize_error_messages
-      self.parsing_errors = {}
-      self.parsing_errors[:database_changed] = false
-      self.parsing_errors[:messages] = []
-    end
-    
-    def initialize_columns
-      keys = [:name, :years_worked, :num_weeks_off]
-      self.cols = Hash[*keys.zip([nil]*keys.size).flatten]
-    end
-    
+    # error handling methods
     def error_invalid_type
       self.parsing_errors[:messages] << 'File to parse was not a valid xls or xlsx'
     end
@@ -151,12 +166,9 @@ module NurseBulkUploader
     end
     
     def missing_header_message(sym)
-      "Header row is missing the #{nice_col_name(sym)} column"
+      "Header row is missing the #{Nurse.nice_col_name(sym)} column"
     end
     
-    def nice_col_name(sym)
-      sym.to_s.split('_').map{ |word| word.capitalize }.join(' ')
-    end
     
   end
   

@@ -14,7 +14,7 @@ describe NurseBulkUploader do
   describe 'replace from spreadsheet method of the Uploader class' do
     before(:each) do
       @orig_nurse = Nurse.create!(:name => 'nurse1', :seniority => 1, :shift => 'am',
-                                 :unit => @unit)
+                                  :unit => @unit, :num_weeks_off => 2)
     end
     
     context 'with a file that is not xls or xlsx' do
@@ -67,7 +67,7 @@ describe NurseBulkUploader do
     
     context 'with a file format that is not xls or xlsx' do
       before { @ret = @uploader.load_from_file(path_helper("not_a_spreadsheet.txt")) }
-        
+      
       it 'should return false to indicate failure' do
         @ret.should == false
       end
@@ -107,7 +107,7 @@ describe NurseBulkUploader do
   end
   
   describe 'checking for header row in spreadsheet' do
-      
+    
     context 'with a blank spreadsheet' do
       before(:each) do
         @uploader.sheet = Excel.new path_helper("blank.xls") # removes dependence from load_from_file
@@ -128,7 +128,7 @@ describe NurseBulkUploader do
         should include 'Header row is missing the Num Weeks Off column'
       end
     end
-      
+    
     context 'where header row is missing the name column' do
       before(:each) do
         @uploader.sheet = Excel.new path_helper("missing_name_header.xls") 
@@ -218,7 +218,7 @@ describe NurseBulkUploader do
       :num_weeks_off => 'Num Weeks Off' }
     expected_nice_names.each do |name, nice_name|
       it "should turn #{name} into #{nice_name}" do
-        @uploader.nice_col_name(name).should == nice_name
+        Nurse.nice_col_name(name).should == nice_name
       end
     end
   end
@@ -228,8 +228,10 @@ describe NurseBulkUploader do
       @uploader.parsing_errors[:database_changed] == true
     end
     it 'should remove the nurses that match shift/unit' do
-      rem_nurse = @unit.nurses.create!(:name => 'nurse to stay', :shift => 'pm')
-      gone_nurse = @unit.nurses.create!(:name => 'nurse to remove', :shift => 'am')
+      rem_nurse = @unit.nurses.create!(:name => 'nurse to stay', :shift => 'pm',
+                                       :seniority => 1, :num_weeks_off => 2)
+      gone_nurse = @unit.nurses.create!(:name => 'nurse to remove', :shift => 'am',
+                                        :seniority => 2, :num_weeks_off => 5)
       @uploader.destroy_original_nurses
       @unit.reload
       @unit.nurses.should == [rem_nurse]
@@ -311,6 +313,19 @@ describe NurseBulkUploader do
       NurseBulkUploader::Uploader.any_instance.stub(:parsing_errors).and_return(error_hash)
       Temp.replace_from_spreadsheet(nil, nil, nil)
       Temp.parsing_errors.should == error_hash
+    end
+  end
+  
+  describe 'get the required and optional columns of the uploader' do
+    class Temp; extend NurseBulkUploader; end
+    
+    it 'should have the required columns be Name and Num Weeks Off' do
+      expected_array = ['Name', 'Num Weeks Off']
+      Temp.required_columns.should == expected_array
+    end
+    
+    it 'should have the optional column be Years Worked' do
+      Temp.optional_columns.should == ['Years Worked']
     end
   end
   
