@@ -15,16 +15,10 @@ Background:
 
 Scenario: Viewing calendar
   When I select "January" from "Months"
+  And I press "Submit"  
   Then I should see "Jane Doe"
   When I select "March" from "Months"
+  And I press "Submit"
   Then I should see "Jane Doe" 
   Then I should see "John Doe"
 
-Scenario: Update calendar
-  When I select "February"from "Months"
-  And I select "3"
-  And I select "12"
-  And I select "Jane Doe" from "Nurses"
-  Then "3" through "12" should be black
-  When I press "Done"
-  Then I should see "Vacation times selected"	

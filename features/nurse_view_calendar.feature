@@ -24,6 +24,7 @@ Scenario: Selecting blacked out time
 Scenario: Selecting vacation times
   When it is my turn
   And I select "May" from "Months"
+  And I press "Submit"
   And I select "10"
   And I select "17" 
   Then "10" through "17" should be black
