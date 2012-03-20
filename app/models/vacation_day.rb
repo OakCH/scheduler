@@ -3,5 +3,6 @@ class VacationDay < ActiveRecord::Base
   has_and_belongs_to_many :nurses
   validates :date, :shift, :remaining_spots, :unit_id, :presence => true
   validates_uniqueness_of :date, :scope => [:shift, :unit_id]
+  validates :shift, :inclusion => { :in => Unit.shifts }
 
 end
