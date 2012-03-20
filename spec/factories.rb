@@ -1,9 +1,13 @@
 factory :admin, :class => Admin do
-  name "Jane Roe"
+sequence :name do |n|
+    "ADMINOMATIC#{n}"
+  end
 end
 
 factory :event, :class => Event do
-  name "A Fun Event!"
+  sequence :name do |n|
+    name "FUNEVENTOMATIC#{n}"
+  end
   start_at Date.today
   end_at Date.tomorrow
   created_at Date.today
@@ -11,15 +15,23 @@ factory :event, :class => Event do
 end
 
 factory :nurse, :class => Nurse do
-  name "Lonnie Berg"
+  sequence :name do |n|
+    "NURSATRONIC#{n}"
+  end
   shift "PMs"
   unit_id 42
-  seniority 100
+  sequence :seniority do |n|
+    n
+  end
   num_weeks_off 10
   email "hello@hi.com"
+  vacation_days
+  unit
 end
 
 factory :units, :class => Unit do
+  nurse
+  vacation_days
   name "Surgery"
 end
 
@@ -28,4 +40,6 @@ factory :vacation_day, :class => VacationDay do
   remaining_spots 1
   shift "PMs"
   unit_id 42
+  unit
+  nurses
 end
