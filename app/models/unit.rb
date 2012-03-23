@@ -8,4 +8,7 @@ class Unit < ActiveRecord::Base
     ['Days', 'PMs', 'Nights']
   end
   
+  def self.names
+    self.all.map{|unit| unit.name}
+  end
 end

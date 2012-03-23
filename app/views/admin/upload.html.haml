@@ -1,6 +1,6 @@
 %h1 Upload Nurse List
 
-= form_tag({:method => 'get', :action => :upload}, :multipart => true) do
+= form_tag({:action => :upload}, :method => 'post', :multipart => true) do
 
   = label :admin, :shift, 'Shift'
   = select :admin, :shift, @shifts
@@ -15,4 +15,4 @@
     = label :admin, :select_file, 'Select file'
     = file_field :admin, :upload
     = submit_tag 'Upload'#, :confirm => 'Are you sure?'
-    = render :partial => 'nurse_table'
+    = render :partial => 'nurses_table'
