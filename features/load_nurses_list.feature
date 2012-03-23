@@ -6,33 +6,39 @@ So that I don't have to enter in everyone's names one at a time
 
 Background:
 
-  I am on the Edit Nurses page
+  Given "Surgery" is a type of Unit
+  And I am on the Edit Nurses page
 
-Scenario: Upload schedule for PM shift
-  When I select "PM" from "Shift"
-  And when I select "Surgery" from "Unit"
-  And when I fill in upload with "nurseslist.xls"
-  And I press "Upload File"
+Scenario: Upload xls schedule for PM shift
+  When I select "PMs" from "Shift"
+  And I select "Surgery" from "Unit"
+  And I press "Next"
+  And I choose "sample.xls" to upload
+  And I press "Upload"
   Then I should see "Jane Doe"
 
-Scenario: Forget to enter in a shift
-  When I select "Surgery" from "Unit"
-  And when I fill in upload with "nurseslists.xls"
-  And I press "Upload File"
-  Then I should see "Error: Forgot to specify shift"
+Scenario: Upload xlsx file
+  When I select "Days" from "Shift"
+  And I select "Surgery" from "Unit"
+  And I press "Next"
+  And I choose "basic_spreadsheet.xlsx" to upload
+  And I press "Upload"
+  Then I should see "Nurse1"
+  And I should see "Nurse2"
+  And I should see "nurse 3"
 
-Scenario: Forget to enter in a unit
-  When I select "Day Time" from "Shift"
-  And when I fill in upload with "nurseslists.xls"
-  And I press "Upload File"
-  Then I should see "Error: Forgot to specify unit"
-  
-Scenario: Upload an invalid schedule
-  When I select "Day Time" from "Shift"
-  And when I select "Surgery" from "Unit"
-  And when I fill in upload with ""
-  And I press "Upload File"
-  Then I should see "Error: Invalid file"
+Scenario: Upload an invalid file
+  When I select "Days" from "Shift"
+  And I select "Surgery" from "Unit"
+  And I press "Next"
+  And I choose "not_a_spreadsheet.txt" to upload
+  And I press "Upload"
+  Then I should see "File to parse was not a valid xls or xlsx"
 
-
-
+Scenario: Upload malformed xls file
+  When I select "Days" from "Shift"
+  And I select "Surgery" from "Unit"
+  And I press "Next"
+  And I choose "missing_name_header.xls" to upload
+  And I press "Upload"
+  Then I should see "Header row is missing the name column"
