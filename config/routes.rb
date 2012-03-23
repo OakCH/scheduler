@@ -1,5 +1,4 @@
 Scheduler::Application.routes.draw do
-  match '/calendar(/:year(/:month))' => 'calendar#index', :as => :calendar, :constraints => {:year => /\d{4}/, :month => /\d{1,2}/}
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -22,6 +21,7 @@ Scheduler::Application.routes.draw do
   scope '/nurse/:nurse_id/' do
     # insert regular routes as above in the admin scope
     # follow the convention of starting the named path with 'nurse_'
+    match '/calendar(/:year(/:month))' => 'calendar#index', :as => :calendar, :constraints => {:year => /\d{4}/, :month => /\d{1,2}/}
   end
   
   # Sample resource route (maps HTTP verbs to controller actions automatically):

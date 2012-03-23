@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120318201314) do
+ActiveRecord::Schema.define(:version => 20120323233026) do
 
   create_table "admins", :force => true do |t|
     t.string "name"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20120318201314) do
     t.boolean  "all_day",    :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "nurse_id"
   end
 
   create_table "nurses", :force => true do |t|

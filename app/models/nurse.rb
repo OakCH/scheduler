@@ -1,5 +1,5 @@
 class Nurse < ActiveRecord::Base
-  has_and_belongs_to_many :vacation_days
+  has_many :events
   belongs_to :unit
   
   validates_uniqueness_of :seniority, :scope => [:shift, :unit_id]
