@@ -1,31 +1,29 @@
-factory :admin, :class => Admin do
-  name "Jane Roe"
-end
+FactoryGirl.define do
+  factory :admin do
+    sequence :name do |n|
+      "ADMINOMATIC#{n}20k"
+    end
+  end
 
-factory :event, :class => Event do
-  name "A Fun Event!"
-  start_at Date.today
-  end_at Date.tomorrow
-  created_at Date.today
-  all_day true
-end
+  factory :nurse do
+    sequence :name do |n|
+      "NURSATRONIC SERIAL NO:#{n}"
+    end
+    sequence :seniority do |n|
+      n
+    end
+    sequence :email do |n|
+      "EMAILOTRONIC#{n}@SEMPERUBISUBUBI.com"
+    end
+    num_weeks_off 10
+    shift "PMs"
+    unit
+  end
 
-factory :nurse, :class => Nurse do
-  name "Lonnie Berg"
-  shift "PMs"
-  unit_id 42
-  seniority 100
-  num_weeks_off 10
-  email "hello@hi.com"
-end
+  factory :unit do
+    sequence :name do |n|
+      "Bender Unit #{n}"
+    end
+  end
 
-factory :units, :class => Unit do
-  name "Surgery"
-end
-
-factory :vacation_day, :class => VacationDay do
-  date Date.today
-  remaining_spots 1
-  shift "PMs"
-  unit_id 42
 end
