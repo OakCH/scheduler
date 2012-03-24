@@ -16,6 +16,8 @@
     });
   });
 
-%h1 Calendar
+%h2 Choose vacation time
 
-= raw(event_calendar)
+= form_tag :method => :post do
+  = render :partial => 'event_form'
+  = submit_tag 'Save Changes'
