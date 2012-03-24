@@ -6,7 +6,8 @@ class CalendarController < ApplicationController
 
     @shown_month = Date.civil(@year, @month)
 
-    @event_strips = Event.event_strips_for_month(@shown_month)
+    nurse_id = params[:nurse_id]
+    @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id = '+nurse_id)
   end
   
 end
