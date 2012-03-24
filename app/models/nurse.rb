@@ -4,5 +4,5 @@ class Nurse < ActiveRecord::Base
 
   validates_uniqueness_of :seniority, :scope => [:shift, :unit_id]
   validates_presence_of :name, :shift, :unit_id, :seniority, :num_weeks_off, :email
-  validates :shifts, :inclusion => { :in => Unit.shifts }
+  validates :shift, :inclusion => { :in => Unit.shifts }
 end
