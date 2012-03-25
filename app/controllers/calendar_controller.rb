@@ -1,5 +1,5 @@
 class CalendarController < ApplicationController
-  
+
   def index
     @month = (params[:month] || (Time.zone || Time).now.month).to_i
     @year = (params[:year] || (Time.zone || Time).now.year).to_i
@@ -31,7 +31,7 @@ class CalendarController < ApplicationController
     event.name = nurse.name
     nurse.events << event
     nurse.save!
-    flash[:notice] = 'You successfully scheduled your vaction'
+    flash[:notice] = 'You successfully scheduled your vacation'
     redirect_to nurse_calendar_index_path
   end
 
@@ -44,14 +44,14 @@ class CalendarController < ApplicationController
   def update
     @event = Event.find(params[:id])
     @event.update_attributes!(params[:event])
-    flash[:notice] = 'You successfully scheduled your vaction'
+    flash[:notice] = 'You successfully scheduled your vacation'
     redirect_to nurse_calendar_index_path
   end
 
   def destroy
     @event = Event.find(params[:id])
     @event.destroy
-    flash[:notice] = 'You successfully nuked your vaction'
+    flash[:notice] = 'You successfully nuked your vacation'
     redirect_to nurse_calendar_index_path
   end
 
