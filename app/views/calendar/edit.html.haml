@@ -2,7 +2,7 @@
   $(function() {
     $.datepicker.setDefaults({dateFormat: 'dd/mm/yy'});
     var dates = $( "#event_start_at, #event_end_at" ).datepicker({
-      defaultDate: "+1w",
+      defaultDate: "#{@event.start_at.strftime("%d/%m/%y")}",
       changeMonth: true,
       numberOfMonths: 3,
       onSelect: function( selectedDate ) {
