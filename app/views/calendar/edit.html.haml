@@ -22,3 +22,5 @@
 = form_tag "/nurse/#{@nurse_id}/calendar/#{@id}", :method => :put do
   = render :partial => 'event_form'
   = submit_tag 'Update vacation time'
+
+= link_to 'Back to calendar', nurse_calendar_index_path
