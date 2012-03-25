@@ -20,10 +20,10 @@ describe AdminController, "POST upload" do
       end
         
       it 'should assign @unit' do
-        @unit_obj = Unit.create!(:name => @unit)
-        Unit.stub(:find_by_name).with(@unit).and_return(@unit_obj)
+        #@unit_obj = Unit.create!(:name => @unit)
+        Unit.stub(:find_by_name)#.with(@unit).and_return(@unit_obj)
         post :upload, {:admin => @admin, :commit => 'Next'}
-        assigns[:unit].should == @unit_obj
+        assigns[:unit].should == @unit
       end
       
       it 'should assign @shift' do
@@ -33,7 +33,7 @@ describe AdminController, "POST upload" do
       
       it 'should reload the page' do
         post :upload, {:admin => @admin, :commit => 'Next'}
-        response.should render_template ('/admin/upload')
+        response.should redirect_to :action => 'upload', :admin => @admin
       end
     end
     
@@ -57,7 +57,7 @@ describe AdminController, "POST upload" do
       
       it 'should reload the page' do
         post :upload, {:admin => @admin, :commit => 'Next'}
-        response.should render_template ('/admin/upload')
+        response.should redirect_to :action => 'upload', :admin => {:unit=>@unit, :shift=>nil}
       end
     end
     
@@ -76,7 +76,7 @@ describe AdminController, "POST upload" do
       end
       
       it 'should reload the page' do
-        response.should render_template ('/admin/upload')
+        response.should redirect_to :action => 'upload', :admin => {:shift => "PMs", :unit => nil}
       end
     end
 
@@ -170,7 +170,7 @@ describe AdminController, "POST upload" do
       AdminController.any_instance.stub(:deleteFile)
       
       post :upload, {:admin => @admin, :commit => 'Upload'}
-      response.should render_template ('/admin/upload')
+      response.should redirect_to :action => 'upload', :admin => {:unit => @unit, :shift => @shift}
     end
     
     context 'with no file given' do

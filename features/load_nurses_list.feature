@@ -13,9 +13,11 @@ Scenario: Upload xls schedule for PM shift
   When I select "PMs" from "Shift"
   And I select "Surgery" from "Unit"
   And I press "Next"
-  And I choose "sample.xls" to upload
+  And I choose "basic_spreadsheet.xls" to upload
   And I press "Upload"
-  Then I should see "Jane Doe"
+  Then I should see "Nurse1"
+  And I should see "Nurse2"
+  And I should see "nurse 3"
 
 Scenario: Upload xlsx file
   When I select "Days" from "Shift"

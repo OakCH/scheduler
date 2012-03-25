@@ -1,6 +1,6 @@
 %h1 Upload Nurse List
 
-= form_tag({:action => :upload}, :method => 'post', :multipart => true) do
+= form_tag({:action => :upload}, :multipart => true) do
 
   = label :admin, :shift, 'Shift'
   = select :admin, :shift, @shifts
