@@ -1,5 +1,6 @@
 :javascript
   $(function() {
+    $.datepicker.setDefaults({dateFormat: 'dd/mm/yy'});
     var dates = $( "#event_start_at, #event_end_at" ).datepicker({
       defaultDate: "+1w",
       changeMonth: true,
@@ -18,6 +19,6 @@
 
 %h2 Choose vacation time
 
-= form_tag :method => :post do
+= form_tag "/nurse/#{@nurse_id}/calendar" do
   = render :partial => 'event_form'
   = submit_tag 'Save Changes'

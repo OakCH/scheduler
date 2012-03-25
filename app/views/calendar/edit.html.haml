@@ -1,5 +1,6 @@
 :javascript
   $(function() {
+    $.datepicker.setDefaults({dateFormat: 'dd/mm/yy'});
     var dates = $( "#event_start_at, #event_end_at" ).datepicker({
       defaultDate: "+1w",
       changeMonth: true,
