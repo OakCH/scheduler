@@ -26,7 +26,7 @@ describe Admin do
       describe 'modify events:' do
         before(:each) do
           @new_event = Event.create!(:name => @nurse.name, :start_at => @start_at,
-                                    :end_at => @end_at, :nurse_id => @nurse.id)
+                                     :end_at => @end_at, :nurse_id => @nurse.id)
           @new_event.should_not == nil
           @events = Event.find(:all, :conditions => {:id => @new_event.id})
           @events.length.should==1
@@ -47,7 +47,19 @@ describe Admin do
     end
     describe 'view events for one month' do
       it 'should retrieve events for one month for one shift and one unit' do
-        
+        unit3 = FactoryGirl.create(:unit, :id=>3)
+        unit2 = FactoryGirl.create(:unit, :id=>2)
+        nurses = [FactoryGirl.create(:nurse, :unit_id=>3, :shift=>'Days')]
+        nurses << FactoryGirl.create(:nurse, :unit_id=>3, :shift=>'Days')
+        nurses << FactoryGirl.create(:nurse, :unit_id=>3, :shift=>'PMs')
+        nurses << FactoryGirl.create(:nurse, :unit_id=>2, :shift=>'Days')
+        for nurse in nurses
+          event = Event.create!(:name => nurse.name, :start_at => @start_at, :end_at => @end_at, :nurse_id => nurse.id)
+        end
+
+        Admin.show_events_for_month({:unit_id=>3, :shift=>'Days'}).length.should == 2
+        Admin.show_events_for_month({:unit_id=>2, :shift=>'Days'}).length.should == 1
+        Admin.show_events_for_month({:unit_id=>3}).length.should == 3
       end
     end
   end
