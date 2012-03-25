@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20120325215256) do
     t.boolean  "all_day",    :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "nurse_id"
   end
 
   create_table "nurses", :force => true do |t|
