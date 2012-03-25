@@ -17,6 +17,27 @@ class CalendarController < ApplicationController
     end
   end
 
+  def admin_index
+    @month = (params[:month] || (Time.zone || Time).now.month).to_i
+    @year = (params[:year] || (Time.zone || Time).now.year).to_i
+
+    @shown_month = Date.civil(@year, @month)
+
+    @shifts = Unit.shifts
+    @unit_id = Unit.find(:all)
+
+    if params[:shift] and params[:unit_id]
+      ids = Nurse.get_nurse_ids_shift_unit_id(@nurse.shift, @nurse.unit_id)
+    end
+
+    if ids
+      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id in '+ ids)
+    else
+      @event_strips = Event.event_strips_for_month(@shown_month)
+    end
+
+  end
+
   def show
     @event = Event.find(params[:id])
   end
