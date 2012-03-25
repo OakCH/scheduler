@@ -1,0 +1,26 @@
+:javascript
+  $(function() {
+    var dates = $( "#event_start_at, #event_end_at" ).datepicker({
+      minDate: "#{Time.now.strftime("%d/%m/%y")}",
+      dateFormat: "dd/mm/yy",
+      changeMonth: true,
+      numberOfMonths: 3,
+      onSelect: function( selectedDate ) {
+        var option = this.id == "event_start_at" ? "minDate" : "maxDate",
+        instance = $( this ).data( "datepicker" ),
+        date = $.datepicker.parseDate(
+          instance.settings.dateFormat ||
+          $.datepicker._defaults.dateFormat,
+          selectedDate, instance.settings );
+        dates.not( this ).datepicker( "option", option, date );
+      }
+    });
+  });
+
+%h2 Choose vacation time
+
+= form_tag "/nurse/#{@nurse_id}/calendar" do
+  = render :partial => 'event_form'
+  = submit_tag 'Save Changes'
+
+= link_to 'Back to calendar', nurse_calendar_index_path
