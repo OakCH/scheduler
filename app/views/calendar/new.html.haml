@@ -1,12 +1,11 @@
 :javascript
   $(function() {
-    $.datepicker.setDefaults({dateFormat: 'dd/mm/yy'});
     var dates = $( "#event_start_at, #event_end_at" ).datepicker({
-      defaultDate: "+1w",
+      dateFormat: "dd/mm/yy",
       changeMonth: true,
       numberOfMonths: 3,
       onSelect: function( selectedDate ) {
-        var option = this.id == "from" ? "minDate" : "maxDate",
+        var option = this.id == "event_start_at" ? "minDate" : "maxDate",
         instance = $( this ).data( "datepicker" ),
         date = $.datepicker.parseDate(
           instance.settings.dateFormat ||
