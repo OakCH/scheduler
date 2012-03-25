@@ -7,13 +7,13 @@ describe NurseBulkUploader do
   end
   
   before(:each) do
-    @unit = Factory(:unit)
+    @unit = FactoryGirl.create(:unit)
     @uploader = NurseBulkUploader::Uploader.new(@unit, 'PMs')
   end
   
   describe 'replace from spreadsheet method of the Uploader class' do
     before(:each) do
-      @orig_nurse = Factory(:nurse, :name => 'nurse1', :seniority => 1, :shift => 'PMs', :unit => @unit, :num_weeks_off => 2)
+      @orig_nurse = FactoryGirl.create(:nurse, :name => 'nurse1', :seniority => 1, :shift => 'PMs', :unit => @unit, :num_weeks_off => 2)
     end
     
     context 'with a file that is not xls or xlsx' do
