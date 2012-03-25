@@ -27,9 +27,14 @@ class CalendarController < ApplicationController
     @units = Unit.find(:all)
 
     if params[:shift] and params[:unit_id]
-      ids = Nurse.get_nurse_ids_shift_unit_id(params[:shift], params[:unit_id])
-      @unit_id = params[:unit_id]
-      @shift = params[:shift]
+      session[:shift] = params[:shift]
+      session[:unit_id] = params[:unit_id]
+    end
+
+    if session[:shift] and session[:unit_id]
+      ids = Nurse.get_nurse_ids_shift_unit_id(session[:shift], session[:unit_id])
+      @unit_id = session[:unit_id]
+      @shift = session[:shift]
     end
 
     if ids
@@ -37,7 +42,6 @@ class CalendarController < ApplicationController
     else
       @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id = 0')
     end
-
   end
 
   def show
