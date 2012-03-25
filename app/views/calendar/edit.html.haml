@@ -19,6 +19,6 @@
 
 %h2 Update your vacation time
 
-= form_tag :method => :put do
+= form_tag "/nurse/#{@nurse_id}/calendar/#{@id}", :method => :put do
   = render :partial => 'event_form'
   = submit_tag 'Update vacation time'

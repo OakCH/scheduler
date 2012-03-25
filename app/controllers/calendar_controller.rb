@@ -34,6 +34,8 @@ class CalendarController < ApplicationController
 
   def edit
     @event = Event.find(params[:id])
+    @nurse_id = params[:nurse_id]
+    @id = params[:id]
   end
 
   def update
