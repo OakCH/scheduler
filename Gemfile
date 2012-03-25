@@ -46,3 +46,4 @@ gem 'jquery-rails'
 
 gem 'haml'
 gem 'event-calendar', :require => 'event_calendar'
+gem 'roo', '~> 1.2.3'
