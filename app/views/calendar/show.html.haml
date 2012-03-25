@@ -1,0 +1,13 @@
+%h2 Details about your vacation week
+
+%ul
+  %li
+    Start date:
+    = @event.start_at
+  %li
+    End date:
+    = @event.end_at
+
+= link_to 'Edit vacation week', edit_nurse_calendar_path(@event.nurse, @event)
+= button_to 'Delete', nurse_calendar_path(@event.nurse, @event), :method => 'delete', :confirm => 'Are you sure?'
+= link_to 'Back to calendar', nurse_calendar_index_path

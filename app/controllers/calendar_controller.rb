@@ -15,7 +15,10 @@ class CalendarController < ApplicationController
     else
       @event_strips = Event.event_strips_for_month(@shown_month)
     end
+  end
 
+  def show
+    @event = Event.find(params[:id])
   end
 
   def new 
@@ -29,7 +32,7 @@ class CalendarController < ApplicationController
     nurse.events << event
     nurse.save!
     flash[:notice] = 'You successfully scheduled your vaction'
-    redirect_to :action => 'index', :nurse_id => nurse.id
+    redirect_to nurse_calendar_index_path
   end
 
   def edit
@@ -42,7 +45,14 @@ class CalendarController < ApplicationController
     @event = Event.find(params[:id])
     @event.update_attributes!(params[:event])
     flash[:notice] = 'You successfully scheduled your vaction'
-    redirect_to :action => 'index', :nurse_id => @event.nurse_id 
+    redirect_to nurse_calendar_index_path
   end
-  
+
+  def destroy
+    @event = Event.find(params[:id])
+    @event.destroy
+    flash[:notice] = 'You successfully nuked your vaction'
+    redirect_to nurse_calendar_index_path
+  end
+
 end
