@@ -1,9 +1,8 @@
 class Nurse < ActiveRecord::Base
   has_many :events
   belongs_to :unit
-  
+
   validates_uniqueness_of :seniority, :scope => [:shift, :unit_id]
-  
   def self.get_nurse_ids_shift_unit_id(shift, unit_id)
     ids = Nurse.find( :all, 
                       :joins => "inner join events on events.nurse_id = nurses.id", 

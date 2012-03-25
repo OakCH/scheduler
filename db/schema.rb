@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(:version => 20120323233026) do
     t.integer "unit_id"
     t.integer "seniority"
     t.integer "num_weeks_off"
+    t.string  "email"
   end
 
   create_table "nurses_vacation_days", :id => false, :force => true do |t|
