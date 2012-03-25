@@ -25,3 +25,6 @@
 # Ignore OS files
 .DS_Store
 Thumbs.db
+
+# Ignore files created by coverage
+/coverage

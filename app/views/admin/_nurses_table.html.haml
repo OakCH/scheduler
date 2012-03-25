@@ -1,0 +1,15 @@
+%h2 Nurses List
+
+%table#nurses
+  %thead
+    %tr
+      %th Name
+      %th Number of Weeks Off
+      %th Number of Years Worked
+  %tbody
+    - if @nurses
+      - @nurses.each do |nurse|
+        %tr
+          %td= nurse.name
+          %td= nurse.num_weeks_off
+          %td= nurse.years_worked

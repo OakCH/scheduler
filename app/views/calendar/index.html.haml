@@ -1,37 +1,16 @@
-= stylesheet_link_tag "event_calendar"
-= stylesheet_link_tag "jquery-ui-1.8.18.custom"
-%script{:type=>"type/javascript", :src => "jquery-1.7.1.min"}
-%script{:type=>"type/javascript", :src => "jquery-ui-1.8.18.custom.min"}
-%script{:type=>"type/javascript", :src => "event_calendar"}
-
-:javascript
-  $(function() {
-    var dates = $( "#event_start_at, #event_end_at" ).datepicker({
-      defaultDate: "+1w",
-      changeMonth: true,
-      numberOfMonths: 3,
-      onSelect: function( selectedDate ) {
-        var option = this.id == "from" ? "minDate" : "maxDate",
-        instance = $( this ).data( "datepicker" ),
-        date = $.datepicker.parseDate(
-          instance.settings.dateFormat ||
-          $.datepicker._defaults.dateFormat,
-          selectedDate, instance.settings );
-        dates.not( this ).datepicker( "option", option, date );
-      }
-    });
-  });
-
 %h1 Calendar
 
-#form
-  = form_tag do
-    = label :event, :start_at, 'From'
-    = text_field :event, 'start_at'
+= link_to 'Schedule your vacation', new_nurse_calendar_path
+= raw(event_calendar)
 
-    = label :account, :end_at, 'To'
-    = text_field :event, 'end_at'
-
-    = submit_tag 'SUBMIT', :class=>'submit'
-
-= raw(event_calendar) 
+- if @nurse.events.length > 0 
+  %h2 Your vacations weeks
+  %tbody
+    - @nurse.events.each do |e|
+      %tr
+        %td= e.start_at.strftime("%d/%m/%y")
+        %td= e.end_at.strftime("%d/%m/%y")
+        %td= link_to 'Edit vacation week', edit_nurse_calendar_path(e.nurse, e)
+        %td= button_to 'Delete', nurse_calendar_path(e.nurse, e), :method => 'delete', :confirm => 'Are you sure?'
+- else
+  %h2 You have not scheduled your vacations.  All work and no play makes us go psycho. Just saying.

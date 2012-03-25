@@ -1,0 +1,6 @@
+= label :event, :start_at, 'From'
+= text_field :event, 'start_at', :value => (@event ? @event.start_at.strftime('%d/%m/%Y') : '')
+
+= label :event, :end_at, 'To'
+= text_field :event, 'end_at', :value => (@event ? @event.end_at.strftime('%d/%m/%Y') : '')
+
