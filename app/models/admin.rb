@@ -18,12 +18,7 @@ class Admin < ActiveRecord::Base
     unit_id = selectors[:unit_id]
     shift = selectors[:shift]
     if shift
-      nurses = Unit.find_by_id(unit_id).nurses.find_all_by_shift(shift)
-      events = []
-      for nurse in nurses
-        events << nurse.events
-      end
-      return events
+      Unit.where(:id=>unit_id).joins({:nurses => [:events]}).where('nurses.shift = ?', shift)
     else
       return Unit.find_by_id(unit_id).events
     end
