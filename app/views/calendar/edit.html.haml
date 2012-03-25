@@ -6,7 +6,7 @@
       changeMonth: true,
       numberOfMonths: 3,
       onSelect: function( selectedDate ) {
-        var option = this.id == "from" ? "minDate" : "maxDate",
+        var option = this.id == "event_start_at" ? "minDate" : "maxDate",
         instance = $( this ).data( "datepicker" ),
         date = $.datepicker.parseDate(
           instance.settings.dateFormat ||
@@ -22,3 +22,5 @@
 = form_tag "/nurse/#{@nurse_id}/calendar/#{@id}", :method => :put do
   = render :partial => 'event_form'
   = submit_tag 'Update vacation time'
+
+= link_to 'Back to calendar', nurse_calendar_index_path
