@@ -1,3 +1,17 @@
 %h1 Calendar
 
+
+= form_tag "/admin/calendar", :method => :get do
+  = hidden_field_tag 'month', @month
+  = hidden_field_tag 'year', @year
+  = label :unit, :id, 'Unit'
+  %select{:name => 'unit_id'}
+    - @units.each do |u|
+      %option{:value => u.id} #{u.name}
+  = label :unit, :shift, 'Shift'
+  %select{:name => 'shift'}
+    - @shifts.each do |s|
+      %option{:value => s, :selected => s == @shift} #{s}
+  = submit_tag 'Filter calendars'
+
 = raw(admin_event_calendar)
