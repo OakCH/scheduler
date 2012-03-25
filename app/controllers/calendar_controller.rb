@@ -29,7 +29,7 @@ class CalendarController < ApplicationController
     nurse.events << event
     nurse.save!
     flash[:notice] = 'You successfully scheduled your vaction'
-    redirect_to nurse_calendar_index 
+    redirect_to :action => 'index', :nurse_id => nurse.id
   end
 
   def edit
@@ -42,7 +42,7 @@ class CalendarController < ApplicationController
     @event = Event.find(params[:id])
     @event.update_attributes!(params[:event])
     flash[:notice] = 'You successfully scheduled your vaction'
-    redirect_to nurse_calendar_index 
+    redirect_to :action => 'index', :nurse_id => @event.nurse_id 
   end
   
 end
