@@ -24,18 +24,24 @@ class CalendarController < ApplicationController
     @shown_month = Date.civil(@year, @month)
 
     @shifts = Unit.shifts
-    @unit_id = Unit.find(:all)
+    @units = Unit.find(:all)
 
     if params[:shift] and params[:unit_id]
-      ids = Nurse.get_nurse_ids_shift_unit_id(@nurse.shift, @nurse.unit_id)
+      session[:shift] = params[:shift]
+      session[:unit_id] = params[:unit_id]
+    end
+
+    if session[:shift] and session[:unit_id]
+      ids = Nurse.get_nurse_ids_shift_unit_id(session[:shift], session[:unit_id])
+      @unit_id = session[:unit_id]
+      @shift = session[:shift]
     end
 
     if ids
       @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id in '+ ids)
     else
-      @event_strips = Event.event_strips_for_month(@shown_month)
+      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id = 0')
     end
-
   end
 
   def show
