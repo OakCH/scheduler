@@ -18,6 +18,8 @@ module NavigationHelpers
       
     when /^the Edit Nurses page$/
       '/admin/upload/'
+    when /^the Nurse Calendar page for "([^"]*)"/
+      nurse_calendar_index_path(Nurse.find_by_name($1))
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
