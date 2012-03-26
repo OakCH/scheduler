@@ -17,7 +17,7 @@ Background:
   | John Doe   | 2-Apr-2012  | 9-Apr-2012  | 2        |
 
 
-  And I am on the Nurse Calendar page for "Jane Doe"
+  And I am on the Nurse Calendar page for "Jane Doe" in the month "3"
 
 Scenario: Viewing calendar for March 
   Then I should see "Jane Doe"
