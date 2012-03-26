@@ -18,7 +18,7 @@ module NavigationHelpers
       
     when /^the Edit Nurses page$/
       '/admin/upload/'
-    when /^the Nurse Calendar page for "([^"]*) in the month "([^"]*)$/
+    when /^the Nurse Calendar page for "([^"]*)" in the month "([^"]*)"$/
       nurse = Nurse.find_by_name($1)
       "/nurse/#{nurse.id}/calendar?month=#{$2}&year=2012"
 #nurse_calendar_index_path(Nurse.find_by_name($1))
