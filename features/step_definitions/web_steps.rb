@@ -110,6 +110,12 @@ Then /^(?:|I )should see "([^"]*)"$/ do |text|
   end
 end
 
+Then /^(?:|I )should see a stripe "([^"]*)"$/ do |text|
+  myregex = /#{text}/ 
+  assert page.body =~ myregex
+end
+
+
 Then /^(?:|I )should see \/([^\/]*)\/$/ do |regexp|
   regexp = Regexp.new(regexp)
 
