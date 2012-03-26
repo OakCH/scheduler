@@ -10,7 +10,7 @@ describe Admin do
   describe 'Admin should be able to' do
     describe 'do CRUD on events: ' do
       it 'should create an event for a specific nurse' do
-        pending
+        pending "for iteration 3 user story Admin Can Override Vacation Events"
         start_at = '03/03/2012'
         end_at = '03/04/2012'
         Admin.add_event(@start_at, @end_at, @nurse.id)
@@ -20,11 +20,11 @@ describe Admin do
         new_event.start_at.should == @start_at
         new_event.end_at.should == @end_at
         new_event.nurse_id.should == @nurse.id
-        #what's the point of having Event.name when we already have nurse_id
         new_event.name.should == @nurse.name
       end
       describe 'modify events:' do
         before(:each) do
+          pending "for iteration 3 user story Admin Can Override Vacation Events"
           @new_event = Event.create!(:name => @nurse.name, :start_at => @start_at,
                                      :end_at => @end_at, :nurse_id => @nurse.id)
           @new_event.should_not == nil
@@ -33,7 +33,7 @@ describe Admin do
           @nurse.events.length.should==1
         end
         it 'should delete an event' do
-          pending
+          pending "for iteration 3 user story Admin Can Override Vacation Events"
           Admin.delete_event(@events[0])
           events = Event.find(:all, :conditions => {:id => @new_event.id})
           events.length.should==0
@@ -41,7 +41,7 @@ describe Admin do
           nurse_ex.events.length.should==0
         end
         it 'should update an event' do
-          pending
+          pending "for iteration 3 user story Admin Can Override Vacation Events"
         end
       end
     end
