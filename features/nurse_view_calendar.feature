@@ -6,14 +6,18 @@ So that I can start planning my vacation time
 
 Background:
 
-  Given the following dates have been taken:
-  | Jane Doe   | 17-Jan-2012 | 24-Jan-2012 | Days | Surgery    |
-  | John Doe   | 24-Feb-2012 | 5-Mar-2012  | Days | Surgery    |
-  | Jane Doe   | 4-Mar-2012  | 12-Mar-2012 | Days | Surgery    |
-  | J.P. Morgan| 17-Jan-2012 | 24-Jan-2012 | PMs  | Surgery    |
-  | K.D. Tang  | 17-Jan-2012 | 24-Jan-2012 | PMs | Cardiology |
+  Given the following nurses exist:
+  | name       | shift | unit_id | seniority  | num_weeks_off | email           | years_worked |
+  | Jane Doe   | PMs   | 1       | 23         | 3            | jad@example.com | 12           |
+  | John Doe   | PMs   | 1       | 24         | 4            | jod@example.com | 5            |
+  
+  And the following events exist:
+  | name       | start_at    | end_at      | nurse_id |
+  | Jane Doe   | 17-Jan-2012 | 24-Jan-2012 | 1        |
+  | John Doe   | 24-Feb-2012 | 5-Mar-2012  | 2        |
 
-  And I am on the "Nurse Calendar" page
+
+  And I am on the Nurse Calendar page for "Jane Doe"
   And I select "Days" from "Shift"
   And I select "Surgery" from "Unit"
 
