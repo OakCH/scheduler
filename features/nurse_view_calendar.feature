@@ -13,17 +13,13 @@ Background:
   
   And the following events exist:
   | name       | start_at    | end_at      | nurse_id |
-  | Jane Doe   | 17-Jan-2012 | 24-Jan-2012 | 1        |
+  | Jane Doe   | 17-Mar-2012 | 24-Mar-2012 | 1        |
   | John Doe   | 24-Feb-2012 | 5-Mar-2012  | 2        |
 
 
   And I am on the Nurse Calendar page for "Jane Doe"
-  And I select "Days" from "Shift"
-  And I select "Surgery" from "Unit"
 
-Scenario: Viewing calendar for January
-  When I select "January" from "Months"
-  And I press "Submit"
+Scenario: Viewing calendar for March 
   Then I should see "Jane Doe"
 
 Scenario: Changing month with two nurses per month
