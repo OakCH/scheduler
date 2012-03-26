@@ -1,48 +1,43 @@
 class CalendarController < ApplicationController
 
-  def index
+  def setup_index
     @month = (params[:month] || (Time.zone || Time).now.month).to_i
     @year = (params[:year] || (Time.zone || Time).now.year).to_i
-
     @shown_month = Date.civil(@year, @month)
 
-    @nurse = Nurse.find_by_id(params[:nurse_id])
+    yield
 
-    if @nurse
-      ids = Nurse.get_nurse_ids_shift_unit_id(@nurse.shift, @nurse.unit_id)
-    end
-
-    if ids
-      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id in '+ ids)
+    if @ids
+      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id in '+ @ids)
     else
       @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id = 0')
     end
   end
 
+  def index
+    setup_index do
+      @nurse = Nurse.find_by_id(params[:nurse_id])
+      if @nurse
+        @ids = Nurse.get_nurse_ids_shift_unit_id(@nurse.shift, @nurse.unit_id)
+      end
+    end
+  end
+
   def admin_index
-    @month = (params[:month] || (Time.zone || Time).now.month).to_i
-    @year = (params[:year] || (Time.zone || Time).now.year).to_i
+    setup_index do
+      @shifts = Unit.shifts
+      @units = Unit.find(:all)
 
-    @shown_month = Date.civil(@year, @month)
+      if params[:shift] and params[:unit_id]
+        session[:shift] = params[:shift]
+        session[:unit_id] = params[:unit_id]
+      end
 
-    @shifts = Unit.shifts
-    @units = Unit.find(:all)
-
-    if params[:shift] and params[:unit_id]
-      session[:shift] = params[:shift]
-      session[:unit_id] = params[:unit_id]
-    end
-
-    if session[:shift] and session[:unit_id]
-      ids = Nurse.get_nurse_ids_shift_unit_id(session[:shift], session[:unit_id])
-      @unit_id = session[:unit_id]
-      @shift = session[:shift]
-    end
-
-    if ids
-      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id in '+ ids)
-    else
-      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => 'nurse_id = 0')
+      if session[:shift] and session[:unit_id]
+        @ids = Nurse.get_nurse_ids_shift_unit_id(session[:shift], session[:unit_id])
+        @unit_id = session[:unit_id]
+        @shift = session[:shift]
+      end
     end
   end
 
@@ -55,7 +50,7 @@ class CalendarController < ApplicationController
   end
 
   def create
-    nurse = Nurse.find(params[:nurse_id])
+    nurse = Nurse.find_by_id(params[:nurse_id])
     event = Event.new(params[:event])
     event.name = nurse.name
     nurse.events << event
