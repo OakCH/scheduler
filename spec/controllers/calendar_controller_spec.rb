@@ -2,123 +2,126 @@ require 'spec_helper'
 require 'date'
 
 describe CalendarController do
-  describe "index action" do
-
+  
+  before{ @nurse = FactoryGirl.create(:nurse) }
+  
+  describe "nurse index action" do
+     
     it 'should query the Nurse model for nurses' do
-      Nurse.should_receive(:find)
-      Nurse.should_receive(:get_nurse_ids_shift_unit_id)
-      post :index
+      Nurse.should_receive(:find_by_id)
+      get :index, :nurse_id => @nurse.id
     end
-
+    
     it 'should find nurses by shift and unit_id' do
       Nurse.should_receive(:get_nurse_ids_shift_unit_id)
-      post :index
+      get :index, :nurse_id => @nurse.id
     end
-
+    
     it 'should query the Event model for events' do
       Event.should_receive(:event_strips_for_month)
-      post :index
+      get :index, :nurse_id => @nurse.id
     end
-
-    it 'should assign the right date if given' do
+    
+    it 'should assign the right month if given' do
       month = 12
-      post :index, :month => month
+      get :index, :nurse_id => @nurse.id, :month => month
       assigns(:month).should == 12
     end
-
+    
     it 'should assign the right year if given' do
       year = 1998
-      post :index, :year => year
-      assigns(:year).should == 1997
+      get :index, :nurse_id => @nurse.id, :year => year
+      assigns(:year).should == 1998
     end
-
+    
     it 'should assign a month if none given' do
-      post :index
+      get :index, :nurse_id => @nurse.id
       assigns(:month).should_not be_nil
     end
-
+    
     it 'should assign a year if none given' do
-      post :index
+      get :index, :nurse_id => @nurse.id
       assigns(:year).should_not be_nil
     end
-
+    
     it 'should assign a shown month' do
-      post :index
+      get :index, :nurse_id => @nurse.id
       assigns(:shown_month).should_not be_nil
     end
-
+    
     it 'should find the correct nurse' do
-      nurse = FactoryGirl.create(:nurse)
-      post :index, :nurse_id => nurse.id
-      assigns(:nurse).should == nurse
+      get :index, :nurse_id => @nurse.id
+      assigns(:nurse).should == @nurse
     end
-
-    it 'should assign no nurse at all if no id given' do
-      post :index
+    
+    it 'should assign no nurse at all if the id does not belong to a nurse' do
+      other_nurse = Nurse.find_by_id(@nurse.id + 1)
+      other_nurse.destroy if other_nurse
+      get :index, :nurse_id => @nurse.id + 1
       assigns(:nurse).should be_nil
     end
-
-    it 'should get an event strip for only the nurse if id given' do
+    
+    it 'should get an event strip for only the current nurse, if id given' do
       nurse = FactoryGirl.create(:nurse)
       other_nurse = FactoryGirl.create(:nurse)
       month = 5
       day = 5
       date = Date.new(2012, month, day)
       event = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => date)
-      event = FactoryGirl.create(:event, :nurse_id => other_nurse.id, :start_at => date)
-      post :index, :nurse_id => nurse.id, :month => month
-      assigns(:event_strips)[0].nurse_id.should == nurse.id
+      event2 = FactoryGirl.create(:event, :nurse_id => other_nurse.id, :start_at => date)
+      get :index, :nurse_id => nurse.id, :month => month
+      assigns(:event_strips)[0].nurse.id.should == nurse.id
     end
-
-    it 'should get an event strip eve with no id given' do
+    
+    it 'should get an event strip even with no id given' do
       dummy_nurse = FactoryGirl.create(:nurse)
       month = 5
       day = 5
       date = Date.new(2012, month, day)
       event = FactoryGirl.create(:event, :nurse_id => dummy_nurse.id, :start_at => date)
-      post :index, :month => month
-      assigns(:event_strips)[0].nurse_id.should == nurse.id
+      get :index, :nurse_id => @nurse.id, :month => month
+      assigns(:event_strips)[0].nurse.id.should == nurse.id
     end
   end
-
-  describe 'admin_index' do
-
-    it 'should assign the right date if given' do
+  
+  describe 'admin index action' do
+    
+    it 'should assign the right month if given' do
       month = 12
       post :admin_index, :month => month
       assigns(:month).should == 12
     end
-
+    
     it 'should assign the right year if given' do
       year = 1998
       post :admin_index, :year => year
       assigns(:year).should == 1998
     end
-
+    
     it 'should assign a month if none given' do
       post :admin_index
       assigns(:month).should_not be_nil
     end
-
+    
     it 'should assign a year if none given' do
       post :admin_index
       assigns(:year).should_not be_nil
     end
-
+    
     it 'should assign a shown month' do
       post :admin_index
       assigns(:shown_month).should_not be_nil
     end
-
+    
     it 'should assign session shift and unit_id' do
       unit = FactoryGirl.create(:unit)
       post :admin_index, :shift => "PMs", :unit_id => unit.id
       session[:shift].should == "PMs"
-      session[:unit_id].should == "Surgery"
+      session[:unit_id].should == unit.id.to_s
       assigns(:shift).should == "PMs"
-      assigns(:unit_id).should == "Surgery"
+      assigns(:unit_id).should == unit.id.to_s
     end
-
+    
     it 'should not assign session shift or unit_id if one is missing' do
       old_shift = session[:shift]
       old_unit_id = session[:unit_it]
@@ -128,49 +131,49 @@ describe CalendarController do
       assigns(:shift).should == old_shift
       assigns(:unit_id).should == old_unit_id
     end
-
+    
     it 'should call shift from Unit and find' do
       Unit.should_receive(:shifts)
       Unit.should_receive(:find)
       post :admin_index
     end
-
+    
     it 'should call get_nurse_ids_shift_unit_id form Nurse' do
       Nurse.should_receive(:get_nurse_ids_shift_unit_id)
       unit = FactoryGirl.create(:unit)
       post :admin_index, :shift => "PMs", :unit_id => unit.id
     end
-
+    
     it 'should assign event_strips' do
       unit = FactoryGirl.create(:unit)
       post :admin_index, :shift => "PMs", :unit_id => unit.id
       assigns(:event_strips).should_not be_nil
     end
-
+    
   end
-
+  
   describe "Show" do
     it 'should assign nothing if there is no id' do
       post :show
       assigns(:event).should_be nil
     end
-
+    
     it 'should find right event given id' do
       event = FactoryGirl.create(:event)
       post :show, :id => event.id
       assigns(:event).id.should == event.id
     end
   end
-
+  
   describe "New" do
     it 'should assign nothing if there is no nurse id' do
-      post :new
+      get :new, :nurse_id => @nurse.id
       assigns(:nurse_id).should_be nil
     end
-
+    
     it 'should assign right nurse id given id' do
       nurse = FactoryGirl.create(:nurse)
-      post :new, :id => nurse.id
+      get :new, :nurse_id => @nurse.id
       assigns(:nurse_id).should == nurse.id
     end
   end
