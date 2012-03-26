@@ -14,7 +14,7 @@ Background:
   And the following events exist:
   | name       | start_at    | end_at      | nurse_id |
   | Jane Doe   | 17-Mar-2012 | 24-Mar-2012 | 1        |
-  | John Doe   | 24-Feb-2012 | 5-Mar-2012  | 2        |
+  | John Doe   | 2-Apr-2012  | 9-Apr-2012  | 2        |
 
 
   And I am on the Nurse Calendar page for "Jane Doe"
@@ -23,11 +23,6 @@ Scenario: Viewing calendar for March
   Then I should see "Jane Doe"
 
 Scenario: Changing month to February 
-  When I follow "month_2"
-  Then I should see "John Doe" 
-
-Scenario: Viewing other unit or shift
-  When I select "January" from "Months"
-  And I press "Submit"
-  Then I should not see "J.P. Morgan"
-  And I should not see "K.D. Tang"
+  When I follow "month_4"
+  Then I should see a stripe "a href="
+  Then I should see a stripe "#"
