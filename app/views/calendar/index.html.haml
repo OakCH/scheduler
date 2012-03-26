@@ -3,7 +3,7 @@
 = link_to 'Schedule your vacation', new_nurse_calendar_path
 = raw(event_calendar)
 
-- if @nurse.events.length > 0 
+- if @nurse and (@nurse.events.length > 0)
   %h2 Your vacations weeks
   %tbody
     - @nurse.events.each do |e|
@@ -12,5 +12,7 @@
         %td= e.end_at.strftime("%d/%m/%y")
         %td= link_to 'Edit vacation week', edit_nurse_calendar_path(e.nurse, e)
         %td= button_to 'Delete', nurse_calendar_path(e.nurse, e), :method => 'delete', :confirm => 'Are you sure?'
-- else
+- elsif @nurse
   %h2 You have not scheduled your vacations.  All work and no play makes us go psycho. Just saying.
+- else
+  %h2 Impostor! You are not a nurse.
