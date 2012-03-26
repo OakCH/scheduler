@@ -38,4 +38,5 @@ FactoryGirl.define do
     sequence :nurse_id do |n|
       n
     end
+  end
 end
