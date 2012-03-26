@@ -62,15 +62,14 @@ describe CalendarController do
     end
 
     it 'should get an event strip for only the current nurse, if id given' do
-      nurse = FactoryGirl.create(:nurse)
       other_nurse = FactoryGirl.create(:nurse)
       month = 5
       day = 5
       date = Date.new(2012, month, day)
-      event = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => date)
+      event = FactoryGirl.create(:event, :nurse_id => @nurse.id, :start_at => date)
       event2 = FactoryGirl.create(:event, :nurse_id => other_nurse.id, :start_at => date)
-      get :index, :nurse_id => nurse.id, :month => month
-      assigns(:event_strips)[0].nurse.id.should == nurse.id
+      get :index, :nurse_id => @nurse.id, :month => month
+      assigns(:event_strips)[0].nurse.id.should == @nurse.id
     end
 
     it 'should get an event strip even with no id given' do
@@ -80,7 +79,7 @@ describe CalendarController do
       date = Date.new(2012, month, day)
       event = FactoryGirl.create(:event, :nurse_id => dummy_nurse.id, :start_at => date)
       get :index, :nurse_id => @nurse.id, :month => month
-      assigns(:event_strips)[0].nurse.id.should == nurse.id
+      assigns(:event_strips)[0].nurse.id.should == @nurse.id
     end
   end
 
@@ -153,9 +152,6 @@ describe CalendarController do
   end
 
   describe "Show" do
-    before (:each) do
-      @nurse = FactoryGirl.create(:nurse)
-    end
 
     it 'should find right event given id' do
       event = FactoryGirl.create(:event)
@@ -165,23 +161,16 @@ describe CalendarController do
   end
 
   describe "New" do
-    it 'should assign nothing if there is no nurse id' do
-      get :new, :nurse_id => @nurse.id
-      assigns(:nurse_id).should_be nil
-    end
-
     it 'should assign right nurse id given id' do
-      nurse = FactoryGirl.create(:nurse)
       get :new, :nurse_id => @nurse.id
-      assigns(:nurse_id).should == nurse.id
+      assigns(:nurse_id).should == @nurse.id
     end
   end
 
   describe "Create" do
     it 'should increase the count of nurses' do
       nurse_count = Nurse.all.length
-      nurse = FactoryGirl.create(:nurse)
-      post :create, :nurse_id => nurse.id,
+      post :create, :nurse_id => @nurse.id,
       :event => {:name => "My day off",
         :start_at => DateTime.now,
         :end_at => 2.days.from_now,
@@ -191,20 +180,18 @@ describe CalendarController do
     end
 
     it 'should increase the count of events assoc with nurse' do
-      nurse = FactoryGirl.create(:nurse)
-      event_count = nurse.events.length
-      post :create, :nurse_id => nurse.id,
+      event_count = @nurse.events.length
+      post :create, :nurse_id => @nurse.id,
       :event => {:name => "My day off",
         :start_at => DateTime.now,
         :end_at => 2.days.from_now,
         :all_day => true
       }
-      nurse.events.length.should == event_count + 1
+      @nurse.events.length.should == event_count + 1
     end
 
     it 'should redirect' do
-      nurse = FactoryGirl.create(:nurse)
-      post :create, :nurse_id => nurse.id,
+      post :create, :nurse_id => @nurse.id,
       :event => {:name => "My day off",
         :start_at => DateTime.now,
         :end_at => 2.days.from_now,
@@ -228,9 +215,6 @@ describe CalendarController do
   end
 
   describe "Update" do
-    before(:each) do
-      @nurse = FactoryGirl.create(:nurse)
-    end
 
     it 'should call find from Event' do
       event = FactoryGirl.create(:event)
@@ -250,7 +234,7 @@ describe CalendarController do
       event = FactoryGirl.create(:event)
       get :update, :id => event.id, :nurse_id => @nurse.id,
       :event => { :name => "My day off" }
-      assigns(:event).name.should == "my day off"
+      assigns(:event).name.should == "My day off"
     end
 
     it 'should redirect' do
@@ -265,16 +249,15 @@ describe CalendarController do
   describe "Destroy" do
 
     it 'should call find from Event' do
+      nurse = FactoryGirl.create(:nurse)
       event = FactoryGirl.create(:event)
       Event.should_receive(:find)
-      nurse = FactoryGirl.create(:nurse)
       delete :destroy, :id => event.id, :nurse_id => nurse.id
     end
 
     it 'should call destroy on the event' do
-      event = FactoryGirl.create(:event)
       nurse = FactoryGirl.create(:nurse)
-      event.should_receive(:destroy)
+      event = FactoryGirl.create(:event)
       delete :destroy, :id => event.id, :nurse_id => nurse.id
     end
 
