@@ -22,11 +22,9 @@ Background:
 Scenario: Viewing calendar for March 
   Then I should see "Jane Doe"
 
-Scenario: Changing month with two nurses per month
-  When I select "March" from "Months"
-  And I press "Submit"
-  Then I should see "Jane Doe" 
-  And I should see "John Doe"
+Scenario: Changing month to February 
+  When I follow "month_2"
+  Then I should see "John Doe" 
 
 Scenario: Viewing other unit or shift
   When I select "January" from "Months"
