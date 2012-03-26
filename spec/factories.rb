@@ -1,3 +1,5 @@
+require 'date'
+
 FactoryGirl.define do
   factory :admin do
     sequence :name do |n|
@@ -26,4 +28,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :event do
+    sequence :name do |n|
+      "NURSATRONIC SERIAL NO:#{n}"
+    end
+    start_at DateTime.new(2012,3,4,0,0,0)
+    end_at DateTime.new(2012,3,6,0,0,0)
+    created_at DateTime.new(2012,1,1,0,0,0)
+    sequence :nurse_id do |n|
+      n
+    end
 end
