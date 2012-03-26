@@ -48,7 +48,7 @@ describe CalendarController do
     end
 
     it 'should find the correct nurse' do
-      nurse = Factory(:nurse)
+      nurse = FactoryGirl.create(:nurse)
       post :index, :nurse_id => nurse.id
       assigns(:nurse).should == nurse
     end
@@ -59,27 +59,25 @@ describe CalendarController do
     end
 
     it 'should get an event strip for only the nurse if id given' do
-      nurse = Factory(:nurse)
-      other_nurse = Factory(:nurse)
+      nurse = FactoryGirl.create(:nurse)
+      other_nurse = FactoryGirl.create(:nurse)
       month = 5
       day = 5
       date = Date.new(2012, month, day)
-      event = Factory(:event, :nurse_id => nurse.id, :start_at => date)
-      event = Factory(:event, :nurse_id => other_nurse.id, :start_at => date)
+      event = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => date)
+      event = FactoryGirl.create(:event, :nurse_id => other_nurse.id, :start_at => date)
       post :index, :nurse_id => nurse.id, :month => month
       assigns(:event_strips)[0].nurse_id.should == nurse.id
-      assigns(:event_strips).length.should == 1
     end
 
     it 'should get an event strip eve with no id given' do
-      dummy_nurse = Factory(:nurse)
+      dummy_nurse = FactoryGirl.create(:nurse)
       month = 5
       day = 5
       date = Date.new(2012, month, day)
-      event = Factory(:event, :nurse_id => dummy_nurse.id, :start_at => date)
+      event = FactoryGirl.create(:event, :nurse_id => dummy_nurse.id, :start_at => date)
       post :index, :month => month
       assigns(:event_strips)[0].nurse_id.should == nurse.id
-      assigns(:event_strips).length.should == 1
     end
   end
 
@@ -94,7 +92,7 @@ describe CalendarController do
     it 'should assign the right year if given' do
       year = 1998
       post :admin_index, :year => year
-      assigns(:year).should == 1997
+      assigns(:year).should == 1998
     end
 
     it 'should assign a month if none given' do
@@ -113,7 +111,7 @@ describe CalendarController do
     end
 
     it 'should assign session shift and unit_id' do
-      unit = Factory(:unit)
+      unit = FactoryGirl.create(:unit)
       post :admin_index, :shift => "PMs", :unit_id => unit.id
       session[:shift].should == "PMs"
       session[:unit_id].should == "Surgery"
@@ -139,12 +137,12 @@ describe CalendarController do
 
     it 'should call get_nurse_ids_shift_unit_id form Nurse' do
       Nurse.should_receive(:get_nurse_ids_shift_unit_id)
-      unit = Factory(:unit)
+      unit = FactoryGirl.create(:unit)
       post :admin_index, :shift => "PMs", :unit_id => unit.id
     end
 
     it 'should assign event_strips' do
-      unit = Factory(:unit)
+      unit = FactoryGirl.create(:unit)
       post :admin_index, :shift => "PMs", :unit_id => unit.id
       assigns(:event_strips).should_not be_nil
     end
@@ -158,7 +156,7 @@ describe CalendarController do
     end
 
     it 'should find right event given id' do
-      event = Factory(:event)
+      event = FactoryGirl.create(:event)
       post :show, :id => event.id
       assigns(:event).id.should == event.id
     end
@@ -171,7 +169,7 @@ describe CalendarController do
     end
 
     it 'should assign right nurse id given id' do
-      nurse = Factory(:nurse)
+      nurse = FactoryGirl.create(:nurse)
       post :new, :id => nurse.id
       assigns(:nurse_id).should == nurse.id
     end
@@ -180,24 +178,36 @@ describe CalendarController do
   describe "Create" do
     it 'should increase the count of nurses' do
       nurse_count = Nurse.all.length
-      nurse = Factory(:nurse)
-      post :create, :nurse_id => nurse.id, :name => "My day off",
-      :start_at => DateTime.now, :end_at => 2.days.from_now, :all_day => true
+      nurse = FactoryGirl.create(:nurse)
+      post :create, :nurse_id => nurse.id,
+      :event => {:name => "My day off",
+        :start_at => DateTime.now,
+        :end_at => 2.days.from_now,
+        :all_day => true
+      }
       Nurse.all.length.should == nurse_count + 1
     end
 
     it 'should increase the count of events assoc with nurse' do
-      nurse = Factory(:nurse)
+      nurse = FactoryGirl.create(:nurse)
       event_count = nurse.events.length
-      post :create, :nurse_id => nurse.id, :name => "My day off",
-      :start_at => DateTime.now, :end_at => 2.days.from_now, :all_day => true
-      nurse.events.length = event_count + 1
+      post :create, :nurse_id => nurse.id,
+      :event => {:name => "My day off",
+        :start_at => DateTime.now,
+        :end_at => 2.days.from_now,
+        :all_day => true
+      }
+      nurse.events.length.should == event_count + 1
     end
 
     it 'should redirect' do
-      nurse = Factory(:nurse)
-      post :create, :nurse_id => nurse.id, :name => "My day off",
-      :start_at => DateTime.now, :end_at => 2.days.from_now, :all_day => true
+      nurse = FactoryGirl.create(:nurse)
+      post :create, :nurse_id => nurse.id,
+      :event => {:name => "My day off",
+        :start_at => DateTime.now,
+        :end_at => 2.days.from_now,
+        :all_day => true
+      }
       response.should redirect_to(nurse_calendar_index_path)
     end
   end
@@ -212,7 +222,7 @@ describe CalendarController do
     end
 
     it 'should assign the whatever is in params' do
-      event = Factory(:event)
+      event = FactoryGirl.create(:event)
       post :edit, :id => event.id, :nurse_id => 2
       assigns(:id).should == event.id
       assigns(:nurse_id).should == 2
@@ -228,26 +238,30 @@ describe CalendarController do
     end
 
     it 'should call find from Event' do
-      event = Factory(:event)
+      event = FactoryGirl.create(:event)
       Event.should_receive(:find)
-      post :update, :id => event.id, :name => "my day off"
+      post :update, :id => event.id,
+      :event => { :name => "My day off" }
     end
 
     it 'should call update attributes! on the event' do
-      event = Factory(:event)
+      event = FactoryGirl.create(:event)
       event.should_receive(:update_atrributes!)
-      post :update, :id => event.id, :name => "my day off"
+      post :update, :id => event.id,
+      :event => { :name => "My day off" }
     end
 
     it 'should update the event' do
-      event = Factory(:event)
-      post :update, :id => event.id, :name => "my day off"
+      event = FactoryGirl.create(:event)
+      post :update, :id => event.id,
+      :event => { :name => "My day off" }
       assigns(:event).name.should == "my day off"
     end
 
     it 'should redirect' do
-      event = Factory(:event)
-      post :update, :id => event.id, :name => "my day off"
+      event = FactoryGirl.create(:event)
+      post :update, :id => event.id,
+      :event => { :name => "My day off" }
       response.should redirect_to(nurse_calendar_index_path)
     end
 
@@ -260,20 +274,20 @@ describe CalendarController do
     end
 
     it 'should call find from Event' do
-      event = Factory(:event)
+      event = FactoryGirl.create(:event)
       Event.should_receive(:find)
       post :destroy, :id => event.id
     end
 
     it 'should call destroy on the event' do
-      event = Factory(:event)
+      event = FactoryGirl.create(:event)
       event.should_receive(:destroy)
       post :destroy, :id => event.id
     end
 
 
     it 'should redirect' do
-      nurse = Factory(:nurse)
+      nurse = FactoryGirl.create(:nurse)
       post :destroy, :id => nurse.id
       response.should redirect_to(nurse_calendar_index_path)
     end
