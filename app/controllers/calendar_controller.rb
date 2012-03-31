@@ -52,7 +52,7 @@ class CalendarController < ApplicationController
     nurse.events << event
     nurse.save!
     flash[:notice] = 'You successfully scheduled your vacation'
-    redirect_to nurse_calendar_index_path
+    redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
   end
 
   def edit
