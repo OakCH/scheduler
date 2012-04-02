@@ -3,7 +3,7 @@ require 'date'
 
 describe CalendarController do
 
-  before{ @nurse = FactoryGirl.create(:nurse) }
+  before(:each){ @nurse = FactoryGirl.create(:nurse) }
 
   describe "nurse index action" do
 
@@ -69,17 +69,29 @@ describe CalendarController do
       event = FactoryGirl.create(:event, :nurse_id => @nurse.id, :start_at => date)
       event2 = FactoryGirl.create(:event, :nurse_id => other_nurse.id, :start_at => date)
       get :index, :nurse_id => @nurse.id, :month => month
-      assigns(:event_strips)[0].nurse.id.should == @nurse.id
+      nurse_assigned = false
+      assigns(:event_strips).each do |d|
+        d.each do |e|
+          if e and e.nurse_id ==  @nurse.id then
+            nurse_assigned = true
+          end
+        end
+      end
+      nurse_assigned.should be_true
     end
 
-    it 'should get an event strip even with no id given' do
+    it 'should get an event strip that is all nil with no id given' do
       dummy_nurse = FactoryGirl.create(:nurse)
       month = 5
       day = 5
       date = Date.new(2012, month, day)
       event = FactoryGirl.create(:event, :nurse_id => dummy_nurse.id, :start_at => date)
       get :index, :nurse_id => @nurse.id, :month => month
-      assigns(:event_strips)[0].nurse.id.should == @nurse.id
+      assigns(:event_strips).each do |s|
+        s.each do |e|
+          e.should be_nil
+        end
+      end
     end
   end
 
