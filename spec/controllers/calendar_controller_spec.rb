@@ -9,11 +9,7 @@ describe CalendarController do
 
     it 'should query the Nurse model for nurses' do
       Nurse.should_receive(:find_by_id)
-      get :index, :nurse_id => @nurse.id
-    end
-
-    it 'should find nurses by shift and unit_id' do
-      Nurse.should_receive(:get_nurse_ids_shift_unit_id)
+      narse = Nurse.find_by_id(params[:nurse_id])
       get :index, :nurse_id => @nurse.id
     end
 
@@ -180,36 +176,29 @@ describe CalendarController do
   end
 
   describe "Create" do
-    it 'should increase the count of nurses' do
-      nurse_count = Nurse.all.length
-      post :create, :nurse_id => @nurse.id,
-      :event => {:name => "My day off",
+
+    before :each do
+      @new_event = { :name => "My day off",
         :start_at => DateTime.now,
         :end_at => 2.days.from_now,
-        :all_day => true
-      }
+        :all_day => true }
+    end
+
+    it 'should increase the count of nurses' do
+      nurse_count = Nurse.all.length
+      post :create, :nurse_id => @nurse.id, :event => @new_event
       Nurse.all.length.should == nurse_count + 1
     end
 
     it 'should increase the count of events assoc with nurse' do
       event_count = @nurse.events.length
-      post :create, :nurse_id => @nurse.id,
-      :event => {:name => "My day off",
-        :start_at => DateTime.now,
-        :end_at => 2.days.from_now,
-        :all_day => true
-      }
+      post :create, :nurse_id => @nurse.id, :event => @new_event
       @nurse.events.length.should == event_count + 1
     end
 
     it 'should redirect' do
-      post :create, :nurse_id => @nurse.id,
-      :event => {:name => "My day off",
-        :start_at => DateTime.now,
-        :end_at => 2.days.from_now,
-        :all_day => true
-      }
-      response.should redirect_to(nurse_calendar_index_path)
+      post :create, :nurse_id => @nurse.id, :event => @new_event
+      response.should redirect_to(nurse_calendar_index_path, :month => @new_event[start_at].month, :year => @new_event[start_at].year )
     end
   end
 
@@ -253,7 +242,7 @@ describe CalendarController do
       event = FactoryGirl.create(:event)
       get :update, :id => event.id, :nurse_id => @nurse.id,
       :event => { :name => "My day off" }
-      response.should redirect_to(nurse_calendar_index_path)
+      response.should redirect_to(nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year))
     end
 
   end
