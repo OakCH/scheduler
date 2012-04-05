@@ -14,17 +14,29 @@ module NurseBulkUploader
     @parsing_errors = uploader.parsing_errors
   end
   
+   # helper methods for the views
+  def optional_columns
+    nice_col_names(PossibleColumns - RequiredColumns)
+  end
+  
+  def required_columns
+    nice_col_names(RequiredColumns)
+  end
+  
+  def all_columns
+    nice_col_names(PossibleColumns)
+  end
+  
+  def all_columns_as_sym
+    PossibleColumns
+  end
+  
   def nice_col_name(sym)
     sym.to_s.split('_').map{ |word| word.capitalize }.join(' ')
   end
   
-   # helper methods for the views
-  def optional_columns
-    (PossibleColumns - RequiredColumns).map { |sym| nice_col_name(sym) }
-  end
-  
-  def required_columns
-    RequiredColumns.map { |sym| nice_col_name(sym) }
+  def nice_col_names(col_collection)
+    col_collection.map { |sym| nice_col_name(sym) }
   end
   
   class Uploader

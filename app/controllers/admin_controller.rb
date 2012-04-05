@@ -19,9 +19,9 @@ class AdminController < ApplicationController
     
     if params[:admin]
       getNextParams
-      if (@unit && @shift)
+      if (@unit_obj && @shift)
         @readyToUpload = true
-        @nurses = Nurse.find(:all)
+        @nurses = @unit_obj.nurses.where(:shift => @shift)
       end
     end
     
@@ -55,7 +55,7 @@ class AdminController < ApplicationController
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
   end
-
+  
   def getNextParams
     @unit = params[:admin][:unit]
     if (@unit)
