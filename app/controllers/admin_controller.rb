@@ -2,16 +2,6 @@ class AdminController < ApplicationController
   
   # attr_reader :unit, :shift
   
-  def copyFile(file)
-    File.open(Rails.root.join('tmp', file.original_filename), 'wb') do |f|
-      f.write(file.read)
-    end
-  end
-  
-  def deleteFile(file)
-    File.delete(Rails.root.join('tmp', file.original_filename))
-  end
-  
   def upload
     @units = Unit.names
     @shifts = Unit.shifts
@@ -42,18 +32,25 @@ class AdminController < ApplicationController
       if @file
         copyFile(@file)
         Nurse.replace_from_spreadsheet(Rails.root.join('tmp', @file.original_filename).to_path, @unit_obj, @shift)
-        @parsed_results = Nurse.parsing_errors
-        if (@parsed_results[:messages])
-          @parsed_results[:messages].each do |msg|
-            flash[:notice] << msg
-          end
-        end
+        flash[:notice].concat(Nurse.parsing_errors[:messages])
         deleteFile(@file)
       else 
         flash[:notice] << "Error: Please select a file"
       end
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
+  end
+  
+  private
+  
+  def copyFile(file)
+    File.open(Rails.root.join('tmp', file.original_filename), 'wb') do |f|
+      f.write(file.read)
+    end
+  end
+  
+  def deleteFile(file)
+    File.delete(Rails.root.join('tmp', file.original_filename))
   end
   
   def getNextParams

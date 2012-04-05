@@ -79,7 +79,7 @@ describe AdminController, "POST upload" do
         response.should redirect_to :action => 'upload', :admin => {:shift => "PMs", :unit => nil}
       end
     end
-
+    
   end
   
   describe 'upon clicking upload' do
@@ -141,12 +141,13 @@ describe AdminController, "POST upload" do
       post :upload, {:admin => @admin, :commit => 'Upload'}
     end
     
-    it 'should get all the nurses' do
+    it 'should get the nurses within the particular unit and shift' do
+      nurses = FactoryGirl.create_list(:nurse, 2)
       AdminController.any_instance.stub(:copyFile)
       AdminController.any_instance.stub(:deleteFile)
-      
-      Nurse.should_receive(:find).with(:all)
+      @admin = {:unit => nurses[0].unit.name, :shift => nurses[0].shift, :upload => @basic_xls_file}
       post :upload, {:admin => @admin, :commit => 'Upload'}
+      assigns[:nurses].should == nurses[0, 1]
     end
     
     it 'should call parsing errors' do
