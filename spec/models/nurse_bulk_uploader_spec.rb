@@ -338,13 +338,23 @@ describe NurseBulkUploader do
   describe 'get the required and optional columns of the uploader' do
     class Temp; extend NurseBulkUploader; end
     
-    it 'should have the required columns be Name and Num Weeks Off' do
+    it 'should have the required columns be Name, Num Weeks Off, and Email' do
       expected_array = ['Name', 'Num Weeks Off', 'Email']
       Temp.required_columns.should == expected_array
     end
     
     it 'should have the optional column be Years Worked' do
       Temp.optional_columns.should == ['Years Worked']
+    end
+    
+    it 'should have all columns be Name, Num Weeks Off, Email, and Years Worked' do
+      expected_array = ['Name', 'Num Weeks Off', 'Email', 'Years Worked']
+      Temp.all_columns.should == expected_array
+    end
+    
+    it 'should return all the column symbols, both required and optional' do
+      expected_array = [:name, :num_weeks_off, :email, :years_worked]
+      Temp.all_columns_as_sym.should == expected_array
     end
   end
   

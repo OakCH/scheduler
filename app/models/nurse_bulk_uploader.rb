@@ -30,6 +30,7 @@ module NurseBulkUploader
   def all_columns_as_sym
     PossibleColumns
   end
+
   
   def nice_col_name(sym)
     sym.to_s.split('_').map{ |word| word.capitalize }.join(' ')
