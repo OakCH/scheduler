@@ -1,4 +1,4 @@
-  !!! 5
+!!! 5
 %html
   %head
     %title Nurse Scheduler
@@ -10,6 +10,8 @@
     #container
       #header
         NURSE SCHEDULER
+      #flash
+        = render 'shared/flash', :flash => flash
       #content
         = yield
       #footer
