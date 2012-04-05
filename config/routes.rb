@@ -1,5 +1,5 @@
 Scheduler::Application.routes.draw do
-
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
   
@@ -19,7 +19,7 @@ Scheduler::Application.routes.draw do
     # match ':action' => 'admin#:action', :as => :admin
   end
   
-  resources :nurse do
+  resources :nurse, :only => [] do
     resources :calendar
   end
   
