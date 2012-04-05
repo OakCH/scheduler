@@ -1,15 +1,13 @@
 %h2 Nurses List
-
+%p Below are the nurses currently in the database for this unit and shift.
 %table#nurses
   %thead
     %tr
-      %th Name
-      %th Number of Weeks Off
-      %th Number of Years Worked
+    - Nurse.all_columns.each do |col_name|
+      %th= col_name
   %tbody
     - if @nurses
       - @nurses.each do |nurse|
         %tr
-          %td= nurse.name
-          %td= nurse.num_weeks_off
-          %td= nurse.years_worked
+        - Nurse.all_columns_as_sym.each do |attr|
+          %td= nurse.send(attr)
