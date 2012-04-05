@@ -5,7 +5,7 @@ class AdminController < ApplicationController
   def upload
     @units = Unit.names
     @shifts = Unit.shifts
-    flash[:notice] = []
+    flash[:error] = []
     
     if params[:admin]
       getNextParams
@@ -17,11 +17,11 @@ class AdminController < ApplicationController
     
     if params[:commit] == 'Next'
       if @unit == nil
-        flash[:notice] << "Error: Forgot to specify unit"
+        flash[:error] << "Forgot to specify unit"
         @readyToUpload = false
       end
       if @shift == nil
-        flash[:notice] << "Error: Forgot to specify shift"
+        flash[:error] << "Forgot to specify shift"
         @readyToUpload = false
       end
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
@@ -32,10 +32,10 @@ class AdminController < ApplicationController
       if @file
         copyFile(@file)
         Nurse.replace_from_spreadsheet(Rails.root.join('tmp', @file.original_filename).to_path, @unit_obj, @shift)
-        flash[:notice].concat(Nurse.parsing_errors[:messages])
+        flash[:error].concat(Nurse.parsing_errors[:messages])
         deleteFile(@file)
       else 
-        flash[:notice] << "Error: Please select a file"
+        flash[:error] << "Please select a file"
       end
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end

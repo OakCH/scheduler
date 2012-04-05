@@ -43,11 +43,11 @@ describe AdminController, "POST upload" do
         @admin = {:unit => @unit}
       end
       
-      it 'should set a flash[:notice] message if no shift' do
+      it 'should set a flash[:error] message if no shift' do
         @unit_obj = Unit.create!(:name=>@unit)
         Unit.stub(:find_by_name).with(@unit).and_return(@unit_obj)
         post :upload, {:admin => @admin, :commit => 'Next'}
-        flash[:notice].should == ["Error: Forgot to specify shift"]
+        flash[:error].should == ["Forgot to specify shift"]
       end
       
       it 'should assign @readyToUpload to false' do
@@ -67,8 +67,8 @@ describe AdminController, "POST upload" do
         post :upload, {:admin => @admin, :commit => 'Next'}
       end
       
-      it 'should set a flash[:notice] message if no unit' do
-        flash[:notice].should == ["Error: Forgot to specify unit"]
+      it 'should set a flash[:error] message if no unit' do
+        flash[:error].should == ["Forgot to specify unit"]
       end
       
       it 'should assign @readyToUpload to false' do
@@ -158,13 +158,13 @@ describe AdminController, "POST upload" do
       post :upload, {:admin => @admin, :commit => 'Upload'}
     end
     
-    it 'should set flash[:notice]' do
+    it 'should set flash[:error]' do
       AdminController.any_instance.stub(:copyFile)
       Nurse.stub(:parsing_errors).and_return({:messages => ['Some Error']})
       AdminController.any_instance.stub(:deleteFile)
       
       post :upload, {:admin => @admin, :commit => 'Upload'}
-      flash[:notice].should == ['Some Error']
+      flash[:error].should == ['Some Error']
     end
     
     it 'should render same page' do
@@ -176,13 +176,13 @@ describe AdminController, "POST upload" do
     end
     
     context 'with no file given' do
-      it 'should set flash[:notice]' do
+      it 'should set flash[:error]' do
         AdminController.any_instance.stub(:copyFile)
         AdminController.any_instance.stub(:deleteFile)
         @admin = {:unit => @unit, :shift => @shift}
         
         post :upload, {:admin => @admin, :commit => 'Upload'}
-        flash[:notice].should == ['Error: Please select a file']
+        flash[:error].should == ['Please select a file']
       end
     end
     
