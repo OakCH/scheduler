@@ -1,5 +1,5 @@
 Scheduler::Application.routes.draw do
-
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
   
@@ -19,8 +19,8 @@ Scheduler::Application.routes.draw do
     # match ':action' => 'admin#:action', :as => :admin
   end
   
-  resources :nurse do
-    resources :calendar
+  scope 'nurse/:nurse_id/' do
+    resources :calendar, :as => 'nurse_calendar'
   end
   
   # Sample resource route (maps HTTP verbs to controller actions automatically):
