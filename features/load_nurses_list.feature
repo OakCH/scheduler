@@ -43,4 +43,4 @@ Scenario: Upload malformed xls file
   And I press "Next"
   And I choose "missing_name_header.xls" to upload
   And I press "Upload"
-  Then I should see "Header row is missing the name column"
+  Then I should see "Header row is missing the Name column"
