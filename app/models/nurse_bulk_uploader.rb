@@ -1,7 +1,10 @@
 module NurseBulkUploader
   
   attr_reader :parsing_errors
-  
+
+  # to add another column, add the symbol representing the database field
+  # to PossibleColumns and optionally to RequiredColumns and define
+  # a match_col_name function below
   PossibleColumns = [:name, :num_weeks_off, :email, :years_worked]
   RequiredColumns = [:name, :num_weeks_off, :email]
   
@@ -10,17 +13,31 @@ module NurseBulkUploader
     uploader.replace_from_spreadsheet(file_path)
     @parsing_errors = uploader.parsing_errors
   end
-
-  def nice_col_name(sym)
-    sym.to_s.split('_').map{ |word| word.capitalize }.join(' ')
-  end
-
+  
+   # helper methods for the views
   def optional_columns
-    (PossibleColumns - RequiredColumns).map { |sym| nice_col_name(sym)}
+    nice_col_names(PossibleColumns - RequiredColumns)
   end
   
   def required_columns
-    RequiredColumns.map { |sym| nice_col_name(sym) }
+    nice_col_names(RequiredColumns)
+  end
+  
+  def all_columns
+    nice_col_names(PossibleColumns)
+  end
+  
+  def all_columns_as_sym
+    PossibleColumns
+  end
+
+  
+  def nice_col_name(sym)
+    sym.to_s.split('_').map{ |word| word.capitalize }.join(' ')
+  end
+  
+  def nice_col_names(col_collection)
+    col_collection.map { |sym| nice_col_name(sym) }
   end
   
   class Uploader
@@ -55,7 +72,7 @@ module NurseBulkUploader
     end
     
     def set_column_positions
-      initialize_columns
+      self.cols = {}
       iterate_columns(sheet.first_column, sheet.last_column)
       if !necessary_cols_associated
         error_missing_headers
@@ -87,14 +104,11 @@ module NurseBulkUploader
     
     # helper methods for create_nurses
     def create_nurse(row, count)
-      years_worked = (cols[:years_worked])? sheet.cell(row, cols[:years_worked]) : nil
-      nurse = Nurse.new(:seniority => count,
-                        :unit => self.unit,
-                        :shift => self.shift,
-                        :name => sheet.cell(row, cols[:name]),
-                        :num_weeks_off => sheet.cell(row, cols[:num_weeks_off]),
-                        :years_worked => years_worked,
-                        :email => sheet.cell(row, cols[:email]))
+      nurse_params = { :seniority => count, :unit => self.unit, :shift => self.shift }
+      PossibleColumns.each do |col_name|
+        nurse_params[col_name] = sheet.cell(row, cols[col_name]) if cols[col_name]
+      end
+      nurse = Nurse.new(nurse_params)
       nurse.save
       set_creation_errors(row, nurse.errors)
     end
@@ -105,11 +119,6 @@ module NurseBulkUploader
     end
     
     # helper methods for set_column_positions
-    def initialize_columns
-      keys = [:name, :years_worked, :num_weeks_off, :email]
-      self.cols = Hash[*keys.zip([nil]*keys.size).flatten]
-    end
-    
     def iterate_columns(start_col, end_col)
       return if !start_col or !end_col
       start_col.upto (end_col) do |col|
@@ -122,10 +131,9 @@ module NurseBulkUploader
       cell = @sheet.cell(row, col)
       cell = cell.downcase if cell
       
-      cols[:name] = col if match_name cell
-      cols[:num_weeks_off] = col if match_num_weeks_off cell
-      cols[:years_worked] = col if match_years_worked cell
-      cols[:email] = col if match_email cell
+      PossibleColumns.each do |col_name|
+        return cols[col_name] = col if send("match_#{col_name.to_s}", cell)
+      end
     end
     
     def match_name(cell)
@@ -139,7 +147,7 @@ module NurseBulkUploader
     def match_years_worked(cell)
       cell =~ /^years(?: worked)?$/
     end
-
+    
     def match_email(cell)
       cell =~ /^e\-?mail$/
     end
@@ -173,8 +181,6 @@ module NurseBulkUploader
     def missing_header_message(sym)
       "Header row is missing the #{Nurse.nice_col_name(sym)} column"
     end
-    
-    
   end
   
 end

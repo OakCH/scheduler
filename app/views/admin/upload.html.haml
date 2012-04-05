@@ -3,12 +3,12 @@
 = form_tag({:action => :upload}, :multipart => true) do
 
   = label :admin, :shift, 'Shift'
-  = select :admin, :shift, @shifts
+  = select :admin, :shift, @shifts, :selected => @shift
   
   = label :admin, :unit, 'Unit'
-  = select :admin, :unit, @units
+  = select :admin, :unit, @units, :selected => @unit
   
-  = submit_tag 'Next'
+  = submit_tag 'Next' if !@readyToUpload
  
   - if @readyToUpload
     -# instructions
