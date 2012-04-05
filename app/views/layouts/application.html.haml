@@ -1,4 +1,4 @@
-  !!! 5
+!!! 5
 %html
   %head
     %title Nurse Scheduler
@@ -10,6 +10,13 @@
     #container
       #header
         NURSE SCHEDULER
+      #flash
+        - if flash[:notice]
+          #notice.message= flash[:notice]
+        - if flash[:warning]
+          #warning.message= flash[:warning]
+        - if flash[:error]
+          #error.message= flash[:error]
       #content
         = yield
       #footer
