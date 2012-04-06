@@ -14,12 +14,12 @@
 */
 
 /* Outer most container */
+$lite-gray: #d5d0cf;
+
 .ec-calendar {
-  font-family: verdana, arial, helvetica, sans-serif;
-  font-size: 11px;
-  line-height: 14px;
+  line-height: 30px;
   margin: 0;
-  padding: 0;
+  padding: 30px 0;
   border-bottom: 1px solid #d5d5d5;
 }
 
@@ -33,10 +33,14 @@
 .ec-month-name {
   font-size: 16px;
   font-weight: bold;
+  text-align: center;
 }
 
 .ec-month-nav {
-
+  text-align: center;
+  a {
+    color: $lite-gray;
+  }
 }
 
 /* Containers */
@@ -48,24 +52,22 @@
 
 /* Day names */
 .ec-day-names {
-  position: absolute;
-  top: 0;
-  left: 0;
+
   width: 100%;
   table-layout: fixed;
-  padding: 2px 0;
-  background: #303030;
-  color: white;
+  padding: 0px;
 }
 
 .ec-day-name {
-  font-weight: normal;
+  text-align: center;
+  line-height: 20px;
 }
 
 /* Rows container and Row */
 .ec-rows {
   position: absolute;
   left: 0;
+  top: 10px;
   bottom: 0;
   width: 100%;
   background: white;
@@ -92,6 +94,10 @@
 
 .ec-day-bg {
   border-left: 1px solid #d5d5d5;
+  background-color: #ffffff;
+}
+
+#calendar table tr:hover td {
 }
 
 .ec-today-bg {
