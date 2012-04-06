@@ -16,10 +16,8 @@
             %p
               Sign in to schedule your vacation hours. If you don't know
               your login/password, please contact your nurse manager.
-          - if flash[:notice]
-            #notice.message= flash[:notice]
-          - elsif flash[:warning]
-            #warning.message= flash[:warning]
+          #flash
+            = render 'shared/flash', :flash => flash
           #form
             =yield
         #footer
