@@ -7,6 +7,8 @@ class CalendarController < ApplicationController
 
     yield
 
+    # AS FAR AS I KNOW, under the hood, this uses the ? syntax.
+    # Might not be susceptible to sql injections.
     @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
   end
 
@@ -41,7 +43,7 @@ class CalendarController < ApplicationController
     @event = Event.find(params[:id])
   end
 
-  def new 
+  def new
     @nurse_id = params[:nurse_id]
   end
 
