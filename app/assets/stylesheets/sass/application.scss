@@ -1,0 +1,80 @@
+/* application.scss */
+$dark-gray: #454545;
+$lite-gray: #d5d0cf;
+$gray: #7c7c7c;
+$teal: #47a19c;
+$dark-teal: #00a198;
+body {
+  background-color: $lite-gray;
+  color: $dark-gray;
+  font-family: 'Open Sans', sans-serif;
+
+}
+
+#container {
+  margin: 80px auto 0 auto;
+  width: 960px;
+}
+
+#header {
+  position: relative;
+  text-transform: uppercase;
+  .left {
+    font-size: 200%;
+    float: left;
+    font-weight: bold;
+    text-shadow: 0 1px 0 #FFFFFF; 
+    position: absolute;
+    bottom: 10px;
+  }
+  .right {
+    float: right;
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+    ul {
+      margin-left: 0;
+      padding-left: 0;
+      display: inline;
+      li {
+        padding: 3px 15px;
+        border-left: 1px solid $dark-gray;
+        list-style: none;
+        display: inline;
+      }
+      li.first {
+        border-left: 0px;
+      }
+    }
+  }
+}
+
+#content {
+  padding: 0;
+}
+
+.clear {
+  clear: both;
+}
+
+.separator {
+  width: 100%;
+  margin: 0 auto;
+  border-bottom: 2px solid $gray;
+}
+
+h1 {
+  text-align: center;
+  font-size: 300%;
+  font-family: 'Merriweather', serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-shadow: 0 1px 0 #FFFFFF; 
+}
+
+a {
+  font-weight: bold;
+  text-decoration: none;
+  color: $teal;
+  &:hover { color: $dark-teal; }
+}
