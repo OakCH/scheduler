@@ -28,7 +28,7 @@ body {
       padding-left: 0;
       display: inline; }
       #header .right ul li {
-        padding: 3px 15px;
+        padding: 0px 10px;
         border-left: 1px solid #454545;
         list-style: none;
         display: inline; }
@@ -36,7 +36,7 @@ body {
         border-left: 0px; }
 
 #content {
-  padding: 0; }
+  padding: 0 0 30px 0; }
 
 .clear {
   clear: both; }
@@ -60,3 +60,21 @@ a {
   color: #47a19c; }
   a:hover {
     color: #00a198; }
+
+table {
+  width: 80%;
+  margin: 0 auto;
+  font-size: 95%; }
+  table th {
+    background-color: #cd3301;
+    color: #d5d0cf;
+    text-transform: uppercase;
+    text-align: left; }
+  table td, table th {
+    padding: 0 8px; }
+  table tr.odd td {
+    background-color: #e4e3e3; }
+  table tr.even td {
+    background-color: #dadada; }
+  table tr:hover td {
+    background-color: #c7c5c5; }

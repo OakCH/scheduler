@@ -4,6 +4,9 @@ $lite-gray: #d5d0cf;
 $gray: #7c7c7c;
 $teal: #47a19c;
 $dark-teal: #00a198;
+$orange: #cd3301;
+$white: #ffffff;
+
 body {
   background-color: $lite-gray;
   color: $dark-gray;
@@ -37,7 +40,7 @@ body {
       padding-left: 0;
       display: inline;
       li {
-        padding: 3px 15px;
+        padding: 0px 10px;
         border-left: 1px solid $dark-gray;
         list-style: none;
         display: inline;
@@ -50,7 +53,7 @@ body {
 }
 
 #content {
-  padding: 0;
+  padding: 0 0 30px 0;
 }
 
 .clear {
@@ -78,3 +81,31 @@ a {
   color: $teal;
   &:hover { color: $dark-teal; }
 }
+
+table {
+  width: 80%;
+  margin: 0 auto;
+  font-size: 95%;
+  th {
+    background-color: $orange;
+    color: $lite-gray;
+    text-transform: uppercase;
+    text-align: left;
+   }
+  td, th {
+    padding: 0 8px;
+  }
+  tr {
+    &.odd {
+      td {background-color: #e4e3e3;}
+    }
+    &.even {
+      td {background-color: #dadada;}
+    }
+    &:hover {
+      td {background-color: #c7c5c5;}
+    }
+  }
+}
+
+

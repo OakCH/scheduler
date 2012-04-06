@@ -8,6 +8,6 @@
   %tbody
     - if @nurses
       - @nurses.each do |nurse|
-        %tr
+        %tr{:class => cycle("even", "odd")}/
         - Nurse.all_columns_as_sym.each do |attr|
           %td= nurse.send(attr)

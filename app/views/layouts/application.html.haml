@@ -16,14 +16,17 @@
             %li.first
               =link_to_unless_current 'Home', root_path
             %li
-              =link_to_unless_current 'Upload', root_path
+              =link_to_unless_current 'Upload', admin_upload_path
             %li
-              =link_to_unless_current 'Calendar', root_path
+              =link_to_unless_current 'Admin Cal', admin_calendar_path
+            %li
+              =link_to_unless_current 'Nurse Cal', root_path
         .clear
-        .separator
+      .separator
       #flash
         = render 'shared/flash', :flash => flash
       #content
         = yield
+      .separator
       #footer
         (c) 2012 Team Awesome
