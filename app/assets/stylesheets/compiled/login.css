@@ -1,0 +1,108 @@
+/* login.scss */
+body {
+  background-color: #d5d0cf; }
+
+#login {
+  width: 600px; }
+
+#container {
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+  background-image: url("../mascot.png");
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  margin: 85px auto 0 auto;
+  width: 880px;
+  height: 490px; }
+
+#login #header {
+  font-size: 50px;
+  text-align: center;
+  color: #cd3301;
+  text-align: left; }
+
+#login #content {
+  width: 500px;
+  border-radius: 100px 100px;
+  border-bottom-left-radius: 120px 100px;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 100px 150px;
+  background-color: #7c7c7c;
+  padding: 50px; }
+
+#login input {
+  border: 1px;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #969696;
+  height: 30px;
+  width: 250px;
+  margin: 10px 5px 10px 5px;
+  border-radius: 3px;
+  color: #FFFFFF;
+  padding-left: 7px;
+  padding-right: 7px; }
+
+#login input.submit {
+  width: 200px;
+  height: 106px;
+  background-color: #00a198;
+  border: none;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 120%;
+  border-radius: 10px;
+  padding-left: 7px;
+  padding-right: 7px; }
+
+#login input.submit:hover {
+  background-color: #01b0a6; }
+
+.left {
+  float: left; }
+
+.right {
+  float: right; }
+
+#login .left {
+  width: 60%; }
+
+#login .right {
+  position: absolute;
+  bottom: 0;
+  right: 0; }
+
+.clear {
+  clear: both; }
+
+#login #form {
+  position: relative; }
+
+#login #footer {
+  color: #454545;
+  text-align: right;
+  font-size: 90%; }
+
+ul {
+  margin-left: 0;
+  padding-left: 0;
+  display: inline; }
+  ul li {
+    padding: 0px 15px;
+    border-left: 1px solid #454545;
+    list-style: none;
+    display: inline; }
+  ul li.first {
+    border-left: 0px; }
+  ul a {
+    color: #cd3301;
+    text-decoration: none;
+    font-weight: bold; }
+    ul a:hover {
+      color: #a62900; }
+
+#tempnavi {
+  text-transform: uppercase;
+  font-family: 'Open Sans', serif;
+  top: 20px;
+  right: 20px;
+  position: absolute; }
