@@ -1,17 +1,17 @@
 class CalendarController < ApplicationController
-
+  
   def setup_index
     @month = (params[:month] || (Time.zone || Time).now.month).to_i
     @year = (params[:year] || (Time.zone || Time).now.year).to_i
     @shown_month = Date.civil(@year, @month)
-
+    
     yield
 
-    # AS FAR AS I KNOW, under the hood, this uses the ? syntax.
-    # Might not be susceptible to sql injections.
+    # Event.event_strips_for_month will sanitize the input that has been
+    # string interpolated
     @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
   end
-
+  
   def index
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])
