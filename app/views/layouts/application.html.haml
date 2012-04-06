@@ -4,6 +4,7 @@
     %title Nurse Scheduler
     = stylesheet_link_tag 'compiled/application'
     = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600|Merriweather:900'
+    = stylesheet_link_tag 'compiled/event_calendar'
     = csrf_meta_tags
 
   %body
@@ -20,7 +21,7 @@
             %li
               =link_to_unless_current 'Admin Cal', admin_calendar_path
             %li
-              =link_to_unless_current 'Nurse Cal', root_path
+              =link_to_unless_current 'Nurse Cal', '/nurse/1/calendar'
         .clear
       .separator
       #flash

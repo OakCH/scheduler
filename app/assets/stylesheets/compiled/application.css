@@ -57,9 +57,9 @@ h1 {
 a {
   font-weight: bold;
   text-decoration: none;
-  color: #47a19c; }
-  a:hover {
-    color: #00a198; }
+  color: #cd3301; }
+  a:hover td {
+    color: #a62900; }
 
 table {
   width: 80%;
@@ -74,7 +74,17 @@ table {
     padding: 0 8px; }
   table tr.odd td {
     background-color: #e4e3e3; }
+  table tr.odd:hover td {
+    background-color: #d2d1d1; }
   table tr.even td {
     background-color: #dadada; }
-  table tr:hover td {
-    background-color: #c7c5c5; }
+  table tr.even:hover td {
+    background-color: #d2d1d1; }
+
+label {
+  padding: 10px 4px; }
+
+#footer {
+  font-size: 95%;
+  text-align: center;
+  padding: 20px; }

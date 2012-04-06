@@ -1,8 +1,15 @@
-@charset "utf-8";
-/* CSS Document */
+/* login.scss */
+$dark-gray: #454545;
+$lite-gray: #d5d0cf;
+$gray: #7c7c7c;
+$teal: #23bbb3;
+$dark-teal: #00a198;
+$orange: #cd3301;
+$dark-orange: #a62900;
+$white: #ffffff;
 
 body {
-  background-color: #46433A;
+  background-color: $lite-gray;
 }
 
 #login {
@@ -11,8 +18,8 @@ body {
 
 #container {
   font-family: 'Open Sans', sans-serif;
-  color: #46433A;
-  background-image:url('mascot.png');
+  color: $white;
+  background-image:url('../mascot.png');
   background-position: right bottom;
   background-repeat: no-repeat;
   margin: 85px auto 0 auto;
@@ -21,10 +28,10 @@ body {
 }
   
 
-#login #header { 
+#login #header {
   font-size: 50px;
   text-align: center;
-  color: #FFFFFF;
+  color: $orange;
   text-align: left;
 }
 
@@ -34,14 +41,14 @@ body {
   border-bottom-left-radius: 120px 100px;
   border-bottom-right-radius: 0;
   border-top-right-radius: 100px 150px;
-  background-color:#ded4b9;
+  background-color:$gray;
   padding: 50px;
 }
 
 #login input {
   border: 1px;
   font-family: 'Open Sans', sans-serif;
-  background-color:#8a8472;
+  background-color: #969696;
   height: 30px;
   width: 250px;
   margin: 10px 5px 10px 5px;
@@ -54,7 +61,7 @@ body {
 #login input.submit {
   width: 200px;
   height: 106px;
-  background-color: #47a19c;
+  background-color: $dark-teal;
   border: none;
   color: #FFFFFF;
   font-weight: 600;
@@ -65,7 +72,7 @@ body {
 }
 
 #login input.submit:hover {
-  background-color: #56b4ae;
+  background-color: #01b0a6;
 }
 
 .left {
@@ -95,7 +102,39 @@ body {
 }
 
 #login #footer {
-  color: #ffffff;
+  color: $dark-gray;
   text-align: right;
   font-size: 90%;
+}
+
+ul {
+  margin-left: 0;
+  padding-left: 0;
+  display: inline;
+  li {
+    padding: 0px 15px;
+    border-left: 1px solid $dark-gray;
+    list-style: none;
+    display: inline;
+  }
+  li.first {
+    border-left: 0px;
+  }
+
+  a {
+    color: $orange;
+    text-decoration: none;
+    font-weight: bold;
+    &:hover {
+      color: $dark-orange;
+    }
+  }
+}
+
+#tempnavi {
+  text-transform: uppercase;
+  font-family: 'Open Sans', serif;
+  top: 20px;
+  right: 20px;
+  position: absolute;
 }

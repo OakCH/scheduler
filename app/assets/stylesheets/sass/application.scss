@@ -5,6 +5,7 @@ $gray: #7c7c7c;
 $teal: #47a19c;
 $dark-teal: #00a198;
 $orange: #cd3301;
+$dark-orange: #a62900;
 $white: #ffffff;
 
 body {
@@ -52,13 +53,10 @@ body {
   }
 }
 
-#content {
-  padding: 0 0 30px 0;
-}
+#content {padding: 0 0 30px 0;}
 
-.clear {
-  clear: both;
-}
+
+.clear {clear: both;}
 
 .separator {
   width: 100%;
@@ -78,8 +76,8 @@ h1 {
 a {
   font-weight: bold;
   text-decoration: none;
-  color: $teal;
-  &:hover { color: $dark-teal; }
+  color: $orange;
+  &:hover { td { color: $dark-orange; }}
 }
 
 table {
@@ -98,14 +96,26 @@ table {
   tr {
     &.odd {
       td {background-color: #e4e3e3;}
+      &:hover {td {background-color: #d2d1d1;}}
     }
     &.even {
       td {background-color: #dadada;}
-    }
-    &:hover {
-      td {background-color: #c7c5c5;}
+      &:hover {td {background-color: #d2d1d1;}}
     }
   }
 }
 
+label {
+  padding: 10px 4px; 
+}
 
+#footer {
+  font-size: 95%;
+  text-align: center;
+  padding: 20px;
+}
+
+#flash {
+  .error { color: red; }
+  .notice { color: $orange; }
+}
