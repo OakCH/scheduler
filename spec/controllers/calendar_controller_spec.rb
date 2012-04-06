@@ -3,7 +3,7 @@ require 'date'
 
 describe CalendarController do
 
-  before{ @nurse = FactoryGirl.create(:nurse) }
+  before(:each){ @nurse = FactoryGirl.create(:nurse) }
 
   describe "nurse index action" do
 
@@ -11,7 +11,7 @@ describe CalendarController do
       Nurse.should_receive(:find_by_id)
       get :index, :nurse_id => @nurse.id
     end
-    
+
     it 'should query the Event model for events' do
       Event.should_receive(:event_strips_for_month)
       get :index, :nurse_id => @nurse.id
@@ -33,12 +33,12 @@ describe CalendarController do
       get :index, :nurse_id => @nurse.id
       assigns(:month).should_not be_nil
     end
-    
+
     it 'should assign a year if none given' do
       get :index, :nurse_id => @nurse.id
       assigns(:year).should_not be_nil
     end
-    
+
     it 'should assign a shown month' do
       get :index, :nurse_id => @nurse.id
       assigns(:shown_month).should_not be_nil
@@ -64,22 +64,34 @@ describe CalendarController do
       event = FactoryGirl.create(:event, :nurse_id => @nurse.id, :start_at => date)
       event2 = FactoryGirl.create(:event, :nurse_id => other_nurse.id, :start_at => date)
       get :index, :nurse_id => @nurse.id, :month => month
-      assigns(:event_strips)[0].nurse.id.should == @nurse.id
+      nurse_assigned = false
+      assigns(:event_strips).each do |d|
+        d.each do |e|
+          if e and e.nurse_id ==  @nurse.id then
+            nurse_assigned = true
+          end
+        end
+      end
+      nurse_assigned.should be_true
     end
-    
-    it 'should get an event strip even with no id given' do
+
+    it 'should get an event strip that is all nil with no id given' do
       dummy_nurse = FactoryGirl.create(:nurse)
       month = 5
       day = 5
       date = Date.new(2012, month, day)
       event = FactoryGirl.create(:event, :nurse_id => dummy_nurse.id, :start_at => date)
       get :index, :nurse_id => @nurse.id, :month => month
-      assigns(:event_strips)[0].nurse.id.should == @nurse.id
+      assigns(:event_strips).each do |s|
+        s.each do |e|
+          e.should be_nil
+        end
+      end
     end
   end
-  
+
   describe 'admin index action' do
-    
+
     it 'should assign the right month if given' do
       month = 12
       get :admin_index, :month => month
@@ -91,7 +103,7 @@ describe CalendarController do
       get :admin_index, :year => year
       assigns(:year).should == 1998
     end
-    
+
     it 'should assign a month if none given' do
       get :admin_index
       assigns(:month).should_not be_nil
@@ -101,7 +113,7 @@ describe CalendarController do
       get :admin_index
       assigns(:year).should_not be_nil
     end
-    
+
     it 'should assign a shown month' do
       get :admin_index
       assigns(:shown_month).should_not be_nil
@@ -115,7 +127,7 @@ describe CalendarController do
       assigns(:shift).should == "PMs"
       assigns(:unit_id).should == unit.id.to_s
     end
-    
+
     it 'should not assign session shift or unit_id if one is missing' do
       old_shift = session[:shift]
       old_unit_id = session[:unit_it]
@@ -125,7 +137,7 @@ describe CalendarController do
       assigns(:shift).should == old_shift
       assigns(:unit_id).should == old_unit_id
     end
-    
+
     it 'should call shift from Unit and find' do
       Unit.should_receive(:shifts)
       Unit.should_receive(:find)
@@ -137,94 +149,94 @@ describe CalendarController do
       unit = FactoryGirl.create(:unit)
       get :admin_index, :shift => "PMs", :unit_id => unit.id
     end
-    
+
     it 'should assign event_strips' do
       unit = FactoryGirl.create(:unit)
       get :admin_index, :shift => "PMs", :unit_id => unit.id
       assigns(:event_strips).should_not be_nil
     end
-    
+
   end
-  
+
   describe "Show" do
-    
+
     it 'should find right event given id' do
       event = FactoryGirl.create(:event)
       get :show, :id => event.id, :nurse_id => @nurse.id
       assigns(:event).id.should == event.id
     end
   end
-  
+
   describe "New" do
     it 'should assign right nurse id given id' do
       get :new, :nurse_id => @nurse.id
       assigns(:nurse_id).should == @nurse.id
     end
   end
-  
+
   describe "Create" do
-    
+
     before :each do
       @new_event = { :name => "My day off",
         :start_at => DateTime.now,
         :end_at => 2.days.from_now,
         :all_day => true }
     end
-    
+
     it 'should increase the count of nurses' do
       nurse_count = Nurse.all.length
       post :create, :nurse_id => @nurse.id, :event => @new_event
       Nurse.all.length.should == nurse_count + 1
     end
-    
+
     it 'should increase the count of events assoc with nurse' do
       event_count = @nurse.events.length
       post :create, :nurse_id => @nurse.id, :event => @new_event
       @nurse.events.length.should == event_count + 1
     end
-  
+
     it 'should redirect' do
       post :create, :nurse_id => @nurse.id, :event => @new_event
       response.should redirect_to(nurse_calendar_index_path, :month => @new_event[start_at].month, :year => @new_event[start_at].year )
     end
   end
-  
+
   describe "Edit" do
-    
-    
-    
+
+
+
     it 'should assign the whatever is in params' do
       event = FactoryGirl.create(:event)
       get :edit, :id => event.id, :nurse_id => 2
       assigns(:id).should == event.id
       assigns(:nurse_id).should == 2
     end
-    
+
   end
-  
+
   describe "Update" do
-  
+
     it 'should call find from Event' do
       event = FactoryGirl.create(:event)
       Event.should_receive(:find)
       get :update, :id => event.id, :nurse_id => @nurse.id,
       :event => { :name => "My day off" }
     end
-  
+
     it 'should call update attributes! on the event' do
       event = FactoryGirl.create(:event)
       event.should_receive(:update_atrributes!)
       get :update, :id => event.id, :nurse_id => @nurse.id,
       :event => { :name => "My day off" }
     end
-    
+
     it 'should update the event' do
       event = FactoryGirl.create(:event)
       get :update, :id => event.id, :nurse_id => @nurse.id,
       :event => { :name => "My day off" }
       assigns(:event).name.should == "My day off"
     end
-    
+
     it 'should redirect' do
       event = FactoryGirl.create(:event)
       get :update, :id => event.id, :nurse_id => @nurse.id,
