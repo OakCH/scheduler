@@ -9,7 +9,6 @@ describe CalendarController do
 
     it 'should query the Nurse model for nurses' do
       Nurse.should_receive(:find_by_id)
-      narse = Nurse.find_by_id(params[:nurse_id])
       get :index, :nurse_id => @nurse.id
     end
 
