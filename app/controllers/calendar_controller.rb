@@ -25,7 +25,11 @@ class CalendarController < ApplicationController
       @shifts = Unit.shifts
       @units = Unit.find(:all)
       @shift = @shifts[0]
-      @unit_id = @units[0].id
+      @unit_id = 0
+
+      if @units.length > 0
+        @unit_id = @units[0].id
+      end 
 
       if params[:shift] and params[:unit_id]
         session[:shift] = params[:shift]
