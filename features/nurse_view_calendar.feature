@@ -26,3 +26,4 @@ Scenario: Changing month to February
   When I follow "month_4"
   Then I should see a stripe "a href="
   Then I should see a stripe "#"
+  Then show me the page
