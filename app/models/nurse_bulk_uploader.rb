@@ -5,7 +5,7 @@ module NurseBulkUploader
   # to add another column, add the symbol representing the database field
   # to PossibleColumns and optionally to RequiredColumns and define
   # a match_col_name function below
-  PossibleColumns = [:seniority, :name, :num_weeks_off, :email, :years_worked]
+  PossibleColumns = [:name, :num_weeks_off, :email, :years_worked]
   RequiredColumns = [:name, :num_weeks_off, :email]
   
   def replace_from_spreadsheet(file_path, unit, shift)
