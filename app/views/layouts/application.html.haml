@@ -21,7 +21,7 @@
             %li
               =link_to_unless_current 'Admin Cal', admin_calendar_path
             %li
-              =link_to_unless_current 'Nurse Cal', '/nurse/1/calendar'
+              =link_to_unless_current 'Nurse Cal', "/nurse/#{Nurse.find(:first).id.to_s}/calendar"
         .clear
       .separator
       #flash
