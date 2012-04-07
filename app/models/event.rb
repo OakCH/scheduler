@@ -13,7 +13,7 @@ class Event < ActiveRecord::Base
   end
   
   def color
-    "#d5d0cf"
+    "#7c7c7c" # gray
   end
 
   def color=(hexcolor)
