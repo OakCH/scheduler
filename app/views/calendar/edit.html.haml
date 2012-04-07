@@ -18,7 +18,8 @@
     });
   });
 
-%h2 Update your vacation time
+%h1
+  Change
 
 = form_tag "/nurse/#{@nurse_id}/calendar/#{@id}", :method => :put do
   = render :partial => 'event_form'
