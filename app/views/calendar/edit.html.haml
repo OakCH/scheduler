@@ -18,7 +18,8 @@
     });
   });
 
-%h2 Update your vacation time
+%h1
+  Change
 
 = form_tag nurse_calendar_path(:nurse_id=>@nurse_id, :id=>@id), :method => :put do
   = render :partial => 'event_form'

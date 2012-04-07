@@ -6,14 +6,19 @@
 
 - if @nurse and (@nurse.events.length > 0)
   %h2 Your vacations weeks
-  %tbody
-    - @nurse.events.each do |e|
+  %table
+    %thead
       %tr
-        %td= e.start_at.strftime("%d/%m/%y")
-        %td= e.end_at.strftime("%d/%m/%y")
-        %td= link_to 'Edit vacation week', edit_nurse_calendar_path(e.nurse, e)
-        %td= button_to 'Delete', nurse_calendar_path(e.nurse, e), :method => 'delete', :confirm => 'Are you sure?'
+        - @col_names.each do |name|
+          %th= name
+    %tbody
+      - @nurse.events.each do |e|
+        %tr{:class => cycle("even", "odd")}
+          %td= e.start_at.strftime("%d/%m/%y")
+          %td= e.end_at.strftime("%d/%m/%y")
+          %td= link_to 'Edit vacation week', edit_nurse_calendar_path(e.nurse, e)
+          %td= button_to 'Delete', nurse_calendar_path(e.nurse, e), :method => 'delete', :confirm => 'Are you sure?'
 - elsif @nurse
-  %h2 You have not scheduled your vacations.  All work and no play makes us go psycho. Just saying.
+  %h2 You have not scheduled your vacations.
 - else
   %h2 Impostor! You are not a nurse.

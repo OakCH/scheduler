@@ -116,11 +116,17 @@ a.ec-day-link {
   cursor: pointer;
   vertical-align: top;
   padding-right: 1px;
-  padding-left: 2px; }
+  padding-left: 2px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  text-transform: uppercase; }
 
 .ec-event-cell a {
   text-decoration: none;
   display: block;
+  padding-top: 0px;
+  margin-top: 0px;
   width: 100%;
   height: 100%; }
 
@@ -142,7 +148,12 @@ a.ec-day-link {
   /* background-color: #2eac6a; */ }
 
 .ec-event-bg a {
-  color: white; }
+  color: white;
+  position: relative;
+  padding-top: 0px;
+  margin-top: 0px;
+  bottom: 20px;
+  top: 0; }
 
 /* used to distinguish non-all_day events */
 .ec-event-no-bg {
