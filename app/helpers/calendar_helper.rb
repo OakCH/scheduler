@@ -22,12 +22,10 @@ module CalendarHelper
       event, day = args[:event], args[:day]
       if @nurse and (@nurse.id == event.nurse_id)
         html = %(<a href="/nurse/#{event.nurse_id}/calendar/#{event.id}" title="#{h(event.name)}" class="event">)
-        html << %Q(#{@nurse.name} #{(display_event_time(event, day))})
-        html << %(#{h(event.name)}</a>)
+        html << %Q(#{@nurse.name}</a>)
       else
         html = %(<a href="#">)
-        html << %Q(#{event.nurse.name} #{display_event_time(event, day)})
-        html << %(</a>)
+        html << %Q(#{event.nurse.name}</a>)
       end
       html
     end
