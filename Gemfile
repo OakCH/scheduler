@@ -6,7 +6,6 @@ gem 'rails', '3.1.3'
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
 group :development, :test do
-  gem 'hoe'
   gem 'factory_girl_rails', '~>2.0'
   gem 'sqlite3'
   gem 'ruby-debug19', :require => 'ruby-debug'
@@ -48,3 +47,4 @@ gem 'jquery-rails'
 gem 'haml'
 gem 'event-calendar', :require => 'event_calendar'
 gem 'roo', '~> 1.2.3'
+gem 'hoe', '1.5.2'
