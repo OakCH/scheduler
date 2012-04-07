@@ -15,6 +15,7 @@
 
 /* Outer most container */
 $lite-gray: #d5d0cf;
+$orange: #cd3301;
 
 .ec-calendar {
   line-height: 30px;
@@ -151,6 +152,10 @@ a.ec-day-link {
   vertical-align: top;
   padding-right: 1px;
   padding-left: 2px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 14px;
+  text-transform: uppercase;
 }
 
 .ec-event-cell a {

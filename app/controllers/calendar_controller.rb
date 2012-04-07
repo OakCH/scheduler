@@ -18,6 +18,7 @@ class CalendarController < ApplicationController
       @unit_id = @nurse.unit_id
       @shift = @nurse.shift
     end
+    @col_names = Event.all_display_columns
   end
 
   def admin_index
