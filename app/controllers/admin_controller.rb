@@ -11,7 +11,7 @@ class AdminController < ApplicationController
       getNextParams
       if (@unit_obj && @shift)
         @readyToUpload = true
-        @nurses = @unit_obj.nurses.where(:shift => @shift)
+        @nurses = @unit_obj.nurses.where(:shift => @shift).order(:seniority)
       end
     end
     
