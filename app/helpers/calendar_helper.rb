@@ -24,8 +24,7 @@ module CalendarHelper
         html = %(<a href="/nurse/#{event.nurse_id}/calendar/#{event.id}" title="#{h(event.name)}">)
         html << %(#{h(event.name)}</a>)
       else
-        html = %(<a href="#">)
-        html << %(</a>)
+        html = %(<a href="#">Scheduled</a>)
       end
       html
     end

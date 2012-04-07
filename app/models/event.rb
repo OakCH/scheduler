@@ -11,4 +11,11 @@ class Event < ActiveRecord::Base
   def self.all_display_columns
     ['start date', 'end date', 'Change vacation', '']
   end
+  
+  def color
+    "#d5d0cf"
+  end
+
+  def color=(hexcolor)
+  end
 end
