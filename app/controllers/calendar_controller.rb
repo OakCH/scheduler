@@ -54,6 +54,7 @@ class CalendarController < ApplicationController
   def create
     nurse = Nurse.find_by_id(params[:nurse_id])
     event = Event.new(params[:event])
+    event.all_day = 1
     event.name = nurse.name
     nurse.events << event
     nurse.save!
@@ -69,6 +70,7 @@ class CalendarController < ApplicationController
 
   def update
     @event = Event.find(params[:id])
+    @event.all_day = 1
     @event.update_attributes!(params[:event])
     flash[:notice] = 'You successfully scheduled your vacation'
     redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
