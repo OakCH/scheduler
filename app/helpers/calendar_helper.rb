@@ -10,8 +10,8 @@ module CalendarHelper
       :month => @month,
       :event_strips => @event_strips,
       :month_name_text => I18n.localize(@shown_month, :format => "%B %Y"),
-      :previous_month_text => "<< " + month_link(@shown_month.prev_month),
-      :next_month_text => month_link(@shown_month.next_month) + " >>",
+      :previous_month_text => "&lt;&lt; #{month_link(@shown_month.prev_month)}",
+      :next_month_text => "#{month_link(@shown_month.next_month)} &gt;&gt;",
       :use_all_day => true
     }
   end
@@ -26,7 +26,7 @@ module CalendarHelper
         html << %(#{h(event.name)}</a>)
       else
         html = %(<a href="#">)
-        html << display_event_time(event, day)
+        html << %Q(#{event.nurse.name} #{display_event_time(event, day)})
         html << %(</a>)
       end
       html
