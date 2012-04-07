@@ -22,7 +22,10 @@ Background:
 Scenario: Viewing calendar for March 
   Then I should see "Jane Doe"
 
-Scenario: Changing month to February 
+Scenario: Changing month to February
+  When I follow "month_2"
+  Then I should not see "Jane Doe"
+
+Scenario: Changing month to April
   When I follow "month_4"
-  Then I should see a stripe "a href="
-  Then I should see a stripe "#"
+  Then I should see "John Doe"

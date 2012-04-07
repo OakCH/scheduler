@@ -2,10 +2,10 @@ module CalendarHelper
   def month_link(month_date)
     link_to(I18n.localize(month_date, :format => "%B"), {:month => month_date.month, :year => month_date.year}, :id=>('month_'+month_date.month.to_s))
   end
-  
+
   # custom options for this calendar
   def event_calendar_opts
-    { 
+    {
       :year => @year,
       :month => @month,
       :event_strips => @event_strips,
@@ -21,8 +21,8 @@ module CalendarHelper
     calendar event_calendar_opts do |args|
       event, day = args[:event], args[:day]
       if @nurse and (@nurse.id == event.nurse_id)
-        html = %(<a href="/nurse/#{event.nurse_id}/calendar/#{event.id}" title="#{h(event.name)}">)
-        html << display_event_time(event, day)
+        html = %(<a href="/nurse/#{event.nurse_id}/calendar/#{event.id}" title="#{h(event.name)}" class="event">)
+        html << %Q(#{@nurse.name} #{(display_event_time(event, day))})
         html << %(#{h(event.name)}</a>)
       else
         html = %(<a href="#">)
@@ -37,7 +37,8 @@ module CalendarHelper
     # args is an argument hash containing :event, :day, and :options
     calendar event_calendar_opts do |args|
       event, day = args[:event], args[:day]
-      html = %(<a href="/nurse/#{event.nurse_id}/calendar/#{event.id}" title="#{h(event.name + '-' + event.nurse.seniority.to_s)}">)
+      html = %(<a href="/nurse/#{event.nurse_id}/calendar/#{event.id}"
+               title="#{h(event.name + '-' + event.nurse.seniority.to_s)}" class="event">)
       html << display_event_time(event, day)
       html << %(#{h(event.name)}</a>)
       html
