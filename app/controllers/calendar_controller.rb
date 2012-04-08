@@ -53,12 +53,21 @@ class CalendarController < ApplicationController
         @unit_id = @units[0].id
       end 
 
-      if params[:shift] and params[:unit_id]
-        if Unit.is_valid_shift(params[:shift]) and Unit.is_valid_unit_id(params[:unit_id])
+      if params[:shift]
+        if Unit.is_valid_shift(params[:shift])
           session[:shift] = params[:shift]
+        else
+          flash[:error] = "You passed an incorrect shift."
+          redirect_to admin_calendar_path
+          return
+        end
+      end
+
+      if params[:unit_id]
+        if Unit.is_valid_unit_id(params[:unit_id])
           session[:unit_id] = params[:unit_id]
         else
-          flash[:error] = "You passed an incorrect shift or unit."
+          flash[:error] = "You passed an incorrect unit."
           redirect_to admin_calendar_path
           return
         end
@@ -91,7 +100,7 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    event = Event.new(params[:event])
+    event = Event.new(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
     event.all_day = 1
     event.name = nurse.name
     nurse.events << event
@@ -127,7 +136,7 @@ class CalendarController < ApplicationController
 
     @event.all_day = 1
 
-    if not @event.update_attributes(params[:event])
+    if not @event.update_attributes(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
       flash[:error] = 'Update failed'
       redirect_to nurse_calendar_index_path
     else
