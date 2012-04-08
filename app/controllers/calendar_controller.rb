@@ -91,7 +91,7 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    event = Event.new(params[:event])
+    event = Event.new(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
     event.all_day = 1
     event.name = nurse.name
     nurse.events << event
@@ -127,7 +127,7 @@ class CalendarController < ApplicationController
 
     @event.all_day = 1
 
-    if not @event.update_attributes(params[:event])
+    if not @event.update_attributes(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
       flash[:error] = 'Update failed'
       redirect_to nurse_calendar_index_path
     else
