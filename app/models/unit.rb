@@ -19,7 +19,11 @@ class Unit < ActiveRecord::Base
   end
 
   def self.is_valid_unit_id(unit_id)
-    return Unit.find_by_id(unit_id) || unit_id == 0
+    if not /^[\d]+(\.[\d]+){0,1}$/ === unit_id.to_s 
+      return false
+    else
+      return Unit.find_by_id(unit_id) || unit_id == 0
+    end
   end
   
 end

@@ -5,7 +5,7 @@ describe CalendarController do
   
   before(:each) do
     @nurse = FactoryGirl.create(:nurse)
-    @event = FactoryGirl.create(:event)
+    @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
   end
   
   describe "nurse index action" do
@@ -260,8 +260,8 @@ describe CalendarController do
     end
     
     it 'should redirect' do
-      put :update, :id => @event.id, :nurse_id => @nurse.id,
-      :event => { :name => "My day off" }
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
+      @event.reload
       response.should redirect_to(nurse_calendar_index_path(@nurse, :month => @event.start_at.month, :year => @event.start_at.year))
     end
     
