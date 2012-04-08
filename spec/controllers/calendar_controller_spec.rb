@@ -156,15 +156,74 @@ describe CalendarController do
       assigns(:event_strips).should_not be_nil
     end
 
+    describe 'invalid unit with valid shift' do
+      invalid_inputs = [nil,'53a',2343]
+      invalid_inputs.each do |input|
+        before :each do
+          FactoryGirl.create(:unit)
+          FactoryGirl.create(:unit)
+          unit = Unit.find_by_id(input)
+          if unit
+            unit.destroy
+          end
+          get :admin_index, {:unit_id => input,:shift=>'Days'}
+        end
+        it 'should redirect to the admin calendar page' do
+          response.should redirect_to admin_calendar_path
+        end
+        it 'should flash an error message after redirect' do
+          flash[:error].should_not be_empty
+        end
+      end
+    end
+
+    describe 'invalid unit without valid shift' do
+      invalid_inputs = [nil,'53a',2343]
+      invalid_inputs.each do |input|
+        before :each do
+          FactoryGirl.create(:unit)
+          FactoryGirl.create(:unit)
+          unit = Unit.find_by_id(input)
+          if unit
+            unit.destroy
+          end
+          get :admin_index, {:unit_id => input}
+        end
+        it 'should redirect to the admin calendar page' do
+          response.should redirect_to admin_calendar_path
+        end
+        it 'should flash an error message after redirect' do
+          flash[:error].should_not be_empty
+        end
+      end
+    end
+
+
     describe 'no units exist' do
-      it 'should redirect to the login page' do
-        get :admin_index, :unit_id => nil
-        response.should redirect_to(login_path)
+      render_views
+      before :each do
+        units = Unit.find(:all)
+        units.each do |unit|
+          unit.destroy
+        end
+        get :admin_index
       end
-      it 'should flash an error message after redirect' do
-        get :admin_index, :unit_id => nil
-        flash[:error].should_not be_empty
+      it 'should display a message indicating there are no units' do
+        response.body.should have_content('There are no units')
       end
+      it 'should not show any events' do
+        assigns(:event_strips).flatten.compact.should be_empty
+      end
+      it 'should render the admin calendar template' do
+        response.should render_template('admin_index')
+      end
+    end
+
+    describe 'invalid shift' do
+      
+    end
+
+    describe 'invalid nurse' do
     end
 
   end
