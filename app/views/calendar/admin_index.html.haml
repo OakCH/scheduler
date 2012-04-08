@@ -4,14 +4,14 @@
   = form_tag "/admin/calendar", :method => :get do
     = hidden_field_tag 'month', @month
     = hidden_field_tag 'year', @year
-    
-    = label_tag :unit, 'Unit'
-    %select{:name => 'unit_id', :id => 'unit'}
+  
+    = label_tag :unit_id, 'Unit'
+    %select{:name => 'unit_id', :id => :unit_id}
       - @units.each do |u|
         %option{:value => u.id, :selected => u.id.to_s == @unit_id} #{u.name}
       
     = label_tag :shift, 'Shift'
-    %select{:name => 'shift', :id => 'shift'}
+    %select{:name => 'shift', :id => :shift}
       - @shifts.each do |s|
         %option{:value => s, :selected => s == @shift} #{s}
 
@@ -21,3 +21,4 @@
 
 #calendar
   = raw(admin_event_calendar)
+  
