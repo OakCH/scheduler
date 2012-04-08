@@ -7,9 +7,9 @@ So that I can start planning my vacation time
 Background:
 
   Given the following nurses exist:
-  | name       | shift | unit_id |
-  | Jane Doe   | PMs   | 1       |
-  | John Doe   | PMs   | 1       |
+  | name       | shift | unit    |
+  | Jane Doe   | PMs   | Surgery |
+  | John Doe   | PMs   | Surgery |
   
   And the following vacations exist:
   | name       | start_at    | end_at      |
