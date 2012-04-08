@@ -15,6 +15,10 @@ end
 
 Given /the following nurses exist/ do |nurses_table|
   nurses_table.hashes.each do |nurse_params|
+    unit = Unit.find_by_name(nurse_params[:unit])
+    unit = Unit.create!(:name => nurse_params[:unit]) if !unit
+    nurse_params[:unit] = nil
+    nurse_params[:unit_id] = unit.id
     FactoryGirl.create(:nurse, nurse_params)
   end
 end
