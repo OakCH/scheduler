@@ -88,24 +88,23 @@ describe CalendarController do
         end
       end
     end
-
-    describe 'invalid nurse' do
-      invalid_inputs = [nil,'53a',2343,'apple']
-      invalid_inputs.each do |input|
-        before :each do
-#          FactoryGirl.create(:nurse)
-          get :index, :nurse_id =>'apple' 
-        end
-        it 'should redirect to the login calendar page' do
-          response.should redirect_to login_path
-        end
-        it 'should flash an error message after redirect' do
-          flash[:error].should_not be_empty
-        end
+  end
+  describe 'invalid nurse' do
+    invalid_inputs = ['53a',2343,'apple']
+    invalid_inputs.each do |input|
+      before :each do
+        get :index, :nurse_id => input 
+      end
+      it 'should redirect to the login calendar page' do
+        response.should redirect_to login_path
+      end
+      it 'should flash an error message after redirect' do
+        flash[:error].should_not be_empty
       end
     end
-
   end
+
+
 
   describe 'admin index action' do
 
