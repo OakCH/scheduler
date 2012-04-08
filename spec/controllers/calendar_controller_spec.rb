@@ -156,6 +156,17 @@ describe CalendarController do
       assigns(:event_strips).should_not be_nil
     end
 
+    describe 'no units exist' do
+      it 'should redirect to the login page' do
+        get :admin_index, :unit_id => nil
+        response.should redirect_to(login_path)
+      end
+      it 'should flash an error message after redirect' do
+        get :admin_index, :unit_id => nil
+        flash[:error].should_not be_empty
+      end
+    end
+
   end
 
   describe "Show" do
