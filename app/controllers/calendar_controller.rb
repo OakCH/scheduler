@@ -53,12 +53,21 @@ class CalendarController < ApplicationController
         @unit_id = @units[0].id
       end 
 
-      if params[:shift] and params[:unit_id]
-        if Unit.is_valid_shift(params[:shift]) and Unit.is_valid_unit_id(params[:unit_id])
+      if params[:shift]
+        if Unit.is_valid_shift(params[:shift])
           session[:shift] = params[:shift]
+        else
+          flash[:error] = "You passed an incorrect shift."
+          redirect_to admin_calendar_path
+          return
+        end
+      end
+
+      if params[:unit_id]
+        if Unit.is_valid_unit_id(params[:unit_id])
           session[:unit_id] = params[:unit_id]
         else
-          flash[:error] = "You passed an incorrect shift or unit."
+          flash[:error] = "You passed an incorrect unit."
           redirect_to admin_calendar_path
           return
         end
