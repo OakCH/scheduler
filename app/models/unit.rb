@@ -13,5 +13,13 @@ class Unit < ActiveRecord::Base
   def self.names
     self.all.map{|unit| unit.name}
   end
+
+  def self.is_valid_shift(shift)
+    return self.shifts.include?(shift)
+  end
+
+  def self.is_valid_unit_id(unit_id)
+    return Unit.find_by_id(unit_id) || unit_id == 0
+  end
   
 end

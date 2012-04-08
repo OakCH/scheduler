@@ -12,7 +12,7 @@ Background:
 Scenario: Upload xls schedule for PM shift
   When I select "PMs" from "Shift"
   And I select "Surgery" from "Unit"
-  And I press "Next"
+  And I press "Show"
   And I choose "basic_spreadsheet.xls" to upload
   And I press "Upload"
   Then I should see "Nurse1"
@@ -22,7 +22,7 @@ Scenario: Upload xls schedule for PM shift
 Scenario: Upload xlsx file
   When I select "Days" from "Shift"
   And I select "Surgery" from "Unit"
-  And I press "Next"
+  And I press "Show"
   And I choose "basic_spreadsheet.xlsx" to upload
   And I press "Upload"
   Then I should see "Nurse1"
@@ -32,7 +32,7 @@ Scenario: Upload xlsx file
 Scenario: Upload an invalid file
   When I select "Days" from "Shift"
   And I select "Surgery" from "Unit"
-  And I press "Next"
+  And I press "Show"
   And I choose "not_a_spreadsheet.txt" to upload
   And I press "Upload"
   Then I should see "File to parse was not a valid xls or xlsx"
@@ -40,7 +40,7 @@ Scenario: Upload an invalid file
 Scenario: Upload malformed xls file
   When I select "Days" from "Shift"
   And I select "Surgery" from "Unit"
-  And I press "Next"
+  And I press "Show"
   And I choose "missing_name_header.xls" to upload
   And I press "Upload"
   Then I should see "Header row is missing the Name column"

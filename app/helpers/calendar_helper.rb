@@ -25,7 +25,7 @@ module CalendarHelper
         html << %Q(#{@nurse.name}</a>)
       else
         html = %(<a href="#">)
-        html << %Q(#{event.nurse.name}</a>)
+        html << %(</a>)
       end
       html
     end
