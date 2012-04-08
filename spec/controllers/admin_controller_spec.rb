@@ -1,38 +1,39 @@
 require 'spec_helper'
 
 describe AdminController, "POST upload" do
-  describe 'upon clicking next' do
+  describe 'upon clicking Show' do
     context 'with valid inputs' do
       before(:each) do
         @unit = 'Surgery'
         @shift = 'Days'
         @admin = {:unit => @unit, :shift => @shift}
+        Unit.stub(:shifts).and_return(['Days'])
       end
       
       it 'should query the units model for units' do
         Unit.should_receive(:names)
-        post :upload, {:admin => @admin, :commit => 'Next'}
+        post :upload, {:admin => @admin, :commit => 'Show'}
       end
         
       it 'should query the units model for shifts' do
         Unit.should_receive(:shifts)
-        post :upload, {:admin => @admin, :commit => 'Next'}
+        post :upload, {:admin => @admin, :commit => 'Show'}
       end
         
       it 'should assign @unit' do
         #@unit_obj = Unit.create!(:name => @unit)
         Unit.stub(:find_by_name)#.with(@unit).and_return(@unit_obj)
-        post :upload, {:admin => @admin, :commit => 'Next'}
+        post :upload, {:admin => @admin, :commit => 'Show'}
         assigns[:unit].should == @unit
       end
       
       it 'should assign @shift' do
-        post :upload, {:admin => @admin, :commit => 'Next'}
+        post :upload, {:admin => @admin, :commit => 'Show'}
         assigns[:shift].should == @shift
       end
       
       it 'should reload the page' do
-        post :upload, {:admin => @admin, :commit => 'Next'}
+        post :upload, {:admin => @admin, :commit => 'Show'}
         response.should redirect_to :action => 'upload', :admin => @admin
       end
     end
@@ -46,17 +47,25 @@ describe AdminController, "POST upload" do
       it 'should set a flash[:error] message if no shift' do
         @unit_obj = Unit.create!(:name=>@unit)
         Unit.stub(:find_by_name).with(@unit).and_return(@unit_obj)
-        post :upload, {:admin => @admin, :commit => 'Next'}
-        flash[:error].should == ["Forgot to specify shift"]
+        post :upload, {:admin => @admin, :commit => 'Show'}
+        flash[:error].should == ["Invalid shift"]
+      end
+      
+      it 'should set a flash[:error] if the shift does not exist' do
+        @unit_obj = Unit.create!(:name=>@unit)
+        Unit.stub(:find_by_name).with(@unit).and_return(@unit_obj)
+        @admin[:shift] = 'Fake'
+        post :upload, {:admin => @admin, :commit => 'Show'}
+        flash[:error].should == ["Invalid shift"]
       end
       
       it 'should assign @readyToUpload to false' do
-        post :upload, {:admin => @admin, :commit => 'Next'}
+        post :upload, {:admin => @admin, :commit => 'Show'}
         assigns[:readyToUpload].should == false
       end
       
       it 'should reload the page' do
-        post :upload, {:admin => @admin, :commit => 'Next'}
+        post :upload, {:admin => @admin, :commit => 'Show'}
         response.should redirect_to :action => 'upload', :admin => {:unit=>@unit, :shift=>nil}
       end
     end
@@ -64,18 +73,26 @@ describe AdminController, "POST upload" do
     context 'with invalid unit' do
       before(:each) do
         @admin = {:shift => "PMs"}
-        post :upload, {:admin => @admin, :commit => 'Next'}
       end
       
       it 'should set a flash[:error] message if no unit' do
+        post :upload, {:admin => @admin, :commit => 'Show'}
         flash[:error].should == ["Forgot to specify unit"]
       end
       
+      it 'should set a flash[:error] message if unit does not exist' do
+        @admin[:unit] = 'Fake'
+        post :upload, {:admin => @admin, :commit => 'Show'}
+        flash[:error].should == ['Invalid unit']
+      end
+      
       it 'should assign @readyToUpload to false' do
+        post :upload, {:admin => @admin, :commit => 'Show'}
         assigns[:readyToUpload].should == false
       end
       
       it 'should reload the page' do
+        post :upload, {:admin => @admin, :commit => 'Show'}
         response.should redirect_to :action => 'upload', :admin => {:shift => "PMs", :unit => nil}
       end
     end

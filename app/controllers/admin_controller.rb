@@ -5,7 +5,9 @@ class AdminController < ApplicationController
   def upload
     @units = Unit.names
     @shifts = Unit.shifts
-    flash[:error] = []
+    if flash[:error] == nil
+      flash[:error] = []
+    end
     
     if params[:admin]
       getNextParams
@@ -15,15 +17,20 @@ class AdminController < ApplicationController
       end
     end
     
-    if params[:commit] == 'Next'
+    if params[:commit] == 'Show'
       if @unit == nil
         flash[:error] << "Forgot to specify unit"
         @readyToUpload = false
       end
-      if @shift == nil
-        flash[:error] << "Forgot to specify shift"
+      if @unit != nil && @unit_obj == nil
+        flash[:error] << 'Invalid unit'
         @readyToUpload = false
       end
+      if @shift == nil
+        flash[:error] << "Invalid shift"
+        @readyToUpload = false
+      end
+      flash.keep
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
     
@@ -37,6 +44,7 @@ class AdminController < ApplicationController
       else 
         flash[:error] << "Please select a file"
       end
+      flash.keep
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
   end
@@ -55,9 +63,12 @@ class AdminController < ApplicationController
   
   def getNextParams
     @unit = params[:admin][:unit]
-    if (@unit)
+    if @unit
       @unit_obj = Unit.find_by_name(@unit)
     end
     @shift = params[:admin][:shift]
+    if @shift != nil && (@shifts == nil || !@shifts.include?(@shift))
+      @shift = nil
+    end
   end
 end
