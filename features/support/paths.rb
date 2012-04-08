@@ -3,6 +3,7 @@
 # This file is used by web_steps.rb, which you should also delete
 #
 # You have been warned
+
 module NavigationHelpers
   # Maps a name to a path. Used by the
   #
@@ -12,17 +13,17 @@ module NavigationHelpers
   #
   def path_to(page_name)
     case page_name
-
+      
     when /^the home\s?page$/
       '/'
       
     when /^the Edit Nurses page$/
       '/admin/upload/'
-    when /^the Nurse Calendar page for "([^"]*)" in the month "([^"]*)"$/
+    when /^the Nurse Calendar page for "([^"]*)" in "([^"]*)" of "([^"]*)"$/
       nurse = Nurse.find_by_name($1)
-      "/nurse/#{nurse.id}/calendar?month=#{$2}&year=2012"
-#nurse_calendar_index_path(Nurse.find_by_name($1))
-
+      month = Date::MONTHNAMES.index($2)
+      nurse_calendar_index_path(nurse, :month => $month, :year => $3.to_s)
+      
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
