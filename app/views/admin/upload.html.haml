@@ -12,10 +12,11 @@
   = submit_tag 'Show'
  
   - if @readyToUpload
-    %p#instruction2= 'Please upload a .xls or .xlsx file where the columns are labeled "Name", "Years", "Number of weeks off", and "E-mail". Then click "Upload".'
-    -# insert sample .xls file here
+    %p#instruction2
+      = 'Please upload a .xls or .xlsx file where the columns are labeled "Name", "Years", "Number of weeks off", and "E-mail". Then click "Upload".'
+      = link_to "Click here to download a sample spreadsheet", "/sample_spreadsheet.xls"
     
-    %p#upload_warning= 'Note that if you upload a new file, it will overwrite any previous data.'
+    %p#warning= 'Note that if you upload a new file, it will overwrite any previous data.'
     
     = label :admin, :select_file, 'Select file'
     = file_field :admin, :upload
