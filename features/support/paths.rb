@@ -23,12 +23,12 @@ module NavigationHelpers
       nurse = Nurse.find_by_name($1)
       month = Date::MONTHNAMES.index($2)
       nurse_calendar_index_path(nurse, :month => $month, :year => $3.to_s)
-
+      
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
     #   when /^(.*)'s profile page$/i
-      #     user_profile_path(User.find_by_login($1))
+    #     user_profile_path(User.find_by_login($1))
 
     else
       begin
