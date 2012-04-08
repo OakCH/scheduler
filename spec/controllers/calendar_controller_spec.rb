@@ -219,8 +219,53 @@ describe CalendarController do
       end
     end
 
-    describe 'invalid shift' do
-      
+    describe 'invalid shift with valid unit' do
+      invalid_inputs = [nil,'53a',2343,'apple']
+      invalid_inputs.each do |input|
+        before :each do
+          unit = FactoryGirl.create(:unit)
+          get :admin_index, {:shift => input, :unit => unit.id}
+        end
+        it 'should redirect to the admin calendar page' do
+          response.should redirect_to admin_calendar_path
+        end
+        it 'should flash an error message after redirect' do
+          flash[:error].should_not be_empty
+        end
+      end
+    end
+
+    describe 'invalid shift with no unit' do
+      invalid_inputs = [nil,'53a',2343,'apple']
+      invalid_inputs.each do |input|
+        before :each do
+          unit = FactoryGirl.create(:unit)
+          get :admin_index, {:shift => input}
+        end
+        it 'should redirect to the admin calendar page' do
+          response.should redirect_to admin_calendar_path
+        end
+        it 'should flash an error message after redirect' do
+          flash[:error].should_not be_empty
+        end
+      end
+    end
+
+    describe 'invalid shift with invalid unit' do
+      invalid_inputs = [nil,'53a',2343,'apple']
+      invalid_inputs.each do |input|
+        before :each do
+          unit = FactoryGirl.create(:unit)
+          get :admin_index, {:shift => input, :unit_id => input}
+        end
+        it 'should redirect to the admin calendar page' do
+          response.should redirect_to admin_calendar_path
+        end
+        it 'should flash an error message after redirect' do
+          flash[:error].should_not be_empty
+        end
+      end
+
     end
 
     describe 'invalid nurse' do
