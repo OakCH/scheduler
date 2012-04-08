@@ -1,17 +1,17 @@
 class CalendarController < ApplicationController
-  
+
   def setup_index
     @month = (params[:month] || (Time.zone || Time).now.month).to_i
     @year = (params[:year] || (Time.zone || Time).now.year).to_i
     @shown_month = Date.civil(@year, @month)
-    
+
     yield
 
     # Event.event_strips_for_month will sanitize the input that has been
     # string interpolated
     @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
   end
-  
+
   def index
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])
@@ -30,7 +30,7 @@ class CalendarController < ApplicationController
 
       if @units.length > 0
         @unit_id = @units[0].id
-      end 
+      end
 
       if params[:shift] and params[:unit_id]
         session[:shift] = params[:shift]
@@ -59,7 +59,7 @@ class CalendarController < ApplicationController
     event.name = nurse.name
     nurse.events << event
 
-    if not nurse.save 
+    if not event.save and not nurse.save
       flash[:notice] = 'No vacation for you :(. Something went wrong!'
       redirect_to nurse_calendar_index_path
     else

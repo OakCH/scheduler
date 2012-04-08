@@ -8,7 +8,7 @@ describe CalendarController do
   describe "nurse index action" do
 
     it 'should query the Nurse model for nurses' do
-      Nurse.should_receive(:find_by_id)
+      Nurse.should_receive(:find_by_id).and_return(@nurse)
       get :index, :nurse_id => @nurse.id
     end
 
@@ -61,8 +61,9 @@ describe CalendarController do
       month = 5
       day = 5
       date = Date.new(2012, month, day)
-      event = FactoryGirl.create(:event, :nurse_id => @nurse.id, :start_at => date)
-      event2 = FactoryGirl.create(:event, :nurse_id => other_nurse.id, :start_at => date)
+      date2 = Date.new(2012, month, day+6)
+      event = FactoryGirl.create(:event, :nurse_id => @nurse.id, :start_at => date, :end_at => date2)
+      event2 = FactoryGirl.create(:event, :nurse_id => other_nurse.id, :start_at => date, :end_at => date2)
       get :index, :nurse_id => @nurse.id, :month => month
       nurse_assigned = false
       assigns(:event_strips).each do |d|
@@ -129,25 +130,11 @@ describe CalendarController do
     end
 
     it 'should not assign session shift or unit_id if one is missing' do
-      old_shift = session[:shift]
-      old_unit_id = session[:unit_it]
-      get :admin_index, :shift => "PMs"
-      session[:shift].should == old_shift
-      session[:unit_id].should == old_unit_id
-      assigns(:shift).should == old_shift
-      assigns(:unit_id).should == old_unit_id
-    end
-
-    it 'should call shift from Unit and find' do
-      Unit.should_receive(:shifts)
-      Unit.should_receive(:find)
+      session[:shift] = "Days"
+      session[:unit_id] = 3
       get :admin_index
-    end
-
-    it 'should call get_nurse_ids_shift_unit_id form Nurse' do
-      Nurse.should_receive(:get_nurse_ids_shift_unit_id)
-      unit = FactoryGirl.create(:unit)
-      get :admin_index, :shift => "PMs", :unit_id => unit.id
+      assigns(:shift).should == "Days"
+      assigns(:unit_id).should == 3
     end
 
     it 'should assign event_strips' do
@@ -170,7 +157,7 @@ describe CalendarController do
   describe "New" do
     it 'should assign right nurse id given id' do
       get :new, :nurse_id => @nurse.id
-      assigns(:nurse_id).should == @nurse.id
+      assigns(:nurse_id).should == "#{@nurse.id}"
     end
   end
 
@@ -183,12 +170,6 @@ describe CalendarController do
         :all_day => true }
     end
 
-    it 'should increase the count of nurses' do
-      nurse_count = Nurse.all.length
-      post :create, :nurse_id => @nurse.id, :event => @new_event
-      Nurse.all.length.should == nurse_count + 1
-    end
-
     it 'should increase the count of events assoc with nurse' do
       event_count = @nurse.events.length
       post :create, :nurse_id => @nurse.id, :event => @new_event
@@ -197,19 +178,17 @@ describe CalendarController do
 
     it 'should redirect' do
       post :create, :nurse_id => @nurse.id, :event => @new_event
-      response.should redirect_to(nurse_calendar_index_path, :month => @new_event[start_at].month, :year => @new_event[start_at].year )
+      response.should redirect_to(nurse_calendar_index_path, :month => @new_event[:start_at].month, :year => @new_event[:start_at].year )
     end
   end
 
   describe "Edit" do
 
-
-
     it 'should assign the whatever is in params' do
       event = FactoryGirl.create(:event)
       get :edit, :id => event.id, :nurse_id => 2
-      assigns(:id).should == event.id
-      assigns(:nurse_id).should == 2
+      assigns(:id).should == "#{event.id}"
+      assigns(:nurse_id).should == "2"
     end
 
   end
