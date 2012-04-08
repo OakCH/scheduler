@@ -6,12 +6,12 @@
     = hidden_field_tag 'year', @year
 
     = label :unit, :id, 'Unit'
-    %select{:name => 'Unit'}
+    %select{:name => 'unit_id'}
       - @units.each do |u|
         %option{:value => u.id, :selected => u.id.to_s == @unit_id} #{u.name}
 
     = label :unit, :shift, 'Shift'
-    %select{:name => 'Shift'}
+    %select{:name => 'shift'}
       - @shifts.each do |s|
         %option{:value => s, :selected => s == @shift} #{s}
 
