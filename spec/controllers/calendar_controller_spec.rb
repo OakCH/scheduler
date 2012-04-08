@@ -206,8 +206,8 @@ describe CalendarController do
     it 'should not allow an assignment of nurse_id' do
       @new_event[:nurse_id] = (@nurse.id + 1).to_s
       post :create, :nurse_id => @nurse.id, :event => @new_event
-      event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
-      event.nurse_id.should_not == @nurse.id + 1
+      event = Event.find_by_nurse_id_and_start_at(@nurse.id + 1, @start.to_time)
+      event.should be_nil
     end
     
   end
