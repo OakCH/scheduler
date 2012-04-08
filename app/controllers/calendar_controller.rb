@@ -1,23 +1,24 @@
 class CalendarController < ApplicationController
-
+  
   def setup_index
     @month = (params[:month] || (Time.zone || Time).now.month).to_i
     @year = (params[:year] || (Time.zone || Time).now.year).to_i
     @shown_month = Date.civil(@year, @month)
-
+    
     yield
 
-    # AS FAR AS I KNOW, under the hood, this uses the ? syntax.
-    # Might not be susceptible to sql injections.
+    # Event.event_strips_for_month will sanitize the input that has been
+    # string interpolated
     @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
   end
-
+  
   def index
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])
       @unit_id = @nurse.unit_id
       @shift = @nurse.shift
     end
+    @col_names = Event.all_display_columns
   end
 
   def admin_index
@@ -25,7 +26,11 @@ class CalendarController < ApplicationController
       @shifts = Unit.shifts
       @units = Unit.find(:all)
       @shift = @shifts[0]
-      @unit_id = @units[0].id
+      @unit_id = 0
+
+      if @units.length > 0
+        @unit_id = @units[0].id
+      end 
 
       if params[:shift] and params[:unit_id]
         session[:shift] = params[:shift]
@@ -50,11 +55,17 @@ class CalendarController < ApplicationController
   def create
     nurse = Nurse.find_by_id(params[:nurse_id])
     event = Event.new(params[:event])
+    event.all_day = 1
     event.name = nurse.name
     nurse.events << event
-    nurse.save!
-    flash[:notice] = 'You successfully scheduled your vacation'
-    redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
+
+    if not nurse.save 
+      flash[:notice] = 'No vacation for you :(. Something went wrong!'
+      redirect_to nurse_calendar_index_path
+    else
+      flash[:notice] = 'You successfully scheduled your vacation'
+      redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
+    end
   end
 
   def edit
@@ -65,9 +76,15 @@ class CalendarController < ApplicationController
 
   def update
     @event = Event.find(params[:id])
-    @event.update_attributes!(params[:event])
-    flash[:notice] = 'You successfully scheduled your vacation'
-    redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
+    @event.all_day = 1
+
+    if not @event.update_attributes(params[:event])
+      flash[:notice] = 'Update failed'
+      redirect_to nurse_calendar_index_path
+    else
+      flash[:notice] = 'You successfully scheduled your vacation'
+      redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
+    end
   end
 
   def destroy

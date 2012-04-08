@@ -1,4 +1,4 @@
-- flash.each do |key,msgs|
+- flash.sort.each do |key,msgs|
   - if msgs.respond_to?(:each)
     %div{:id => key}
       %ul
