@@ -232,23 +232,31 @@ describe CalendarController do
   
   describe "Update" do
     
+    before do
+      @start = DateTime.parse("4-Apr-2012")
+      @end = DateTime.parse("11-Apr-2012")
+      @event_attr = { :start_at => @start, :end_at => @end }
+    end
+    
     it 'should call find from Event' do
       Event.should_receive(:find_by_id)
-      put :update, :id => @event.id, :nurse_id => @nurse.id,
-      :event => { :name => "My day off" }
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
     end
     
     it 'should call update attributes on the event' do
       Event.stub(:find_by_id).and_return(@event)
       @event.should_receive(:update_attributes)
-      put :update, :id => @event.id, :nurse_id => @nurse.id,
-      :event => { :name => "My day off" }
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
     end
     
-    it 'should update the event' do
-      put :update, :id => @event.id, :nurse_id => @nurse.id,
-      :event => { :name => "My day off" }
-      assigns(:event).name.should == "My day off"
+    it 'should update the start at' do
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
+      assigns(:event).start_at.should == @start.to_time
+    end
+    
+    it 'should update the end at' do
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
+      assigns(:event).end_at.should == DateTime.parse("12-Apr-2012").to_time - 1
     end
     
     it 'should redirect' do
@@ -257,6 +265,24 @@ describe CalendarController do
       response.should redirect_to(nurse_calendar_index_path(@nurse, :month => @event.start_at.month, :year => @event.start_at.year))
     end
     
+    it 'should not allow an assignment of name' do
+      @event_attr[:name] = "New Name"
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
+      assigns(:event).name.should_not == "New Name"
+    end
+    
+    it 'should not allow an assignment of nurse_id' do
+      @event_attr[:nurse_id] = (@nurse.id + 1).to_s
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
+      assigns(:event).nurse_id.should_not == @nurse.id + 1
+    end
+    
+    it 'should not allow assignement of all_day' do
+      @event_attr[:all_day] = false
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
+      assigns(:event).all_day.should_not == false
+    end
+
   end
   
   describe "Destroy" do
