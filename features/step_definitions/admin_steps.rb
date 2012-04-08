@@ -6,14 +6,22 @@ Given /^"(.*)" is a type of Unit$/ do |type|
   Unit.create!(:name => type)
 end
 
-Given /the following events exist/ do |events_table|
-  events_table.hashes.each do |event|
-    Event.create!(event)
+Given /the following vacations exist/ do |vacations_table|
+  vacations_table.hashes.each do |vacation|
+    vacation[:nurse_id] = Nurse.find_by_name(vacation[:name])
+    FactoryGirl.create(:event, vacation)
   end
 end
 
 Given /the following nurses exist/ do |nurses_table|
-  nurses_table.hashes.each do |nurse|
-    Nurse.create!(nurse)
+  nurses_table.hashes.each do |nurse_params|
+    FactoryGirl.create(:nurse, nurse_params)
   end
+end
+
+Then /^(?:I )?should see the vacation belonging to "([^"]*)" from "([^"]*)" to "([^"]*)"$/ do |nurse, start_date, end_date|
+  parsed_start = DateTime.parse(start_date).to_time
+  parsed_end = DateTime.parse(end_date).to_time
+  event = Event.find_by_name_and_start_at_and_end_at(nurse, parsed_start, parsed_end)
+  page.find("*[data-event-id='#{event.id}']")
 end
