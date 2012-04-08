@@ -19,7 +19,7 @@ class CalendarController < ApplicationController
     if Unit.is_valid_shift(@shift) and Unit.is_valid_unit_id(@unit_id)
       @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
     else
-      flash[:error] = "An error has happened. It's all your fault."
+      flash[:error] = "Error: #{@shift} and #{@unit_id} An error has happened. It's all your fault."
       redirect_to login_path
       return
     end
