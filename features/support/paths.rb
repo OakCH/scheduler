@@ -3,7 +3,6 @@
 # This file is used by web_steps.rb, which you should also delete
 #
 # You have been warned
-require 'date'
 
 module NavigationHelpers
   # Maps a name to a path. Used by the
@@ -29,7 +28,7 @@ module NavigationHelpers
     # Here is an example that pulls values out of the Regexp:
     #
     #   when /^(.*)'s profile page$/i
-    #     user_profile_path(User.find_by_login($1))
+      #     user_profile_path(User.find_by_login($1))
 
     else
       begin
