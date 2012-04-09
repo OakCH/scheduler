@@ -380,12 +380,12 @@ describe CalendarController do
     end
 
     it 'should redirect to the nurse calendar index page if nurse.save fails' do
-      invalid_event = FactoryGirl.create(:event, )
+      invalid_event = {:start_at=>'poppies', :end_at=>'4/5/2012'}
       post :create, :nurse_id => @nurse.id, :event => invalid_event
       response.should redirect_to nurse_calendar_index_path
     end
     it 'should flash an error message if nurse.save fails' do
-       invalid_event = FactoryGirl.create(:event, :start_at => @end, :end_at => @start)
+       invalid_event = {:start_at=>'poppies', :end_at=>'4/5/2012'}
        post :create, :nurse_id => @nurse.id, :event => invalid_event
        flash[:error].should_not be_empty
     end
