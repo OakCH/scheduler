@@ -123,8 +123,11 @@ describe NurseBulkUploader do
       it 'should have an error message of missing name column' do
         should include 'Header row is missing the Name column'
       end
-      it 'should have an error message of missng number of weeks off column' do
+      it 'should have an error message of missing number of weeks off column' do
         should include 'Header row is missing the Num Weeks Off column'
+      end
+      it 'should have an error message of missing email column' do
+        should include 'Header row is missing the Email column'
       end
     end
     

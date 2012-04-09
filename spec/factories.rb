@@ -6,7 +6,7 @@ FactoryGirl.define do
       "ADMINOMATIC#{n}20k"
     end
   end
-
+  
   factory :nurse do
     sequence :name do |n|
       "NURSATRONIC SERIAL NO:#{n}"
@@ -21,13 +21,13 @@ FactoryGirl.define do
     shift "PMs"
     unit
   end
-
+  
   factory :unit do
     sequence :name do |n|
       "Bender Unit #{n}"
     end
   end
-
+  
   factory :event do
     sequence :name do |n|
       "NURSATRONIC SERIAL NO:#{n}"
@@ -35,6 +35,7 @@ FactoryGirl.define do
     start_at DateTime.new(2012,3,4,0,0,0)
     end_at DateTime.new(2012,3,6,0,0,0)
     created_at DateTime.new(2012,1,1,0,0,0)
+    all_day true
     nurse
   end
 end

@@ -19,10 +19,16 @@ module NavigationHelpers
       
     when /^the Edit Nurses page$/
       '/admin/upload/'
+      
     when /^the Nurse Calendar page for "([^"]*)" in "([^"]*)" of "([^"]*)"$/
       nurse = Nurse.find_by_name($1)
       month = Date::MONTHNAMES.index($2)
-      nurse_calendar_index_path(nurse, :month => $month, :year => $3.to_s)
+      nurse_calendar_index_path(nurse, :month => month.to_s, :year => $3.to_s)
+      
+    when /^the Admin Calendar page in "([^"]*)" of "(\d{4})"$/
+      month = Date::MONTHNAMES.index($1)
+      admin_calendar_path(:month => month.to_s, :year => $2.to_s)
+
       
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
