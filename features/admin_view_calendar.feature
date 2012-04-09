@@ -26,7 +26,8 @@ Scenario: Viewing calendar by Day Time shift
   And I select "Surgery" from "Unit"
   And I select "Days" from "Shift"
   And I press "Filter calendars"
-  Then I should see the vacation belonging to "Jane Doe" from "17-Jan-2012" to "24-Jan-2012"
+  Then I should see "Jane Doe"
+  
 
 Scenario: Changing month with two nurses per month
   When I am on the Admin Calendar page in "March" of "2012"
@@ -34,7 +35,9 @@ Scenario: Changing month with two nurses per month
   And I select "Days" from "Shift"
   And I press "Filter calendars"
   Then I should see "Jane Doe"
-  And I should not see "John Doe"
+  Then I should see the vacation belonging to "Jane Doe" from "4-Mar-2012" to "12-Mar-2012"
+  But I should not see "John Doe"
+  And I should not see the vacation belonging to "John Doe" from "24-Feb-2012" to "5-Mar-2012"
   
 
 Scenario: Changing shift and month with two nurse per month
@@ -52,3 +55,4 @@ Scenario: Viewing other units
   And I press "Filter calendars"
   Then I should not see "J.P. Morgan"
   And I should see "K.D. Tang"
+  And I should see the vacation belonging to "K.D. Tang" from "17-Jan-2012" to "24-Jan-2012"

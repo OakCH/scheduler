@@ -15,9 +15,14 @@ Given /the following nurses exist/ do |nurses_table|
   end
 end
 
-Then /^(?:I )?should see the vacation belonging to "([^"]*)" from "([^"]*)" to "([^"]*)"$/ do |nurse, start_date, end_date|
+Then /^(?:I )?(should|should not) see the vacation belonging to "([^"]*)" from "([^"]*)" to "([^"]*)"$/ do |should_or_not, nurse, start_date, end_date|
   parsed_start = DateTime.parse(start_date).to_time
   parsed_end = (DateTime.parse(end_date) + 1).to_time - 1
   event = Event.find_by_name_and_start_at_and_end_at(nurse, parsed_start, parsed_end)
-  page.find("*[data-event-id='#{event.id}']")
+  #page.find("*[data-event-id='#{event.id}']")
+  page.send should_or_not, have_css("*[data-event-id='#{event.id}']")
+end
+
+Transform /^(should|should not)$/ do |should_or_not|
+  should_or_not.gsub(' ', '_').to_sym
 end
