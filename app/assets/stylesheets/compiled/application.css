@@ -17,7 +17,8 @@ body {
     font-weight: bold;
     text-shadow: 0 1px 0 #FFFFFF;
     position: absolute;
-    bottom: 10px; }
+    bottom: 10px;
+    vertical-align: text-bottom; }
   #header .right {
     float: right;
     position: absolute;
@@ -58,8 +59,10 @@ a {
   font-weight: bold;
   text-decoration: none;
   color: #cd3301; }
-  a:hover td {
+  a:hover {
     color: #a62900; }
+    a:hover td {
+      color: #a62900; }
 
 table {
   width: 80%;
@@ -88,3 +91,8 @@ label {
   font-size: 95%;
   text-align: center;
   padding: 20px; }
+
+#flash .error {
+  color: red; }
+#flash .notice {
+  color: #cd3301; }
