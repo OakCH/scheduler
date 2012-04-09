@@ -30,6 +30,7 @@ body {
     text-shadow: 0 1px 0 #FFFFFF; 
     position: absolute;
     bottom: 10px;
+    vertical-align: text-bottom;
   }
   .right {
     float: right;
@@ -77,7 +78,10 @@ a {
   font-weight: bold;
   text-decoration: none;
   color: $orange;
-  &:hover { td { color: $dark-orange; }}
+  &:hover {
+    color: $dark-orange;
+    td { color: $dark-orange; }
+  }
 }
 
 table {
