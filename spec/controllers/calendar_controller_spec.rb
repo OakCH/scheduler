@@ -269,6 +269,31 @@ describe CalendarController do
         end
       end
     end
+
+    describe 'month or day is zero' do
+      context 'month is zero' do
+        before :each do
+          get :admin_index, :month => 0
+        end
+        it 'should redirect to the login page' do
+          response.should redirect_to login_path
+        end
+        it 'should flash an error message after redirect' do
+          flash[:error].should_not be_empty
+        end
+      end
+      context 'year is zero' do
+        before :each do
+          get :admin_index, :year => 0
+        end
+        it 'should redirect to the login page' do
+          response.should redirect_to login_path
+        end
+        it 'should flash an error message after redirect' do
+          flash[:error].should_not be_empty
+        end
+      end
+    end
   end
   describe "Show" do
     context 'valid event id' do
@@ -355,9 +380,14 @@ describe CalendarController do
     end
 
     it 'should redirect to the nurse calendar index page if nurse.save fails' do
-      
+      invalid_event = FactoryGirl.create(:event, )
+      post :create, :nurse_id => @nurse.id, :event => invalid_event
+      response.should redirect_to nurse_calendar_index_path
     end
-    it 'should flash an error if nurse.save fails'
+    it 'should flash an error message if nurse.save fails' do
+       invalid_event = FactoryGirl.create(:event, :start_at => @end, :end_at => @start)
+       post :create, :nurse_id => @nurse.id, :event => invalid_event
+       flash[:error].should_not be_empty
     end
   end
 
@@ -398,6 +428,29 @@ describe CalendarController do
       assigns(:event).should == @event
     end
 
+  end
+
+  describe 'Edit with invalid event id' do
+    before :each do
+      FactoryGirl.create(:nurse)
+      @nurse = FactoryGirl.create(:event)
+      FactoryGirl.create(:event)
+      @bad_id = '3abc'
+      event = Event.find_by_id(@bad_id)
+      unless not event
+        event.destroy
+      end
+      post :edit, :id => @bad_id, :nurse_id => @nurse.id
+    end
+    it 'should not find a valid event' do
+      assigns(:event).should be_nil
+    end
+    it 'should redirect to the login page' do
+       response.should redirect_to login_path 
+    end
+    it 'should flash an error message after redirect' do
+       flash[:error].should_not be_empty
+    end
   end
 
   describe "Update" do
@@ -472,9 +525,7 @@ describe CalendarController do
       delete :destroy, :id => @event.id, :nurse_id => @nurse.id
       response.should redirect_to(nurse_calendar_index_path(@nurse))
     end
-
   end
-
 end
 
 
