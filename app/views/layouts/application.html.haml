@@ -7,6 +7,7 @@
     = stylesheet_link_tag 'compiled/event_calendar'
     = stylesheet_link_tag 'jquery-ui'
     = javascript_include_tag 'application'
+    = favicon_link_tag 'favicon.ico'
     = csrf_meta_tags
 
   %body
@@ -14,6 +15,7 @@
       #header
         .left
           Nurse Scheduler
+          %img{:src=>'/images/minimascot.png'}
         .right
           = render 'shared/navigation'
         .clear
