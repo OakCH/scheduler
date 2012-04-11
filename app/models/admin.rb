@@ -6,8 +6,9 @@ class Admin < ActiveRecord::Base
   
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
-
+  
   validates_presence_of :name
+  validates_uniqueness_of :email
   
   def self.show_events_for_month(month,year,selectors)
     unit_id = selectors[:unit_id]
