@@ -11,11 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120325215256) do
+ActiveRecord::Schema.define(:version => 20120411051747) do
 
   create_table "admins", :force => true do |t|
-    t.string "name"
+    t.string   "name"
+    t.string   "email",                  :default => "", :null => false
+    t.string   "encrypted_password",     :default => "", :null => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
   end
+
+  add_index "admins", ["email"], :name => "index_admins_on_email", :unique => true
+  add_index "admins", ["reset_password_token"], :name => "index_admins_on_reset_password_token", :unique => true
 
   create_table "events", :force => true do |t|
     t.string   "name"
@@ -28,14 +36,21 @@ ActiveRecord::Schema.define(:version => 20120325215256) do
   end
 
   create_table "nurses", :force => true do |t|
-    t.string  "name"
-    t.string  "shift"
-    t.integer "unit_id"
-    t.integer "seniority"
-    t.integer "num_weeks_off"
-    t.string  "email"
-    t.integer "years_worked"
+    t.string   "name"
+    t.string   "shift"
+    t.integer  "unit_id"
+    t.integer  "seniority"
+    t.integer  "num_weeks_off"
+    t.string   "email"
+    t.integer  "years_worked"
+    t.string   "encrypted_password",     :default => "", :null => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
   end
+
+  add_index "nurses", ["email"], :name => "index_nurses_on_email", :unique => true
+  add_index "nurses", ["reset_password_token"], :name => "index_nurses_on_reset_password_token", :unique => true
 
   create_table "nurses_vacation_days", :id => false, :force => true do |t|
     t.integer "nurse_id"
