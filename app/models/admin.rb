@@ -2,14 +2,8 @@ require 'date'
 
 class Admin < ActiveRecord::Base
   
-  devise :database_authenticatable, :recoverable, :rememberable 
-  
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :name, :email, :password, :password_confirmation, :remember_me
-  
-  validates_presence_of :name
-  validates_uniqueness_of :email
-  
+  include Personable
+
   def self.show_events_for_month(month,year,selectors)
     unit_id = selectors[:unit_id]
     shift = selectors[:shift]
