@@ -1,8 +1,8 @@
 Scheduler::Application.routes.draw do
   
-  devise_for :admins
+  devise_for :admins, :controllers => { :sessions => 'admin/sessions' }
   
-  devise_for :nurses
+  devise_for :nurses, :controllers => { :sessions => 'nurse/sessions' }
   
   # The priority is based upon order of creation:
   # first created -> highest priority.

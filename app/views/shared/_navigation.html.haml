@@ -9,4 +9,9 @@
     -first_nurse = Nurse.find(:first)
     -if first_nurse
       =link_to_unless_current 'Nurse Cal', "/nurse/#{Nurse.find(:first).id.to_s}/calendar"
+  %li
+    -if nurse_signed_in?
+      = link_to 'Logout', destroy_nurse_session_path, :method => :delete
+    -if admin_signed_in?
+      = link_to 'Logout', destroy_admin_session_path, :method => :delete
 
