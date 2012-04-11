@@ -1,29 +1,9 @@
 class CalendarController < ApplicationController
   
-  def setup_index
-    @month = (params[:month] || (Time.zone || Time).now.month).to_i
-    @year = (params[:year] || (Time.zone || Time).now.year).to_i
-    
-    if @month == 0 or @year == 0
-      flash[:error] = "An error has occurred."
-      redirect_to login_path
-      return
-    end
-    
-    @shown_month = Date.civil(@year, @month)
-    
-    yield
-    
-    # Event.event_strips_for_month will sanitize the input that has been
-    # string interpolated
-    if Unit.is_valid_shift(@shift) and Unit.is_valid_unit_id(@unit_id)
-      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
-    else
-      flash[:error] = "An error has happened. It's all your fault."
-      redirect_to login_path
-      return
-    end
-  end
+  before_filter :authenticate_admin!, :only => [:admin_index]
+  before_filter :authenticate_any!, :except => [:admin_index]
+  before_filter :check_nurse_id
+  before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
   
   def index
     setup_index do
@@ -160,6 +140,43 @@ class CalendarController < ApplicationController
       flash[:error] = 'You successfully nuked your vacation'
       redirect_to nurse_calendar_index_path
     end
+  end
+  
+  private
+
+  def setup_index
+    @month = (params[:month] || (Time.zone || Time).now.month).to_i
+    @year = (params[:year] || (Time.zone || Time).now.year).to_i
+    
+    if @month == 0 or @year == 0
+      flash[:error] = "An error has occurred."
+      redirect_to login_path
+      return
+    end
+    
+    @shown_month = Date.civil(@year, @month)
+    
+    yield
+    
+    # Event.event_strips_for_month will sanitize the input that has been
+    # string interpolated
+    if Unit.is_valid_shift(@shift) and Unit.is_valid_unit_id(@unit_id)
+      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
+    else
+      flash[:error] = "An error has happened. It's all your fault."
+      redirect_to login_path
+      return
+    end
+  end
+
+  def check_nurse_id
+    return if admin_signed_in?
+    redirect_to root_path if current_nurse != Nurse.find(params[:nurse_id])
+  end
+  
+  def check_event_id
+    return if admin_signed_in?
+    redirect_to root_path if current_nurse != Event.find(params[:id]).nurse
   end
   
 end

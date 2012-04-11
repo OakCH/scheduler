@@ -1,0 +1,11 @@
+%h2 Sign in for Administrators
+
+#welcome
+  %p
+    Please sign in using your email address/password. If you
+    need help, please contact a site administrator.
+#flash
+  = render 'shared/flash', :flash => flash
+#form
+  = render 'shared/login'
+  = link_to 'Sign in as nurse', new_nurse_session_path

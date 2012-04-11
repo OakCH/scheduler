@@ -1,5 +1,7 @@
 class AdminController < ApplicationController
   
+  before_filter :authenticate_admin!
+
   # attr_reader :unit, :shift
   
   def upload
