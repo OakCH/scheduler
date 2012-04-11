@@ -1,9 +1,9 @@
 Scheduler::Application.routes.draw do
   
   devise_for :admins
-
+  
   devise_for :nurses
-
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
   
@@ -14,7 +14,7 @@ Scheduler::Application.routes.draw do
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
-  match 'accounts/login' => 'accounts#login', :as => :login
+  match '' => 'home#index', :as => :login
   
   scope '/admin/' do
     match 'upload' => 'admin#upload', :as => 'admin_upload'
@@ -27,7 +27,7 @@ Scheduler::Application.routes.draw do
     resources :calendar, :as => 'nurse_calendar'
   end
   
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
+   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
   
   # Sample resource route with options:
@@ -66,7 +66,7 @@ Scheduler::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # root :to => 'welcome#index'
-  root :to => 'accounts#login'
+  root :to => 'home#index'
   # See how all your routes lay out with "rake routes"
   
   # This is a legacy wild controller route that's not recommended for RESTful applications.
