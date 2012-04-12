@@ -12,7 +12,7 @@ end
 describe Rules do
   subject {Validatable.new}
   before(:each) do
-    @nurse = FactoryGirl.create(:nurse)
+    @nurse = FactoryGirl.create(:nurse, :num_weeks_off => 3)
     @nurse_id = @nurse.id
     subject.stub(:nurse_id).and_return(@nurse_id)
     subject.stub(:nurse).and_return(@nurse)
@@ -40,13 +40,29 @@ describe Rules do
   end
 
   describe 'checking less_than_allowed?' do
-    before (:each) do
-      @nurse = FactoryGirl.create(:nurse)
-      @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
+    before(:each) do
+      # add 2 weeks of scheduled vacation into nurse
+      @event1 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,4,0,0,0), :end_at => DateTime.new(2012,3,10,0,0,0))
+      @event2 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,4,4,0,0,0), :end_at => DateTime.new(2012,4,10,0,0,0))
+      @nurse.events << @event1
+      @nurse.events << @event2
+      # this is the third week currently being validated
+      subject.stub(:start_at).and_return(DateTime.new(2012,5,4,0,0,0))
+      subject.stub(:end_at).and_return(DateTime.new(2012,5,10,0,0,0))
     end
-    it 'should return true if taken 23 vacation days and have 25'
-    it 'should return true if taken 23 vacation days and have 23'
-    it 'should return false if taken 25 vacation days and have 23'
+    it 'should return true if taken 21 vacation days and have 28' do
+      @nurse.num_weeks_off = 4
+      subject.should be_valid
+    end
+    it 'should return true if taken 21 vacation days and have 21' do
+      subject.should be_valid
+    end
+    
+    it 'should return false if taken 28 vacation days and have 21' do
+      @event3 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,6,4,0,0,0), :end_at => DateTime.new(2012,6,10,0,0,0))
+      @nurse.events << @event3
+      subject.should have(1).error_on(:allowed)
+    end
   end
 
   describe 'checking up_to_4_segs?'
