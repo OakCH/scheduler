@@ -1,19 +1,11 @@
 %h2 Sign in
-
-#welcome
-  %p
-    Please sign in below using your email address and password.
-    Please contact your nurse manager if you need help.
-  
-#flash
-  = render 'shared/flash', :flash => flash
 #form
   = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
     .left
-    
+      
       = f.label :email    
       = f.email_field :email
-    
+      
       = f.label :password    
       = f.password_field :password
       

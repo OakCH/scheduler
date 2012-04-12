@@ -1,7 +1,8 @@
 class CalendarController < ApplicationController
   
+  before_filter :authenticate_any!
   before_filter :authenticate_admin!, :only => [:admin_index]
-  before_filter :authenticate_any!, :except => [:admin_index]
+  
   before_filter :check_nurse_id
   before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
   
@@ -168,7 +169,7 @@ class CalendarController < ApplicationController
       return
     end
   end
-
+  
   def check_nurse_id
     return if admin_signed_in?
     redirect_to root_path if current_nurse != Nurse.find(params[:nurse_id])

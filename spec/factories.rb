@@ -5,6 +5,10 @@ FactoryGirl.define do
     sequence :name do |n|
       "ADMINOMATIC#{n}20k"
     end
+    sequence :email do |n|
+      "ADMINEMAIL#{n}@admin.com"
+    end
+    password 'admin_pw'
   end
   
   factory :nurse do
@@ -20,6 +24,7 @@ FactoryGirl.define do
     num_weeks_off 10
     shift "PMs"
     unit
+    password 'nurse_pw'
   end
   
   factory :unit do

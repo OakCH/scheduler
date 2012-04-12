@@ -1,7 +1,7 @@
 module ClassMethods
   def define_user_accessors
     all_attributes = User.content_columns.map(&:name)
-    ignored_attributes = ['crated_at', 'updated_at', 'personable_type']
+    ignored_attributes = ['created_at', 'updated_at', 'personable_type']
     attributes_to_delegate = all_attributes - ignored_attributes
     attributes_to_delegate.each do |attrib|
       class_eval <<-RUBY
@@ -19,4 +19,5 @@ end
 RUBY
 end
 end
+
 end

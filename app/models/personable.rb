@@ -17,7 +17,7 @@ module Personable
   rescue NoMethodError
     super
   end
-  
+
   protected
   
   def user_must_be_valid
