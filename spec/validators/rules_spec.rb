@@ -65,7 +65,36 @@ describe Rules do
     end
   end
 
-  describe 'checking up_to_4_segs?'
+  describe 'checking up_to_max_segs?' do
+    before(:each) do
+      #make sure @@max_segs = 4
+      # add 3 segs in
+      @nurse.num_weeks_off = 5
+      @event1 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,4,0,0,0), :end_at => DateTime.new(2012,3,10,0,0,0), :nurse=>@nurse)
+      @event2 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,4,4,0,0,0), :end_at => DateTime.new(2012,4,10,0,0,0), :nurse=>@nurse)
+      @nurse.events << @event1
+      @nurse.events << @event2
+      subject.stub(:start_at).and_return(DateTime.new(2012,5,4,0,0,0))
+      subject.stub(:end_at).and_return(DateTime.new(2012,5,10,0,0,0))
+    end
+    it 'should return true if 3 segs out of 4' do
+      subject.should be_valid
+    end
+    it 'should return true if 4 segs out of 4' do
+      @event3 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,6,4,0,0,0), :end_at => DateTime.new(2012,6,10,0,0,0), :nurse=>@nurse)
+      @nurse.events << @event3
+      subject.should be_valid
+    end
+    it 'should return false if 5 segs out of 4' do
+      @event3 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,6,4,0,0,0), :end_at => DateTime.new(2012,6,10,0,0,0), :nurse=>@nurse)
+      @nurse.events << @event3
+      @event4 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,7,4,0,0,0), :end_at => DateTime.new(2012,7,10,0,0,0), :nurse=>@nurse)
+      @nurse.events << @event4
+      subject.should have(0).error_on(:end_at)
+      subject.should have(0).error_on(:allowed)
+      subject.should have(1).error_on(:segs)
+    end
+  end
   
   describe 'calculating the length of an event' do
     it 'should return true for an event from 4/11/12 to 4/17/12'
