@@ -7,9 +7,14 @@ class ApplicationController < ActionController::Base
   
   def authenticate_admin!
     authenticate_user!
-    redirect_to root_path if !current_admin
+    permission_denied if !current_admin
   end
   
+  def permission_denied
+    flash[:error] = 'You cannot access that page'
+    redirect_to root_path 
+  end
+    
   def current_nurse
     if nurse_signed_in?
       @current_nurse ||= Nurse.find_by_id(current_user.personable_id)
@@ -29,7 +34,7 @@ class ApplicationController < ActionController::Base
   def admin_signed_in?
     current_user and current_user.personable_type == 'Admin'
   end
-
+  
   helper_method :current_nurse, :current_admin
   
 end

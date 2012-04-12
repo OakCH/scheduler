@@ -144,7 +144,7 @@ class CalendarController < ApplicationController
   end
   
   private
-
+  
   def setup_index
     @month = (params[:month] || (Time.zone || Time).now.month).to_i
     @year = (params[:year] || (Time.zone || Time).now.year).to_i
@@ -172,12 +172,12 @@ class CalendarController < ApplicationController
   
   def check_nurse_id
     return if admin_signed_in?
-    redirect_to root_path if current_nurse != Nurse.find(params[:nurse_id])
+    permission_denied if current_nurse != Nurse.find(params[:nurse_id])
   end
-  
+    
   def check_event_id
     return if admin_signed_in?
-    redirect_to root_path if current_nurse != Event.find(params[:id]).nurse
+    permission_denied if current_nurse != Event.find(params[:id]).nurse
   end
   
 end

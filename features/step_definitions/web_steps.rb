@@ -260,10 +260,16 @@ Then /^show me the page$/ do
 end
 
 Given /^I am logged in as an Admin$/ do
-  password = 'admin'
-  admin = FactoryGirl.create(:admin, :password => 'admin')
-  visit '/users/sign_in'
-  fill_in 'user_email', :with => admin.email
-  fill_in 'user_password', :with => password
-  click_button "Sign in" 
+  sign_in(FactoryGirl.create(:admin))
 end  
+
+Given /^I am logged in as the Nurse "([^"]*)"$/ do |name|
+  sign_in(Nurse.find_by_name(name))
+end
+
+def sign_in(user)
+  visit '/users/sign_in'
+  fill_in 'user_email', :with => user.email
+  fill_in 'user_password', :with => "#{user.class.to_s.downcase}_pw"
+  click_button "Sign in"
+end

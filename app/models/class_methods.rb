@@ -20,4 +20,17 @@ RUBY
 end
 end
 
+def method_missing(meth, *args, &blk)
+  if /^find(?:_all)?_by_(?:name|email)(?:_and_(?:name|email))?$/ =~ meth
+    new_meth = meth.to_s + '_and_personable_type'
+    args << self.to_s
+    user = User.send(new_meth, *args, &blk)
+    send(:find, user.personable_id)
+  else
+    super
+  end
+rescue
+  super
+end
+  
 end

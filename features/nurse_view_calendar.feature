@@ -21,6 +21,7 @@ Background:
   | J.D. Another Unit  | 1-Apr-2012  | 9-Apr-2012  |
   | J.D. Another Shift | 1-Apr-2012  | 9-Apr-2012  |
 
+  And I am logged in as the Nurse "Jane Doe"
   And I am on the Nurse Calendar page for "Jane Doe" in "April" of "2012"
 
 Scenario: Viewing calendar for April
