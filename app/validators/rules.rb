@@ -33,7 +33,8 @@ class Rules < ActiveModel::Validator
      def less_than_allowed?(record)
          num_days_total = record.nurse.num_weeks_off * 7
          num_days_taken = 0
-         Event.find_by_nurse_id(record.nurse_id).each do |event|
+         events = Event.find_all_by_nurse_id(record.nurse_id)
+         events.each do |event|
              num_days_taken += calculate_length(event)
          end
          num_days_taken += calculate_length(record)
