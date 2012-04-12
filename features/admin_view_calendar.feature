@@ -21,6 +21,7 @@ Background:
   | J.P. Morgan | 17-Jan-2012 | 24-Jan-2012 |
   | K.D. Tang   | 17-Jan-2012 | 24-Jan-2012 |
 
+  And I am logged in as an Admin
   And I am on the Admin Calendar page in "February" of "2012"
   And I select "Surgery" from "Unit"
   And I select "Days" from "Shift"

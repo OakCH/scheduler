@@ -11,6 +11,7 @@ Background:
   | Jane Doe | Days  | Surgery |
   | John Doe | Days  | Surgery |
 
+  And I am logged in as an Admin
   And I am on the Edit Nurses page
   When I select "Days" from "Shift"
   And I select "Surgery" from "Unit"
