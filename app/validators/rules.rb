@@ -21,14 +21,18 @@ class Rules < ActiveModel::Validator
 
     # not more than 4 segments
     def up_to_4_segs?(record)
-        return Events.find_by_nurse_id(record.nurse_id).count <= 3 # the current one is #4
+        events = Event.find_by_nurse_id(record.nurse_id) # the current one is #4
+        if not events
+          return true
+        else
+          return events.length <= 3
     end
 
      # no more weeks than allowed
      def less_than_allowed?(record)
          num_days_total = record.nurse.num_weeks_off * 7
          num_days_taken = 0
-         Events.find_by_nurse_id(record.nurse_id).each do |event|
+         Event.find_by_nurse_id(record.nurse_id).each do |event|
              num_days_taken += calculate_length(event)
          end
          num_days_taken += calculate_length(record)
@@ -36,8 +40,8 @@ class Rules < ActiveModel::Validator
      end
 
      def calculate_length (event)
-        start_at = DateTime.parse(event.start_at)
-        end_at = DateTime.parse(event.end_at)
-        return days_total = end_at.to_time - start_at.to_time
+        start_at = event.start_at.to_date
+        end_at = event.end_at.to_date
+        return days_total = end_at - start_at
     end
 end
