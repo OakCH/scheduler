@@ -258,3 +258,18 @@ end
 Then /^show me the page$/ do
   save_and_open_page
 end
+
+Given /^I am logged in as an Admin$/ do
+  sign_in(FactoryGirl.create(:admin))
+end  
+
+Given /^I am logged in as the Nurse "([^"]*)"$/ do |name|
+  sign_in(Nurse.find_by_name(name))
+end
+
+def sign_in(user)
+  visit '/users/sign_in'
+  fill_in 'user_email', :with => user.email
+  fill_in 'user_password', :with => "#{user.class.to_s.downcase}_pw"
+  click_button "Sign in"
+end

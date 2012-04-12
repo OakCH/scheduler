@@ -2,6 +2,11 @@ require 'spec_helper'
 require 'date'
 
 describe CalendarController do
+  
+  before(:all) do
+    CalendarController.skip_before_filter :authenticate_any!,
+    :authenticate_admin!, :check_nurse_id, :check_event_id
+  end
 
   before(:each) do
     @nurse = FactoryGirl.create(:nurse)

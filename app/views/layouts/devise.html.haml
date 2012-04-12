@@ -14,13 +14,6 @@
         #header
           NURSE SCHEDULER
         #content.container
-          #welcome
-            %p
-              Sign in to schedule your vacation hours. If you don't know
-              your login/password, please contact your nurse manager.
-          #flash
-            = render 'shared/flash', :flash => flash
-          #form
-            =yield
+          = yield
         #footer
           (c) 2012 Team Awesome
