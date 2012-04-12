@@ -12,6 +12,12 @@ class Event < ActiveRecord::Base
   def self.all_display_columns
     ['start date', 'end date', 'Change vacation', '']
   end
+  
+  def self.calculate_length (event)
+    start_at = event.start_at.to_date
+    end_at = event.end_at.to_date
+    return days_total = end_at - start_at
+  end
 
 # the way the event_calendar gem handles colors for events
 # on the calendar is with 'color' in the model. this sets the
