@@ -26,6 +26,7 @@ class Rules < ActiveModel::Validator
           return true
         else
           return events.length <= 3
+        end
     end
 
      # no more weeks than allowed
