@@ -3,7 +3,7 @@ class Rules < ActiveModel::Validator
   @@max_segs = 4
   def validate(record)
     unless is_week?(record)
-      record.errors[:end_at] << 'Treat yourself. Take more vacation days'
+      record.errors[:end_at] << 'Segments must be at least 7 days long'
     end
 
     unless up_to_max_segs?(record)
@@ -17,7 +17,7 @@ class Rules < ActiveModel::Validator
 
   # at least one week
   def is_week?(record)
-    return Event.calculate_length(record) + 1 >= 7
+    return Event.calculate_length(record) >= 7
   end
 
   def up_to_max_segs?(record)
