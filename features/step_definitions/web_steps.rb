@@ -258,3 +258,12 @@ end
 Then /^show me the page$/ do
   save_and_open_page
 end
+
+Given /^I am logged in as an Admin$/ do
+  password = 'admin'
+  admin = FactoryGirl.create(:admin, :password => 'admin')
+  visit '/users/sign_in'
+  fill_in 'user_email', :with => admin.email
+  fill_in 'user_password', :with => password
+  click_button "Sign in" 
+end  
