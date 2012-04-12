@@ -21,7 +21,7 @@ class Rules < ActiveModel::Validator
 
     # not more than 4 segments
     def up_to_4_segs?(record)
-        events = Event.find_by_nurse_id(record.nurse_id) # the current one is #4
+        events = Event.find_all_by_nurse_id(record.nurse_id) # the current one is #4
         if not events
           return true
         else
