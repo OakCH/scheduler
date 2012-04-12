@@ -41,9 +41,4 @@ class Rules < ActiveModel::Validator
     return num_days_taken < num_days_total
   end
 
-#  def calculate_length (event)
-#    start_at = event.start_at.to_date
-#    end_at = event.end_at.to_date
-#    return days_total = end_at - start_at
-#  end
 end
