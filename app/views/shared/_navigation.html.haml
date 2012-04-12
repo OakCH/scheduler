@@ -10,6 +10,6 @@
     -if first_nurse
       =link_to_unless_current 'Nurse Cal', "/nurse/#{Nurse.find(:first).id.to_s}/calendar"
   %li
-    -if current_user
+    -if user_signed_in?
       = link_to 'Logout', destroy_user_session_path, :method => :delete
       
