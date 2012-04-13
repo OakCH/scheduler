@@ -25,17 +25,28 @@ module NavigationHelpers
       month = Date::MONTHNAMES.index($2)
       nurse_calendar_index_path(nurse, :month => month.to_s, :year => $3.to_s)
       
+    when /^the Nurse Calendar page for "([^"]*)"$/
+      nurse_calendar_index_path(Nurse.find_by_name($1))
+      
     when /^the Admin Calendar page in "([^"]*)" of "(\d{4})"$/
       month = Date::MONTHNAMES.index($1)
       admin_calendar_path(:month => month.to_s, :year => $2.to_s)
+      
+    when /^the Sign In page$/
+      new_user_session_path
+      
+    when /^the Vacation page for "([^"]*)" from "([^"]*)" to "([^"]*)"$/
+      nurse_calendar_path(Nurse.find_by_name($1), event_finder($1, $2, $3))
 
+    when /^the Admin Calendar page$/
+      admin_calendar_path
       
     # Add more mappings here.
-    # Here is an example that pulls values out of the Regexp:
+      # Here is an example that pulls values out of the Regexp:
     #
-    #   when /^(.*)'s profile page$/i
+      #   when /^(.*)'s profile page$/i
     #     user_profile_path(User.find_by_login($1))
-
+      
     else
       begin
         page_name =~ /^the (.*) page$/
