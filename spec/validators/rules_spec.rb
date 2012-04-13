@@ -101,8 +101,7 @@ describe Rules do
         @unit = FactoryGirl.create(:unit, :name => 'Surgery')
         @nurse1 = FactoryGirl.create(:nurse, :unit => @unit)
         @nurse2 = FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
+        FactoryGirl.create_list(:nurse, 2, :unit => @unit)
       end
       
       it 'should should allow first person to schedule vacation' do
@@ -118,6 +117,41 @@ describe Rules do
         subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
         subject.stub(:nurse).and_return(@nurse2)
         subject.stub(:nurse_id).and_return(@nurse2.id)
+        subject.should have(1).error_on(:max_day)
+      end
+    end
+    
+    context 'with 50 accrued weeks, extra 3 months Apr-June' do
+      before(:each) do
+        @unit = FactoryGirl.create(:unit, :name => 'Surgery')
+        @nurse1 = FactoryGirl.create(:nurse, :unit => @unit)
+        @nurse2 = FactoryGirl.create(:nurse, :unit => @unit)
+        @nurse3 = FactoryGirl.create(:nurse, :unit => @unit)
+        FactoryGirl.create_list(:nurse, 2, :unit => @unit)
+        Event.stub(:additional_months).and_return([4, 5, 6])
+      end
+      
+      it 'should allow first person to schedule vacation' do
+        subject.stub(:start_at).and_return(DateTime.new(2012,4,12,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
+        subject.stub(:nurse).and_return(@nurse1)
+        subject.stub(:nurse_id).and_return(@nurse1.id)
+        subject.should be_valid
+      end
+      it 'should allow second person to schedule vacation on overlapping days as first' do
+        Event.stub(:num_nurses_on_day).and_return(1)
+        subject.stub(:start_at).and_return(DateTime.new(2012,4,15,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,4,21,0,0,0))
+        subject.stub(:nurse).and_return(@nurse2)
+        subject.stub(:nurse_id).and_return(@nurse2.id)
+        subject.should be_valid
+      end
+      it 'should not allow third person to schedule vacation on overlapping days as first' do
+        Event.stub(:num_nurses_on_day).and_return(2)
+        subject.stub(:start_at).and_return(DateTime.new(2012,4,7,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,4,13,0,0,0))
+        subject.stub(:nurse).and_return(@nurse3)
+        subject.stub(:nurse_id).and_return(@nurse3.id)
         subject.should have(1).error_on(:max_day)
       end
     end

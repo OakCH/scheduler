@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Unit' do
   describe 'checking max per day calculations' do
     before(:each) do
-      @unit = FactoryGirl.create(:unit)
+      @unit = FactoryGirl.create(:unit, :name => 'Surgery')
       FactoryGirl.create_list(:nurse, 4, :unit => @unit)
     end
     it 'should return 1 year for 40 accrued weeks' do
