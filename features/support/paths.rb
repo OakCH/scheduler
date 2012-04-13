@@ -29,6 +29,8 @@ module NavigationHelpers
       month = Date::MONTHNAMES.index($1)
       admin_calendar_path(:month => month.to_s, :year => $2.to_s)
 
+    when /^the Rules page$/
+      '/admin/rules'
       
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

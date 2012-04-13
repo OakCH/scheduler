@@ -24,7 +24,6 @@ class Event < ActiveRecord::Base
     end_at = event.end_at.to_date
     return days_total = end_at - start_at
   end
-  
 
 # the way the event_calendar gem handles colors for events
 # on the calendar is with 'color' in the model. this sets the
