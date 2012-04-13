@@ -16,6 +16,7 @@ describe Rules do
     @nurse_id = @nurse.id
     subject.stub(:nurse_id).and_return(@nurse_id)
     subject.stub(:nurse).and_return(@nurse)
+    Event.stub(:num_nurses_on_day).and_return(0)
   end
 
   describe 'checking is_week?' do
@@ -91,6 +92,34 @@ describe Rules do
       @event4 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,7,4,0,0,0), :end_at => DateTime.new(2012,7,10,0,0,0), :nurse=>@nurse)
       @nurse.events << @event4
       subject.should have(1).error_on(:segs)
+    end
+  end
+  
+  describe 'checking less_than_max_per_day?' do
+    context 'with 40 accrued weeks' do
+      before(:each) do
+        @unit = FactoryGirl.create(:unit, :name => 'Surgery')
+        @nurse1 = FactoryGirl.create(:nurse, :unit => @unit)
+        @nurse2 = FactoryGirl.create(:nurse, :unit => @unit)
+        FactoryGirl.create(:nurse, :unit => @unit)
+        FactoryGirl.create(:nurse, :unit => @unit)
+      end
+      
+      it 'should should allow first person to schedule vacation' do
+        subject.stub(:start_at).and_return(DateTime.new(2012,4,12,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
+        subject.stub(:nurse).and_return(@nurse1)
+        subject.stub(:nurse_id).and_return(@nurse1.id)
+        subject.should be_valid
+      end
+      it 'should not allow second person to schedule vacation on same day as first' do
+        Event.stub(:num_nurses_on_day).and_return(1)
+        subject.stub(:start_at).and_return(DateTime.new(2012,4,12,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
+        subject.stub(:nurse).and_return(@nurse2)
+        subject.stub(:nurse_id).and_return(@nurse2.id)
+        subject.should have(1).error_on(:max_day)
+      end
     end
   end
   
