@@ -4,10 +4,7 @@ describe 'Unit' do
   describe 'checking max per day calculations' do
     before(:each) do
       @unit = FactoryGirl.create(:unit)
-      FactoryGirl.create(:nurse, :unit => @unit)
-      FactoryGirl.create(:nurse, :unit => @unit)
-      FactoryGirl.create(:nurse, :unit => @unit)
-      FactoryGirl.create(:nurse, :unit => @unit)
+      FactoryGirl.create_list(:nurse, 4, :unit => @unit)
     end
     it 'should return 1 year for 40 accrued weeks' do
       @unit.calculate_max_per_day("PMs")
@@ -34,14 +31,7 @@ describe 'Unit' do
 
     context '120 accrued weeks' do
       before(:each) do
-        FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
-        FactoryGirl.create(:nurse, :unit => @unit)
+        FactoryGirl.create_list(:nurse, 8, :unit => @unit)
       end
       it 'should return 2 years' do
         @unit.calculate_max_per_day("PMs")
