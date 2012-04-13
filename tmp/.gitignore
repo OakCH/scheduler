@@ -1,0 +1,5 @@
+# Ignore the temporary contents generated in this directory
+*
+
+# This gitignore file needs to be tracked though
+!.gitignore
