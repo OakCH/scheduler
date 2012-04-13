@@ -80,14 +80,16 @@ class Rules < ActiveModel::Validator
 
     events = Event.joins(:nurse)
                   .where(
-                          'nurses.shift' => shift, 
-                          'nurses.unit_id' => unit_id, 
-                          'nurses.start_at between ? and ?' => start_date - range_buffer, start_date
+                          'nurses.shift' => shift,
+                          'nurses.unit_id' => unit_id
+                          )
+                  .where(
+                          'events.start_at between ? and ?', start_date - range_buffer, start_date
                           )
 
-    num_nurses = 0
+    num_nurses = 0 
     events.each do |e|
-        if e.start.to_date <= start_date >= e.end_date.to_date
+    if (e.start_at.to_date <= start_date) and (start_date <= e.end_at.to_date)
           num_nurses += 1
         end
     end

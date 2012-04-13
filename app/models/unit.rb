@@ -27,7 +27,7 @@ class Unit < ActiveRecord::Base
   
   @@max_per = {}
   
-  def max_per
+  def self.max_per
     return @@max_per
   end
 
