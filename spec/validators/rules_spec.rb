@@ -129,6 +129,7 @@ describe Rules do
         @nurse3 = FactoryGirl.create(:nurse, :unit => @unit)
         FactoryGirl.create_list(:nurse, 2, :unit => @unit)
         Event.stub(:additional_months).and_return([4, 5, 6])
+        UnitAndShift.create(:unit_id => @unit.id, :shift => 'PMs', :additional_month => 4)
       end
       
       it 'should allow first person to schedule vacation' do

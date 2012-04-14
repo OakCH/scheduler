@@ -9,12 +9,6 @@ class Event < ActiveRecord::Base
 
   validates_with Rules
   
-  @@additional_months = [] # needs to be 1,2,3 and each month can be in here multiple times
-
-  def self.additional_months
-    return @@additional_months
-  end
-  
   def self.all_display_columns
     ['start date', 'end date', 'Change vacation', '']
   end
