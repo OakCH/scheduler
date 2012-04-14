@@ -76,7 +76,7 @@ class Rules < ActiveModel::Validator
 
   def num_nurses_on_day(start_date, shift, unit_id)
     max_weeks = 6 
-    range_buffer = max_weeks * 7
+    range_buffer = (max_weeks * 7) + 1
 
     events = Event.joins(:nurse)
                   .where(
@@ -100,7 +100,7 @@ class Rules < ActiveModel::Validator
   def calculate_length (event)
     start_at = event.start_at.to_date
     end_at = event.end_at.to_date
-    return end_at - start_at
+    return (end_at - start_at).to_i + 1
   end
 
 end
