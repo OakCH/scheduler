@@ -35,6 +35,6 @@ class ApplicationController < ActionController::Base
     user_signed_in? and current_user.personable_type == 'Admin'
   end
   
-  helper_method :current_nurse, :current_admin
+  helper_method :current_nurse, :current_admin, :nurse_signed_in?, :admin_signed_in?
   
 end
