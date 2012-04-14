@@ -22,7 +22,7 @@ class Rules < ActiveModel::Validator
 
   # at least one week
   def is_week?(record)
-    return calculate_length(record) +1 >= 7
+    return calculate_length(record) >= 7
   end
 
   def up_to_max_segs?(record)
@@ -43,7 +43,7 @@ class Rules < ActiveModel::Validator
       num_days_taken += calculate_length(event)
     end
     num_days_taken += calculate_length(record)
-    return num_days_taken < num_days_total
+    return num_days_taken <= num_days_total
   end
 
   def less_than_max_per_day?(record)
@@ -53,7 +53,7 @@ class Rules < ActiveModel::Validator
     start_date = record.start_at.to_date
     end_date = record.end_at.to_date
     while start_date <= end_date do
-      @num_on_this_day = num_nurses_on_day(start_date, record.nurse.shift, record.nurse.unit_id)
+      @num_on_this_day = num_nurses_on_day(start_date, @shift, @unit_id)
       if @num_on_this_day < @max_per[:year]
         start_date = start_date.next_day
       elsif less_than_max_in_additional_month?(start_date)

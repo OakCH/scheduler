@@ -82,14 +82,15 @@ describe Rules do
 
   subject {Validatable.new}
   before(:each) do
-    @nurse = FactoryGirl.create(:nurse, :num_weeks_off => 3)
-    @nurse_id = @nurse.id
-    subject.stub(:nurse_id).and_return(@nurse_id)
-    subject.stub(:nurse).and_return(@nurse)
+    @unit = FactoryGirl.create(:unit, :name => 'Surgery')
   end
 
   describe 'checking is_week?' do
     before(:each) do
+      @nurse = FactoryGirl.create(:nurse, :unit => @unit)
+      @nurse_id = @nurse.id
+      subject.stub(:nurse_id).and_return(@nurse_id)
+      subject.stub(:nurse).and_return(@nurse)
       subject.stub(:start_at).and_return(DateTime.new(2012,3,4,0,0,0))
     end
 
@@ -111,6 +112,10 @@ describe Rules do
 
   describe 'checking less_than_allowed?' do
     before(:each) do
+      @nurse = FactoryGirl.create(:nurse, :num_weeks_off => 3, :unit => @unit)
+      @nurse_id = @nurse.id
+      subject.stub(:nurse_id).and_return(@nurse_id)
+      subject.stub(:nurse).and_return(@nurse)
       # add 2 weeks of scheduled vacation into nurse
       @event1 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,4,0,0,0), :end_at => DateTime.new(2012,3,10,0,0,0))
       @event2 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,4,4,0,0,0), :end_at => DateTime.new(2012,4,10,0,0,0))
@@ -137,7 +142,11 @@ describe Rules do
 
   describe 'checking up_to_max_segs?' do
     before(:each) do
-      #make sure @@max_segs = 4
+      @nurse = FactoryGirl.create(:nurse, :unit => @unit)
+      @nurse_id = @nurse.id
+      subject.stub(:nurse_id).and_return(@nurse_id)
+      subject.stub(:nurse).and_return(@nurse)
+      # make sure @@max_segs = 4
       # add 3 segs in
       @nurse.num_weeks_off = 5
       @event1 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,4,0,0,0), :end_at => DateTime.new(2012,3,10,0,0,0), :nurse=>@nurse)
@@ -167,7 +176,6 @@ describe Rules do
   describe 'checking less_than_max_per_day?' do
     context 'with 40 accrued weeks' do
       before(:each) do
-        @unit = FactoryGirl.create(:unit, :name => 'Surgery')
         @nurse1 = FactoryGirl.create(:nurse, :unit => @unit)
         @nurse2 = FactoryGirl.create(:nurse, :unit => @unit)
         FactoryGirl.create_list(:nurse, 2, :unit => @unit)
@@ -181,7 +189,8 @@ describe Rules do
         subject.should be_valid
       end
       it 'should not allow second person to schedule vacation on same day as first' do
-        Event.stub(:num_nurses_on_day).and_return(1)
+        @event = FactoryGirl.create(:event, :start_at=>DateTime.new(2012,4,12,0,0,0), :end_at => DateTime.new(2012,4,18,0,0,0))
+        @nurse1.events << @event
         subject.stub(:start_at).and_return(DateTime.new(2012,4,12,0,0,0))
         subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
         subject.stub(:nurse).and_return(@nurse2)
@@ -192,7 +201,6 @@ describe Rules do
     
     context 'with 50 accrued weeks, extra 3 months Apr-June' do
       before(:each) do
-        @unit = FactoryGirl.create(:unit, :name => 'Surgery')
         @nurse1 = FactoryGirl.create(:nurse, :unit => @unit)
         @nurse2 = FactoryGirl.create(:nurse, :unit => @unit)
         @nurse3 = FactoryGirl.create(:nurse, :unit => @unit)
@@ -209,6 +217,8 @@ describe Rules do
         subject.should be_valid
       end
       it 'should allow second person to schedule vacation on overlapping days as first' do
+        @event = FactoryGirl.create(:event, :start_at=>DateTime.new(2012,4,12,0,0,0), :end_at => DateTime.new(2012,4,18,0,0,0))
+        @nurse1.events << @event        
         subject.stub(:start_at).and_return(DateTime.new(2012,4,15,0,0,0))
         subject.stub(:end_at).and_return(DateTime.new(2012,4,21,0,0,0))
         subject.stub(:nurse).and_return(@nurse2)
@@ -216,8 +226,12 @@ describe Rules do
         subject.should be_valid
       end
       it 'should not allow third person to schedule vacation on overlapping days as first' do
+        @event = FactoryGirl.create(:event, :start_at=>DateTime.new(2012,4,12,0,0,0), :end_at => DateTime.new(2012,4,18,0,0,0))
+        @nurse1.events << @event
+        @event2 = FactoryGirl.create(:event, :start_at=>DateTime.new(2012,4,15,0,0,0), :end_at => DateTime.new(2012,4,21,0,0,0))
+        @nurse2.events << @event2
         subject.stub(:start_at).and_return(DateTime.new(2012,4,7,0,0,0))
-        subject.stub(:end_at).and_return(DateTime.new(2012,4,13,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
         subject.stub(:nurse).and_return(@nurse3)
         subject.stub(:nurse_id).and_return(@nurse3.id)
         subject.should have(1).error_on(:max_day)
