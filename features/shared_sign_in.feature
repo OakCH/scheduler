@@ -43,4 +43,10 @@ Examples:
 | unauthorized-page                                                    |
 | the Nurse Calendar page for "Jane Doe"                               |
 | the Vacation page for "Jane Doe" from "17-Apr-2012" to "24-Apr-2012" |
+| the Edit Nurses page                                                 |
 
+Scenario: Requesting a password reset
+  And I follow "Forgot your password?"
+  And I fill in "Email" with "jane@doe.com"
+  And I press "Send me reset password instructions"
+  Then "jane@doe.com" should receive an email
