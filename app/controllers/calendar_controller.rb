@@ -1,11 +1,11 @@
 class CalendarController < ApplicationController
   
-#  before_filter :authenticate_any!
-#  before_filter :authenticate_admin!, :only => [:admin_index]
-#  
-#  before_filter :check_nurse_id
-#  before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
-#  
+  before_filter :authenticate_any!
+  before_filter :authenticate_admin!, :only => [:admin_index]
+  
+  before_filter :check_nurse_id
+  before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
+  
   def index
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])

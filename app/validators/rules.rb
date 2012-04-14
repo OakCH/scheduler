@@ -47,12 +47,12 @@ class Rules < ActiveModel::Validator
   end
 
   def less_than_max_per_day?(record)
-    record.nurse.unit.calculate_max_per_day(record.nurse.shift)
+    @max_per = record.nurse.unit.calculate_max_per_day(record.nurse.shift)
     start_date = record.start_at.to_date
     end_date = record.end_at.to_date
     while start_date <= end_date do
       @num_on_this_day = num_nurses_on_day(start_date, record.nurse.shift, record.nurse.unit_id)
-      if @num_on_this_day < Unit.max_per[:year]
+      if @num_on_this_day < @max_per[:year]
         start_date = start_date.next_day
       elsif less_than_max_in_additional_month?(start_date)
         start_date = start_date.next_day
@@ -71,7 +71,7 @@ class Rules < ActiveModel::Validator
       max_this_month += 1
       end
     end
-    return @num_on_this_day < Unit.max_per[:year] + max_this_month
+    return @num_on_this_day < @max_per[:year] + max_this_month
   end
 
   def num_nurses_on_day(start_date, shift, unit_id)
