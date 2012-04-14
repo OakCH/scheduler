@@ -85,12 +85,11 @@ describe CalendarController do
     end
 
     it 'should get an event strip that is all nil with no id given' do
-      dummy_nurse = FactoryGirl.create(:nurse)
+      unit = FactoryGirl.create(:unit)
+      dummy_nurse = FactoryGirl.create(:nurse, :unit => unit)
       month = 5
-      day = 5
-      date = Date.new(2012, month, day)
-      event = FactoryGirl.create(:event, :nurse_id => dummy_nurse.id, :start_at => date)
-      get :index, :nurse_id => @nurse.id, :month => month
+      event = FactoryGirl.create(:event, :nurse_id => dummy_nurse.id, :start_at =>DateTime.new(2012,month,5,0,0,0))
+      get :index, :nurse_id => dummy_nurse.id, :month => month
       assigns(:event_strips).each do |s|
         s.each do |e|
           e.should be_nil
@@ -389,6 +388,7 @@ describe CalendarController do
       post :create, :nurse_id => @nurse.id, :event => invalid_event
       response.should redirect_to nurse_calendar_index_path
     end
+    
     it 'should flash an error message if nurse.save fails' do
        invalid_event = {:start_at=>'poppies', :end_at=>'4/5/2012'}
        post :create, :nurse_id => @nurse.id, :event => invalid_event
