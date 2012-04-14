@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     flash[:error] = 'You cannot access that page'
     redirect_to root_path 
   end
-    
+  
   def current_nurse
     if nurse_signed_in?
       @current_nurse ||= Nurse.find_by_id(current_user.personable_id)
@@ -28,11 +28,11 @@ class ApplicationController < ActionController::Base
   end 
   
   def nurse_signed_in?
-    current_user and current_user.personable_type == 'Nurse'
+    user_signed_in? and current_user.personable_type == 'Nurse'
   end
   
   def admin_signed_in?
-    current_user and current_user.personable_type == 'Admin'
+    user_signed_in? and current_user.personable_type == 'Admin'
   end
   
   helper_method :current_nurse, :current_admin
