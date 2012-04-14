@@ -9,6 +9,8 @@ class Event < ActiveRecord::Base
 
   validates_with Rules
   
+  @@additional_months = []
+
   def self.additional_months
     return @@additional_months
   end

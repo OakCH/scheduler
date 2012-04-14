@@ -10,18 +10,68 @@ class Validatable
 end
 
 describe Rules do
-  describe 'check num_nurses_on_day' do
+  describe 'num_nurses_on_day' do
     before(:each) do
-      @unit = FactoryGirl.create(:unit, :name => 'surgery')
-      @nurse = FactoryGirl.create(:nurse, :name => 'e1', :shift => "PMs", :unit_id => @unit.id)
-      FactoryGirl.create(:event, :name => 'e1', :start_at => DateTime.new(2012,4,4,0,0,0), :end_at => DateTime.new(2012,4,24,0,0,0), :nurse_id => @nurse.id)
+      @unit1 = FactoryGirl.create(:unit, :name => 'surgery')
+      @unit2 = FactoryGirl.create(:unit, :name => 'diagnostics')
+
+      @shift1 = 'PMs'
+
+      @nurses_unit1 = FactoryGirl.create_list(:nurse, 50, :shift => @shift1, :unit_id => @unit1.id)
+      @nurses_unit2 = FactoryGirl.create_list(:nurse, 50, :shift => @shift1, :unit_id => @unit2.id)
+
+
+      @nurse1 = @nurses_unit1[0]
+      @nurse2 = @nurses_unit1[1]
+
+      @nurse3 = @nurses_unit2[0]
+
+      # event from 4/4/2012 to 4/19/2012 for nurse1
+      FactoryGirl.create(:event, :name => 'e1', :start_at => DateTime.new(2012,4,4,0,0,0), :end_at => DateTime.new(2012,4,19,0,0,0), :nurse_id => @nurse1.id)
+
+      # event from 4/10/2012 to 4/20/2012 for nurse2
+      FactoryGirl.create(:event, :name => 'e2', :start_at => DateTime.new(2012,4,10,0,0,0), :end_at => DateTime.new(2012,4,20,0,0,0), :nurse_id => @nurse2.id)
+
+      # event from 4/11/2012 to 4/21/2012 for nurse3
+      FactoryGirl.create(:event, :name => 'e3', :start_at => DateTime.new(2012,4,11,0,0,0), :end_at => DateTime.new(2012,4,21,0,0,0), :nurse_id => @nurse3.id)
     end
 
-    it 'should return 1' do
+    it 'should check the number of events on April 4 for unit1, PMs' do
       rules = Rules.new(nil)
-      test_date = '10/04/2012'.to_date
-      rules.num_nurses_on_day(test_date, @nurse.shift, @nurse.unit_id).should == 1
+      test_date =  DateTime.new(2012,4,4,0,0,0)
+      rules.num_nurses_on_day(test_date, @shift1, @unit1.id).should == 1
     end
+
+    it 'should check the number of events on April 10 for unit1, PMs' do
+      rules = Rules.new(nil)
+      test_date = DateTime.new(2012,4,10,0,0,0)
+      rules.num_nurses_on_day(test_date, @shift1,  @unit1.id).should == 2
+    end
+
+    it 'should check the number of events on April 21 for unit1, PMs' do
+      rules = Rules.new(nil)
+      test_date = DateTime.new(2012,4,21,0,0,0)
+      rules.num_nurses_on_day(test_date, @shift1, @unit1.id).should == 0
+    end
+
+    it 'should check the number of events on April 4 for unit2, PMs' do
+      rules = Rules.new(nil)
+      test_date =  DateTime.new(2012,4,4,0,0,0)
+      rules.num_nurses_on_day(test_date, @shift1, @unit2.id).should == 0
+    end
+
+    it 'should check the number of events on April 10 for unit2, PMs' do
+      rules = Rules.new(nil)
+      test_date = DateTime.new(2012,4,10,0,0,0)
+      rules.num_nurses_on_day(test_date, @shift1,  @unit2.id).should == 0
+    end
+
+    it 'should check the number of events on April 21 for unit2, PMs' do
+      rules = Rules.new(nil)
+      test_date = DateTime.new(2012,4,21,0,0,0)
+      rules.num_nurses_on_day(test_date, @shift1, @unit2.id).should == 1
+    end
+
   end
 
 #  subject {Validatable.new}

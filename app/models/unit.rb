@@ -67,7 +67,7 @@ class Unit < ActiveRecord::Base
       @@max_per[:month] = 3
       return
     elsif num <=46
-      @@max_per[:month] += 1
+      @@max_per[:year] += 1
       return
     end
   end

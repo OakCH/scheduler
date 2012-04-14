@@ -84,7 +84,7 @@ class Rules < ActiveModel::Validator
                           'nurses.unit_id' => unit_id
                           )
                   .where(
-                          'events.start_at between ? and ?', start_date - range_buffer, start_date
+                          'events.start_at between ? and ?', start_date - range_buffer, start_date + 1
                           )
 
     num_nurses = 0 
