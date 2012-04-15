@@ -7,8 +7,8 @@ So that I can have an up-to-date list of them.
 Background:
 
   Given the following units exist:
-  | name |
-  | Surgery |
+  | name       |
+  | Surgery    |
   | Pediatrics |
 
   And I am logged in as an Admin
