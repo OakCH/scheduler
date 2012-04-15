@@ -200,29 +200,62 @@ describe AdminController do
     end
   end
 
-  describe 'when you are admin' do
-    describe 'CRUD for Nurses' do
-      before(:each) do
-        @nurse = FactoryGirl.create(:nurse)
-        @attributes => {:name=>'Nurse2',:shift=>'Days',:unit_id=>1,
-          :num_weeks_off=>3,:years_worked=>5} 
-      end
-      describe 'CREATE' do
+  describe 'CRUD for Nurses' do
+    before(:each) do
+      @nurse = FactoryGirl.create(:nurse)
+      @attributes => {:name=>'Nurse2',:shift=>'Days',:unit_id=>1,
+        :num_weeks_off=>3,:years_worked=>5}
+    end
+    describe 'CREATE' do
+      context 'Happy Path' do
         it 'should call the nurse model method to create a nurse successfully' do
           post :create, @attributes
-          Nurse.find_by_name(@attributes.name).should_not be_nil
+          Nurse.find_by_name(@attributesi[:name]).should_not be_nil
         end
         it 'should redirect to index page w/ new unit & shift of new nurse' do
           post :create, @attributes
           response.should redirect_to nurse_manager_index_path, {:shift => @attributes[:shift], :unit => @attributes[:unit]}
         end
         it 'should flash a message if successfully created' do
-          post :nurse_create, @attributes
+          post :create, @attributes
           flash[:notice].should == "Nurse successfully added. Please don't forget to adjust for seniority."
         end
       end
-
-      describe 'UPDATE' do
+      context 'Sad Path' do
+        it 'should not create the nurse if unit does not exist' do
+          while Unit.find_by_id(@attribute[:unit])
+            @attribute[:unit] += 1
+          end
+          post :create, @attributes
+          Nurse.find_by_name(@attributes[:name]).should be_nil
+        end
+        it 'should not create the nurse if shift does not exist' do
+          @attributes[:shift] = 'djfja3fjf823tasjflkjjg'
+          @attributes[:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:shift])
+          post :create, @attributes
+          Nurse.find_by_name(@attributes[:name]).should be_nil
+        end
+        it 'should not create the nurse if the email is not unique' do
+          @attributes[:email] = @nurse.email
+          post :create, @attributes
+          Nurse.find_by_name(@attributes[:name]).should be_nil
+        end
+        it 'should stay on the create page' do
+          @attributes[:shift] = 'djfja3fjf823tasjflkjjg'
+          @attributes[:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:shift])
+          post :create, @attributes
+          response.should render_template('create')
+        end
+        it 'should flash a message telling you you had invalid inputs' do
+          @attributes[:shift] = 'djfja3fjf823tasjflkjjg'
+          @attributes[:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:shift])
+          post :create, @attributes
+          flash[:error].should == 'Invalid shift. Please modify and resubmit form.'
+        end
+      end
+    end
+    describe 'UPDATE' do
+      context 'Happy Path' do
         it 'should call the nurse model method to update new nurse attributes successfully' do
           Nurse.stub(:find_by_id).and_return(@nurse)
           @attributes[:id]=@nurse.id
@@ -238,34 +271,76 @@ describe AdminController do
           Nurse.find_by_name(@nurse.name).should == nil
         end
         it 'should redirect to index page w/ new unit & shift of updated nurse' do
-          post :create, @attributes
+          post :update, @attributes
           response.should redirect_to nurse_manager_index_path, {:shift => @attributes[:shift], :unit => @attributes[:unit]}
         end
         it 'should flash a message if successfully updated' do
-          post :nurse_create, @attributes
+          post :update, @attributes
           flash[:notice].should == "Nurse successfully updated. Please don't forget to adjust for seniority."
         end
       end
-
-      describe 'DELETE' do
+      context 'Sad Path' do
+        it 'should not update the nurse if unit does not exist' do
+          while Unit.find_by_id(@attribute[:unit])
+            @attribute[:unit] += 1
+          end
+          post :update, @attributes
+          Nurse.find_by_name(@attributes[:name]).should be_nil
+        end
+        it 'should not update the nurse if shift does not exist' do
+          @attributes[:shift] = 'djfja3fjf823tasjflkjjg'
+          @attributes[:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:shift])
+          post :update, @attributes
+          Nurse.find_by_name(@attributes[:name]).should be_nil
+        end
+        it 'should not update the nurse if the email is not unique' do
+          @attributes[:email] = @nurse.email
+          post :update, @attributes
+          Nurse.find_by_name(@attributes[:name]).should be_nil
+        end
+        it 'should stay on the edit page' do
+          @attributes[:shift] = 'djfja3fjf823tasjflkjjg'
+          @attributes[:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:shift])
+          post :update, @attributes
+          response.should render_template('update')
+        end
+        it 'should flash a message telling you you had invalid inputs' do
+          @attributes[:shift] = 'djfja3fjf823tasjflkjjg'
+          @attributes[:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:shift])
+          post :update, @attributes
+          flash[:error].should == 'Invalid shift. Please modify and resubmit form.'
+        end
+      end
+    end
+    describe 'DELETE' do
+      context 'Happy Path' do
         it 'should call the nurse model method to delete a nurse successfully' do
           Nurse.stub(:find_by_id).and_return(@nurse)
           post :destroy, :id => @nurse.id
           Nurse.find_by_id(@attributes[:name]).should == nil
         end
         it 'should redirect to index page w/ new unit & shift of updated nurse' do
-          post :create, @attributes
+          post :destroy, :id => @nurse.id
           response.should redirect_to nurse_manager_index_path, {:shift => @attributes[:shift], :unit => @attributes[:unit]}
         end
         it 'should flash a message if successfully updated' do
-          post :nurse_create, @attributes
+          post :destroy, :id => @nurse.id
           flash[:notice].should == "Nurse successfully removed."
         end
-     end
-
-      describe 'ADJUST SENIORITY' do
+      end
+      context 'Sad Path' do
+        it 'should redirect to the index if nurse id does not exist' do
+          id = @nurse.id 
+          while Nurse.find_by_id(id)
+            id += 1
+          end
+          post :destroy, :id => id
+          response.should redirect_to nurse_manager_index_path
+        end
+        it 'should flash an error if the nurse id does not exist' do
+          flash[:error].should == "Nurse id does not exist. Did not remove."
+        end
       end
     end
   end
-end
 end
