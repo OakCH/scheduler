@@ -9,7 +9,7 @@ Background:
   Given the following units exist:
   | name |
   | Surgery |
-  | Pediactrics |
+  | Pediatrics |
 
   And I am logged in as an Admin
   And I am on the Units page
@@ -47,5 +47,5 @@ Scenario: Changing a name to an existing unit
 Scenario: Deleting a unit
   When I follow "Surgery"
   And I press "Delete Unit"
-  Then I should see "Pediactrics"
+  Then I should see "Pediatrics"
   And I should not see "Surgery"
