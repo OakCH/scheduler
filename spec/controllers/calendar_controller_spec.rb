@@ -9,18 +9,18 @@ describe CalendarController do
         @admin = FactoryGirl.create(:admin)
         @nurse = FactoryGirl.create(:nurse)
         @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
-
-        ApplicationController.stub('authenticate_any!').and_return(1)
-        ApplicationController.stub('authenticate_admin!').and_return(1)
-        ApplicationController.stub('admin_signed_in?').and_return(1)
+        ApplicationController.any_instance.stub('admin_signed_in?').and_return(1)
       end
 
       describe 'should save a range that is less than one week' do
         it 'should increase the count of events assoc with nurse' do
           event_count = @nurse.events.length
+
           @event.start_at = '12/4/2012'.to_date
           @event.end_at = '13/4/2012'.to_date
+
           post :create, :nurse_id => @nurse.id, :event => @event
+
           @nurse.reload
           @nurse.events.length.should == event_count + 1
         end
@@ -38,6 +38,7 @@ describe CalendarController do
      @unit = FactoryGirl.create(:unit)
      @nurse = FactoryGirl.create(:nurse, :unit => @unit)
      @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
+     ApplicationController.any_instance.stub('admin_signed_in?').and_return(1)
    end
 
    describe "nurse index action" do
