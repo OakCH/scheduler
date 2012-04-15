@@ -10,7 +10,7 @@ class Rules < ActiveModel::Validator
       return
     end
 
-    unless is_week?(record)
+    unless at_least_week?(record)
       record.errors[:end_at] << 'Segments must be at least 7 days long'
       return
     end
@@ -81,7 +81,7 @@ class Rules < ActiveModel::Validator
   end
   
   # at least one week
-  def is_week?(record)
+  def at_least_week?(record)
     return calculate_length(record) >= 7
   end
 

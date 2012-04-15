@@ -12,12 +12,12 @@ describe CalendarController do
         CalendarController.stub(:validate_event?).and_return(false)
       end
 
-      describe 'should save a range that is less than one week' do
+      describe 'should create a vacation that is less than one week' do
         it 'should increase the count of events assoc with nurse' do
           event_count = @nurse.events.length
 
-          @event.start_at = '12/4/2012'.to_date
-          @event.end_at = '13/4/2012'.to_date
+          @event.start_at = DateTime.new(2012,4,12,0,0,0)
+          @event.end_at = DateTime.new(2012,4,13,0,0,0)
 
           post :create, :nurse_id => @nurse.id, :event => @event
 
@@ -25,6 +25,7 @@ describe CalendarController do
           @nurse.events.length.should == event_count + 1
         end
       end
+      
     end
   end
 
@@ -115,7 +116,8 @@ describe CalendarController do
      it 'should get an event strip that is all nil with no id given' do
        dummy_nurse = FactoryGirl.create(:nurse)
        month = 5
-       event = FactoryGirl.create(:event, :nurse_id => dummy_nurse.id, :start_at => DateTime.new(2012,month,5,0,0,0))
+       event = Event.new(:nurse_id => dummy_nurse.id, :start_at => DateTime.new(2012,month,5,0,0,0), :end_at => DateTime.new(2012,month,4,0,0,0))
+       event.save
        get :index, :nurse_id => @nurse.id, :month => month
        assigns(:event_strips).each do |s|
          s.each do |e|
@@ -326,6 +328,7 @@ describe CalendarController do
        end
      end
    end
+   
    describe "Show" do
      context 'valid event id' do
        it 'should find right event given id' do
@@ -366,10 +369,10 @@ describe CalendarController do
    end
 
    describe "Create" do
-     before do
+     before(:each) do
        @start = DateTime.parse("4-Apr-2012")
        @end = DateTime.parse("11-Apr-2012")
-       @new_event = { :start_at => @start, :end_at => @end }
+       @new_event = FactoryGirl.create(:event, :start_at => @start, :end_at => @end)
      end
 
      it 'should increase the count of events assoc with nurse' do

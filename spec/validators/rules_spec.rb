@@ -67,27 +67,27 @@ describe Rules do
     end
   end
 
-  describe 'is_week?' do
+  describe 'at_least_week?' do
     it 'should return true for an event that lasts exactly one week (7 days)' do
       rules = Rules.new(nil)
       start_at = '01/04/2012'.to_date
       end_at = '07/04/2012'.to_date
       event = Event.new(:start_at => start_at, :end_at => end_at)
-      rules.is_week?(event).should be_true
+      rules.at_least_week?(event).should be_true
     end
     it 'should return true for an event that lasts more than one week' do
       rules = Rules.new(nil)
       start_at = '01/04/2012'.to_date
       end_at = '08/04/2012'.to_date
       event = Event.new(:start_at => start_at, :end_at => end_at)
-      rules.is_week?(event).should be_true
+      rules.at_least_week?(event).should be_true
     end
     it 'should return false for an event that last six days' do
       rules = Rules.new(nil)
       start_at = '01/04/2012'.to_date
       end_at = '06/04/2012'.to_date
       event = Event.new(:start_at => start_at, :end_at => end_at)
-      rules.is_week?(event).should be_false
+      rules.at_least_week?(event).should be_false
     end
   end
 
@@ -352,5 +352,29 @@ describe Rules do
       end
     end
   end
-  
+
+  describe 'checking overlaps?' do
+    before(:each) do
+      @nurse = FactoryGirl.create(:nurse, :unit => @unit)
+      @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
+    end
+    it 'should not allow overlapping vacations' do
+      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,7,0,0,0), :end_at => DateTime.new(2012,3,13,0,0,0))
+      subject.stub(:start_at).and_return(@new_event.start_at)
+      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:nurse_id).and_return(@nurse.id)
+      subject.stub(:id).and_return(@new_event.id)
+      subject.should have(1).error_on(:overlap)
+    end
+    it 'should pass with no overlapping vacations' do
+      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,4,7,0,0,0), :end_at => DateTime.new(2012,4,13,0,0,0))
+      subject.stub(:start_at).and_return(@new_event.start_at)
+      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:nurse_id).and_return(@nurse.id)
+      subject.stub(:id).and_return(@new_event.id)
+      subject.should be_valid
+    end
+  end  
 end
