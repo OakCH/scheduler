@@ -8,18 +8,15 @@ describe CalendarController do
       before(:each) do
         @admin = FactoryGirl.create(:admin)
         @nurse = FactoryGirl.create(:nurse)
-        @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
-        CalendarController.stub(:admin_signed_in?).and_return(1)
+        CalendarController.any_instance.stub(:validate_event?).and_return(false)
       end
 
       describe 'should create a vacation that is less than one week' do
         it 'should increase the count of events assoc with nurse' do
           event_count = @nurse.events.length
+          event = Event.new(:start_at => '5/6/2012', :end_at => '6/6/2012')
 
-          @event.start_at = DateTime.new(2012,4,12,0,0,0)
-          @event.end_at = DateTime.new(2012,4,13,0,0,0)
-
-          post :create, :nurse_id => @nurse.id, :event => @event
+          post :create, :nurse_id => @nurse.id, :event => event
 
           @nurse.reload
           @nurse.events.length.should == event_count + 1
@@ -38,8 +35,8 @@ describe CalendarController do
    before(:each) do
      @unit = FactoryGirl.create(:unit)
      @nurse = FactoryGirl.create(:nurse, :unit => @unit)
-     @event = FactoryGirl.create(:event)
-     ApplicationController.any_instance.stub('admin_signed_in?').and_return(1)
+     @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
+     CalendarController.any_instance.stub(:validate_event?).and_return(true)
    end
 
    describe "nurse index action" do
@@ -441,7 +438,7 @@ describe CalendarController do
        assigns(:nurse).should be_nil
      end
      it 'should redirect to the login page' do
-        response.should redirect_to login_path
+        response.should redirect_to user_session_path
      end
      it 'should flash an error message after redirect' do
         flash[:error].should_not be_empty
@@ -502,7 +499,7 @@ describe CalendarController do
 
      it 'should call update attributes on the event' do
        Event.stub(:find_by_id).and_return(@event)
-       @event.should_receive(:update_attributes)
+       @event.should_receive(:save)
        put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
      end
 
@@ -562,5 +559,3 @@ describe CalendarController do
    end
  end
 end
-
-

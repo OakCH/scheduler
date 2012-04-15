@@ -86,7 +86,7 @@ class CalendarController < ApplicationController
     event.name = nurse.name
     event.nurse_id = nurse.id
     
-    if not event.save(:validate => (not admin_signed_in?))
+    if not event.save(:validate => validate_event?)
       flash[:error] = 'No vacation for you :(. Something went wrong!'
       redirect_to nurse_calendar_index_path
     else
@@ -120,7 +120,7 @@ class CalendarController < ApplicationController
     @event.start_at = params[:event][:start_at]
     @event.end_at = params[:event][:end_at]
     
-    if not @event.save(:validate => (not admin_signed_in?))
+    if not @event.save(:validate => validate_event?)
       flash[:error] = 'Update failed'
       redirect_to nurse_calendar_index_path
     else
@@ -173,6 +173,10 @@ class CalendarController < ApplicationController
     end
   end
   
+  def validate_event?
+    return (not admin_signed_in?)
+  end
+
   def check_nurse_id
     return if admin_signed_in?
     permission_denied if current_nurse != Nurse.find(params[:nurse_id])
