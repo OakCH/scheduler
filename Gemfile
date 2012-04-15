@@ -18,6 +18,7 @@ group :development, :test do
   gem 'simplecov'
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
+  gem 'email_spec'
 end
 
 group :production do
