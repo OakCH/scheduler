@@ -212,7 +212,7 @@ describe AdminController do
     end
   end
   
-  describe 'rules' do
+   describe 'rules' do
     context 'with 60 accrued vacation weeks' do
       before(:each) do
         @unit = FactoryGirl.create(:unit, :name => 'Surgery')
@@ -248,10 +248,27 @@ describe AdminController do
           response.should redirect_to :action => :rules, :admin => {:unit => @unit.name, :shift => nil}
         end
       end
-    end
-    
-    describe 'after selecting the month' do
-       it 'should add the month into the db'
+
+      describe 'after selecting the month' do
+        before(:each) do
+          @admin = {:unit => @unit.name, :shift => 'Days', :seg1 => 'January', :seg2 => 'March'}
+        end
+
+        it 'should add the month into the db' do
+          post :rules, {:admin => @admin, :commit => 'Done'}
+          @records = UnitAndShift.find_all_by_unit_id_and_shift(@unit.id, 'Days')
+          @result = []
+          @records.each do |r|
+            @result << r.additional_month
+          end
+          @result.should == [3, 1]
+        end
+
+        it 'should redirect to rules page' do
+          post :rules, {:admin => @admin, :commit => 'Done'}
+          response.should redirect_to :action => :rules, :admin => {:shift => 'Days', :unit => @unit.name}
+        end
+      end
     end
   end
 end

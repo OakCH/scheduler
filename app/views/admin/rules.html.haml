@@ -13,11 +13,13 @@
   
   - if @readyToShow
     %p= 'For each 3-month segment below, please select the month you would like the segment to start at:'
-    - @months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    - if @num_months = 0
+    - if @num_months == 0
       %p#nomonths= 'There are no additional 3-month segments this year.'
     - else
-      - while @num_months > 0
-        = label :admin, :seg, 'seg#{@num_months}'
-        = select :admin, :seg, @months
+      - i=0
+      - while i < @num_months
+        - j = i+1
+        = label :admin, "seg#{j}", "Segment #{j}", :selected => @selected_months[i]
+        = select :admin, "seg#{j}", @months, :selected => @selected_months[i]
+        - i = j
       = submit_tag 'Done'

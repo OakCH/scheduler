@@ -7,6 +7,8 @@ class AdminController < ApplicationController
   def rules
     @units = Unit.names
     @shifts = Unit.shifts
+    @months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
     if flash[:error] == nil
       flash[:error] = []
     end
@@ -15,6 +17,10 @@ class AdminController < ApplicationController
       getNextParams
       if @unit_obj && @shift
         @readyToShow = true
+
+        max_per = @unit_obj.calculate_max_per_day(@unit_obj.id, @shift)
+        @num_months = max_per[:month]
+        @selected_months = UnitAndShift.get_additional_months(@unit_obj.id, @shift)
       end
     end
     
@@ -22,9 +28,6 @@ class AdminController < ApplicationController
       valid = verify_shift_and_unit
       if !valid
         @readyToShow = false
-      else
-        max_per = @unit_obj.calculate_max_per_day(@unit_obj.id, @shift)
-        @num_months = max_per[:month]
       end
       flash.keep
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
@@ -32,6 +35,16 @@ class AdminController < ApplicationController
     
     if params[:commit] == 'Done'
       # put into the unit_and_shift db
+      n = @num_months
+      while n > 0 do
+        month = @months.index(params[:admin]["seg#{n}"]) + 1
+        add_month = UnitAndShift.new(:unit => @unit_obj, :shift => @shift, :additional_month => month)
+        add_month.save
+        n -= 1
+      end
+      flash[:error] = 'Your changes have been saved'
+      flash.keep
+      redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
   end
   
