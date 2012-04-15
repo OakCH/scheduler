@@ -10,27 +10,95 @@ class Validatable
 end
 
 describe Rules do
-  describe 'calculate_length' do
+  describe 'up_to_max_segs?' do
     before(:each) do
-      @rules = Rules.new(nil)
-      @start_at = '12/04/2012'.to_date
-      @end_at = '12/04/2012'.to_date
-      @event = Event.new(:start_at => @start_at, :end_at => @end_at)
+      @unit1 = FactoryGirl.create(:unit, :name => 'surgery')
+      @shift1 = 'PMs'
+      @nurses_unit1 = FactoryGirl.create_list(:nurse, 50, :shift => @shift1, :unit_id => @unit1.id)
     end
+
+    it 'should return true when nurse has only 1 seg' do
+      nurse = @nurses_unit1[0]
+      event1 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '1/4/2012'.to_date, :end_at=> '7/4/2012'.to_date)
+      event = Event.new(:start_at => '15/4/2012'.to_date, :end_at=> '20/4/2012'.to_date)
+      nurse.events << event
+      rules = Rules.new(nil)
+      rules.up_to_max_segs?(event).should be_true
+    end
+    it 'should return true when nurse has 3 segs' do
+      nurse = @nurses_unit1[0]
+      event1 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '1/4/2012'.to_date, :end_at=> '7/4/2012'.to_date)
+      event2 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '8/4/2012'.to_date, :end_at=> '14/4/2012'.to_date)
+      event3 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '15/4/2012'.to_date, :end_at=> '21/4/2012'.to_date)
+      event = Event.new(:start_at => '22/4/2012'.to_date, :end_at=> '28/4/2012'.to_date)
+      rules = Rules.new(nil)
+      rules.up_to_max_segs?(event).should be_true
+    end
+
+    it 'should return false when nurse has 4 segs' do
+      nurse = @nurses_unit1[0]
+      event1 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '1/4/2012'.to_date, :end_at=> '7/4/2012'.to_date)
+      event2 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '8/4/2012'.to_date, :end_at=> '14/4/2012'.to_date)
+      event3 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '15/4/2012'.to_date, :end_at=> '21/4/2012'.to_date)
+      event4 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '29/4/2012'.to_date, :end_at=> '05/05/2012'.to_date)
+      event = Event.new(:start_at => '07/05/2012'.to_date, :end_at=> '18/05/2012'.to_date)
+      rules = Rules.new(nil)
+      rules.up_to_max_segs?(event).should be_false
+    end
+  end
+
+  describe 'is_week?' do
+    it 'should return true for an event that lasts exactly one week (7 days)' do
+      rules = Rules.new(nil)
+      start_at = '01/04/2012'.to_date
+      end_at = '07/04/2012'.to_date
+      event = Event.new(:start_at => start_at, :end_at => end_at)
+      rules.is_week?(event).should be_true
+    end
+    it 'should return true for an event that lasts more than one week' do
+      rules = Rules.new(nil)
+      start_at = '01/04/2012'.to_date
+      end_at = '08/04/2012'.to_date
+      event = Event.new(:start_at => start_at, :end_at => end_at)
+      rules.is_week?(event).should be_true
+    end
+    it 'should return false for an event that last six days' do
+      rules = Rules.new(nil)
+      start_at = '01/04/2012'.to_date
+      end_at = '06/04/2012'.to_date
+      event = Event.new(:start_at => start_at, :end_at => end_at)
+      rules.is_week?(event).should be_false
+    end
+  end
+
+  describe 'calculate_length' do
     it 'should return 1 for an event that starts and end on the same day' do
-      @start_at = '12/04/2012'.to_date
-      @end_at = '12/04/2012'.to_date
-      @rules.calculate_length(@event).should == 1
+      rules = Rules.new(nil)
+      start_at = '12/04/2012'.to_date
+      end_at = '12/04/2012'.to_date
+      event = Event.new(:start_at => start_at, :end_at => end_at)
+      rules.calculate_length(event).should == 1
     end
     it 'should return 2 for an event that ends one day after it starts' do
-      @start_at = '12/04/2012'.to_date
-      @end_at = '13/04/2012'.to_date
-      @rules.calculate_length(@event).should == 1
+      rules = Rules.new(nil)
+      start_at = '12/04/2012'.to_date
+      end_at = '13/04/2012'.to_date
+      event = Event.new(:start_at => start_at, :end_at => end_at)
+      rules.calculate_length(event).should == 2
     end
     it 'should return 7 for an event that lasts one week' do
-      @start_at = '01/04/2012'.to_date
-      @end_at = '07/04/2012'.to_date
-      @rules.calculate_length(@event).should == 1
+      rules = Rules.new(nil)
+      start_at = '01/04/2012'.to_date
+      end_at = '07/04/2012'.to_date
+      event = Event.new(:start_at => start_at, :end_at => end_at)
+      rules.calculate_length(event).should == 7
+    end
+    it 'should return 6 for and event that spans from 1/4/2012 to 6/4/2012' do
+      rules = Rules.new(nil)
+      start_at = '01/04/2012'.to_date
+      end_at = '06/04/2012'.to_date
+      event = Event.new(:start_at => start_at, :end_at => end_at)
+      rules.calculate_length(event).should == 6
     end
   end
 

@@ -49,7 +49,7 @@ class Rules < ActiveModel::Validator
   def less_than_max_per_day?(record)
     @shift = record.nurse.shift
     @unit_id = record.nurse.unit.id
-    @max_per = record.nurse.unit.calculate_max_per_day(@shift)
+    @max_per = record.nurse.unit.calculate_max_per_day(@unit_id, @shift)
     start_date = record.start_at.to_date
     end_date = record.end_at.to_date
     while start_date <= end_date do
