@@ -3,23 +3,83 @@ class Rules < ActiveModel::Validator
   @@max_segs = 4
 
   def validate(record)
+    unless has_valid_format?(record)
+      record.errors[:format] << 'Dates were not properly formatted'
+      # we need to exit because inproperly formatted date will cause
+      # other validations to throw up
+      return
+    end
+
     unless is_week?(record)
       record.errors[:end_at] << 'Segments must be at least 7 days long'
+      return
     end
 
     unless up_to_max_segs?(record)
       record.errors[:segs] << 'You have more than 4 segments. Please add vacation days to an existing segment'
+      return
+    end
+
+    if overlaps?(record)
+      record.errors[:overlap] << 'Vacation weeks must not overlap'
+      return
     end
 
     unless less_than_allowed?(record)
       record.errors[:allowed] << 'You have selected more vacation days than you have accrued'
+      return
     end
 
     unless less_than_max_per_day?(record)
       record.errors[:max_day] << 'You have selected a day that has no more availability'
+      return
     end
+
   end
 
+  #dates should be formatted properly
+  def has_valid_format?(record)
+    return (is_date?(record.start_at) and is_date?(record.end_at))
+  end
+
+  def is_date?(date)
+    begin
+      DateTime.parse(date.to_s)
+    rescue
+      return false
+    end
+    return true
+  end
+
+  
+  #should not allow users to select another segment that overlaps with another user segment
+  def overlaps?(record)
+    events = Event.find_all_by_nurse_id(record.nurse_id)
+    events.each do |e|
+      if e.id == record.id
+        next
+      end
+
+      # start dates overlap
+      if (e.start_at.to_date <= record.start_at.to_date) and (record.start_at.to_date <= e.end_at.to_date)
+        return true
+      end
+      # end dates overlap
+      if (e.start_at.to_date <= record.end_at.to_date) and (record.end_at.to_date <= e.end_at.to_date)
+        return true
+      end
+      # e contains record
+      if (e.start_at.to_date < record.start_at.to_date) and (record.end_at.to_date < e.end_at.to_date)
+        return true
+      end
+      # record contains e
+      if (e.start_at.to_date > record.start_at.to_date) and (record.end_at.to_date > e.end_at.to_date)
+        return true
+      end 
+    end
+    return false
+  end
+  
   # at least one week
   def is_week?(record)
     return calculate_length(record) >= 7
