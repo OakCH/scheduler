@@ -36,7 +36,7 @@ describe CalendarController do
      @unit = FactoryGirl.create(:unit)
      @nurse = FactoryGirl.create(:nurse, :unit => @unit)
      @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
-     CalendarController.any_instance.stub(:validate_event?).and_return(1)
+     CalendarController.any_instance.stub(:validate_event?).and_return(true)
    end
 
    describe "nurse index action" do
@@ -438,7 +438,7 @@ describe CalendarController do
        assigns(:nurse).should be_nil
      end
      it 'should redirect to the login page' do
-        response.should redirect_to login_path
+        response.should redirect_to user_session_path
      end
      it 'should flash an error message after redirect' do
         flash[:error].should_not be_empty
@@ -499,7 +499,7 @@ describe CalendarController do
 
      it 'should call update attributes on the event' do
        Event.stub(:find_by_id).and_return(@event)
-       @event.should_receive(:update_attributes)
+       @event.should_receive(:save)
        put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
      end
 
