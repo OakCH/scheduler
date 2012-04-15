@@ -10,6 +10,37 @@ class Validatable
 end
 
 describe Rules do
+  describe 'has_valid_format?' do
+    before(:each) do
+      @rules = Rules.new(nil)
+      @event = Event.new
+    end
+
+    it 'should return false when both dates dont have numbers' do
+      @event.start_at = 'jk/as/qwer'
+      @event.end_at = 'qw/as/ewrq'
+      @rules.has_valid_format?(@event).should be_false
+    end
+
+    it 'should return false when both dates are only numbers (no slashes)' do
+      @event.start_at = '12122012'
+      @event.end_at = '12042012'
+      @rules.has_valid_format?(@event).should be_false
+    end
+
+    it 'should return false even if one date is properly formatted' do
+      @event.start_at = '12122012'
+      @event.end_at = '12/04/2012'
+      @rules.has_valid_format?(@event).should be_false
+    end
+
+    it 'should return true when dates are properly formatted' do
+      @event.start_at = '12/04/2012'
+      @event.end_at = '13/04/2012'
+      @rules.has_valid_format?(@event).should be_true
+    end
+  end
+
   describe 'up_to_max_segs?' do
     before(:each) do
       @unit1 = FactoryGirl.create(:unit, :name => 'surgery')
@@ -33,17 +64,6 @@ describe Rules do
       event = Event.new(:start_at => '22/4/2012'.to_date, :end_at=> '28/4/2012'.to_date)
       rules = Rules.new(nil)
       rules.up_to_max_segs?(event).should be_true
-    end
-
-    it 'should return false when nurse has 4 segs' do
-      nurse = @nurses_unit1[0]
-      event1 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '1/4/2012'.to_date, :end_at=> '7/4/2012'.to_date)
-      event2 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '8/4/2012'.to_date, :end_at=> '14/4/2012'.to_date)
-      event3 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '15/4/2012'.to_date, :end_at=> '21/4/2012'.to_date)
-      event4 = FactoryGirl.create(:event, :nurse_id => nurse.id, :start_at => '29/4/2012'.to_date, :end_at=> '05/05/2012'.to_date)
-      event = Event.new(:start_at => '07/05/2012'.to_date, :end_at=> '18/05/2012'.to_date)
-      rules = Rules.new(nil)
-      rules.up_to_max_segs?(event).should be_false
     end
   end
 
