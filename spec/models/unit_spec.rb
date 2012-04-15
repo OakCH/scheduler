@@ -57,4 +57,38 @@ describe 'Unit' do
       end
     end
   end
+
+  describe 'is_valid_shift' do
+    it 'should return false for pms' do
+      Unit.is_valid_shift('pms').should be_false
+    end
+    it 'should return false for asdfk' do
+      Unit.is_valid_shift('asdfk').should be_false
+    end
+    it 'should return true for PMs' do
+      Unit.is_valid_shift('PMs').should be_true
+    end
+    it 'should return true for Days' do
+      Unit.is_valid_shift('Days').should be_true
+    end
+    it 'should return true for Nights' do
+      Unit.is_valid_shift('Nights').should be_true
+    end
+  end
+
+  describe 'is_valid_unit_id' do
+    it 'should return false for non-numeric unit_id' do
+      Unit.is_valid_unit_id('afjdalfl').should be_false
+    end
+    it 'should return false for an id not in the db' do
+      Unit.is_valid_unit_id(5555555).should be_false
+    end
+    it 'should return false for 1ak' do
+      Unit.is_valid_unit_id('1ak').should be_false
+    end
+    it 'should return true for unit1.id' do
+      unit1 = FactoryGirl.create(:unit, :name => 'emergency')
+      Unit.is_valid_unit_id(unit1.id).should be_true
+    end
+  end
 end
