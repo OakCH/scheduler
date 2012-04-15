@@ -171,17 +171,17 @@ end
 Then /^the "([^"]*)" field should have the error "([^"]*)"$/ do |field, error_message|
   element = find_field(field)
   classes = element.find(:xpath, '..')[:class].split(' ')
-
+  
   form_for_input = element.find(:xpath, 'ancestor::form[1]')
   using_formtastic = form_for_input[:class].include?('formtastic')
   error_class = using_formtastic ? 'error' : 'field_with_errors'
-
+  
   if classes.respond_to? :should
     classes.should include(error_class)
   else
     assert classes.include?(error_class)
   end
-
+  
   if page.respond_to?(:should)
     if using_formtastic
       error_paragraph = element.find(:xpath, '../*[@class="inline-errors"][1]')
@@ -232,7 +232,7 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label
     end
   end
 end
- 
+
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
@@ -257,4 +257,20 @@ end
 
 Then /^show me the page$/ do
   save_and_open_page
+end
+
+Given /^I am logged in as an Admin$/ do
+  sign_in(FactoryGirl.create(:admin))
+end  
+
+Given /^I am logged in as the Nurse "([^"]*)"(?: with password "([^"]*)")?$/ do |name, password|
+  sign_in(Nurse.find_by_name(name), password)
+end
+
+def sign_in(user, password=nil)
+  visit '/users/sign_in'
+  fill_in 'user_email', :with => user.email
+  password ||= "#{user.class.to_s.downcase}_pw"
+  fill_in 'user_password', :with => password
+  click_button "Sign in"
 end

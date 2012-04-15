@@ -18,6 +18,7 @@ group :development, :test do
   gem 'simplecov'
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
+  gem 'email_spec'
 end
 
 group :production do
@@ -48,3 +49,6 @@ gem 'haml'
 gem 'event-calendar', :require => 'event_calendar'
 gem 'roo', '~> 1.2.3'
 gem 'hoe', '2.3.3'
+gem 'devise', '>=2.0.0'
+gem 'devise_invitable'
+
