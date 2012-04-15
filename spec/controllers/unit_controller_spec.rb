@@ -53,7 +53,7 @@ describe UnitController do
 
     it 'should flash an error if invalid id' do
         get :edit, :id => 'asdfasdfadf'
-        flash[:error].should_not be_empty
+        flash[:error].should == "Unit not found"
       end
   end
 
