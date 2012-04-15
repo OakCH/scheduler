@@ -19,7 +19,7 @@ Scheduler::Application.routes.draw do
     match 'calendar' => 'calendar#admin_index', :as => 'admin_calendar'
     # if there become too many actions, we will instead use the following
     # match ':action' => 'admin#:action', :as => :admin
-    resources :unit
+    resources :unit, :as => 'units'
   end
 
   scope 'nurse/:nurse_id/' do
