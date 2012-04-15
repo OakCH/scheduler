@@ -23,7 +23,7 @@ class AdminController < ApplicationController
       if !valid
         @readyToShow = false
       else
-        max_per = @unit_obj.calculate_max_per_day(@shift)
+        max_per = @unit_obj.calculate_max_per_day(@unit_obj.id, @shift)
         @num_months = max_per[:month]
       end
       flash.keep
