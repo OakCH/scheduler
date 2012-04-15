@@ -9,7 +9,7 @@ describe CalendarController do
         @admin = FactoryGirl.create(:admin)
         @nurse = FactoryGirl.create(:nurse)
         @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
-        ApplicationController.any_instance.stub('admin_signed_in?').and_return(1)
+        helper.stub('admin_signed_in?').and_return(1)
       end
 
       describe 'should save a range that is less than one week' do

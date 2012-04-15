@@ -25,16 +25,9 @@ class Unit < ActiveRecord::Base
     end
   end
   
-  def calculate_max_per_day(shift)
+  def calculate_max_per_day(unit_id, shift)
     @max_per = {}
-    # find all nurses by unit and shift
-    @nurses = Nurse.find_all_by_unit_id_and_shift(self.id, shift)
-    # get all nurses' num_weeks_off and add
-    @total_weeks_off = 0
-    @nurses.each do |nurse|
-      @total_weeks_off += nurse.num_weeks_off
-    end
-
+    @total_weeks_off = Nurse.sum(:num_weeks_off, :conditions => {:unit_id => unit_id, :shift => shift})
     tmp_max_per_day = @total_weeks_off / 46
     @max_per[:year] = tmp_max_per_day.floor
 

@@ -10,6 +10,30 @@ class Validatable
 end
 
 describe Rules do
+  describe 'calculate_length' do
+    before(:each) do
+      @rules = Rules.new(nil)
+      @start_at = '12/04/2012'.to_date
+      @end_at = '12/04/2012'.to_date
+      @event = Event.new(:start_at => @start_at, :end_at => @end_at)
+    end
+    it 'should return 1 for an event that starts and end on the same day' do
+      @start_at = '12/04/2012'.to_date
+      @end_at = '12/04/2012'.to_date
+      @rules.calculate_length(@event).should == 1
+    end
+    it 'should return 2 for an event that ends one day after it starts' do
+      @start_at = '12/04/2012'.to_date
+      @end_at = '13/04/2012'.to_date
+      @rules.calculate_length(@event).should == 1
+    end
+    it 'should return 7 for an event that lasts one week' do
+      @start_at = '01/04/2012'.to_date
+      @end_at = '07/04/2012'.to_date
+      @rules.calculate_length(@event).should == 1
+    end
+  end
+
   describe 'num_nurses_on_day' do
     before(:each) do
       @unit1 = FactoryGirl.create(:unit, :name => 'surgery')
