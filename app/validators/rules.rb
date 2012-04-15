@@ -56,6 +56,10 @@ class Rules < ActiveModel::Validator
   def overlaps?(record)
     events = Event.find_all_by_nurse_id(record.nurse_id)
     events.each do |e|
+      if e.id == record.id
+        next
+      end
+
       # start dates overlap
       if (e.start_at.to_date <= record.start_at.to_date) and (record.start_at.to_date <= e.end_at.to_date)
         return true

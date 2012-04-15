@@ -228,6 +228,7 @@ describe Rules do
       @nurse_id = @nurse.id
       subject.stub(:nurse_id).and_return(@nurse_id)
       subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:id).and_return(nil)
       # add 2 weeks of scheduled vacation into nurse
       @event1 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,4,0,0,0), :end_at => DateTime.new(2012,3,10,0,0,0))
       @event2 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,4,4,0,0,0), :end_at => DateTime.new(2012,4,10,0,0,0))
@@ -258,6 +259,7 @@ describe Rules do
       @nurse_id = @nurse.id
       subject.stub(:nurse_id).and_return(@nurse_id)
       subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:id).and_return(nil)
       # make sure @@max_segs = 4
       # add 3 segs in
       @nurse.num_weeks_off = 5
