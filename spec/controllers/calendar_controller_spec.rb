@@ -8,7 +8,7 @@ describe CalendarController do
       before(:each) do
         @admin = FactoryGirl.create(:admin)
         @nurse = FactoryGirl.create(:nurse)
-        CalendarController.stub(:validate_event?).and_return(false)
+        CalendarController.any_instance.stub(:validate_event?).and_return(false)
       end
 
       describe 'should create a vacation that is less than one week' do
