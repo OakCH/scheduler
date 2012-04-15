@@ -9,7 +9,7 @@ describe CalendarController do
         @admin = FactoryGirl.create(:admin)
         @nurse = FactoryGirl.create(:nurse)
         @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
-        helper.stub('admin_signed_in?').and_return(1)
+        CalendarController.stub(:validate_event?).and_return(false)
       end
 
       describe 'should save a range that is less than one week' do
@@ -38,7 +38,7 @@ describe CalendarController do
      @unit = FactoryGirl.create(:unit)
      @nurse = FactoryGirl.create(:nurse, :unit => @unit)
      @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
-     ApplicationController.any_instance.stub('admin_signed_in?').and_return(1)
+     CalendarController.any_instance.stub(:validate_event?).and_return(1)
    end
 
    describe "nurse index action" do
