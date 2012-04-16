@@ -25,7 +25,7 @@ class Unit < ActiveRecord::Base
       return Unit.find_by_id(unit_id) || unit_id == 0
     end
   end
-  
+
   def calculate_max_per_day(unit_id, shift)
     @max_per = {}
     @total_weeks_off = Nurse.sum(:num_weeks_off, :conditions => {:unit_id => unit_id, :shift => shift})
