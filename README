@@ -1,6 +1,10 @@
 == Oakland Children's Hospital
 == Vacation Scheduler
 
+Rake Task to reset the database and preload some nurses, admins, and vacations:
+rake db:reset_and_seed
+The previous command should put 7 nurses, 1 unit, 1 admin, and 3 vacations into the development database (all as defined in FactoryGirl). Please view lib/tasks/db.rake for more information.
+
 Git quickstart/command reminders
 
 1. Fork this repo on Github
