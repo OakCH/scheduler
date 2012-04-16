@@ -38,46 +38,46 @@ class CalendarController < ApplicationController
         if Unit.is_valid_shift(params[:shift])
           session[:shift] = params[:shift]
         else
-          flash[:error] = "You passed an incorrect shift."
+          flash[:error] = "Received an invalid shift: #{params[:shift]}"
           redirect_to admin_calendar_path
           return
         end
       end
-
+      
       if params[:unit_id]
         if Unit.is_valid_unit_id(params[:unit_id])
           session[:unit_id] = params[:unit_id]
         else
-          flash[:error] = "You passed an incorrect unit."
+          flash[:error] = "Received an invalid unit_id: #{params[:unit_id]}"
           redirect_to admin_calendar_path
           return
         end
       end
-
+      
       if session[:shift] and session[:unit_id]
         @unit_id = session[:unit_id]
         @shift = session[:shift]
       end
     end
   end
-
+  
   def show
     @event = Event.find_by_id(params[:id])
     if not @event
-      flash[:error] = "An error has happened. It's all your fault."
+      flash[:error] = "The vacation you were looking for could not be found."
       redirect_to login_path
       return
     end
   end
-
+  
   def new
     @nurse_id = params[:nurse_id]
   end
-
+  
   def create
     nurse = Nurse.find_by_id(params[:nurse_id])
     if not nurse
-      flash[:error] = "An error has happened. It's all your fault."
+      flash[:error] = "The nurse to create this vacation for could not be found."
       redirect_to login_path
       return
     end
@@ -87,61 +87,61 @@ class CalendarController < ApplicationController
     event.nurse_id = nurse.id
     
     if not event.save(:validate => validate_event?)
-      flash[:error] = 'No vacation for you :(. Something went wrong!'
+      flash[:error] = "The vacation to schedule was not valid: #{event.errors}"
       redirect_to nurse_calendar_index_path
     else
-      flash[:error] = 'You successfully scheduled your vacation'
+      flash[:notice] = 'You successfully scheduled your vacation'
       redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
     end
   end
-
+  
   def edit
     @event = Event.find_by_id(params[:id])
     if not @event
-      flash[:error] = "An error has happened. It's all your fault."
+      flash[:error] = "The vacation you are trying to edit could not be found."
       redirect_to login_path
       return
     end
-
+    
     @nurse_id = params[:nurse_id]
     @id = params[:id]
   end
-
+  
   def update
     @event = Event.find_by_id(params[:id])
     if not @event
-      flash[:error] = "An error has happened. It's all your fault."
+      flash[:error] = "The vacation you are trying to update could not be found."
       redirect_to login_path
       return
     end
-
+    
     @event.all_day = 1
-
+    
     @event.start_at = params[:event][:start_at]
     @event.end_at = params[:event][:end_at]
     
     if not @event.save(:validate => validate_event?)
-      flash[:error] = 'Update failed'
+      flash[:error] = "The update failed for the following reasons: #{@event.errors}"
       redirect_to nurse_calendar_index_path
     else
       flash[:error] = 'You successfully scheduled your vacation'
       redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
     end
   end
-
+  
   def destroy
     @event = Event.find_by_id(params[:id])
     if not @event
-      flash[:error] = "An error has happened. It's all your fault."
+      flash[:error] = "The vacation you are trying to delete could not be found."
       redirect_to login_path
       return
     end
-
+    
     if not @event.destroy
-      flash[:error] = 'Something went wrong. You still get to go on vacation.'
+      flash[:error] = "The vacation could not be deleted."
       redirect_to nurse_calendar_index_path
     else
-      flash[:error] = 'You successfully nuked your vacation'
+      flash[:notice] = "That vacation segment has been deleted."
       redirect_to nurse_calendar_index_path
     end
   end
