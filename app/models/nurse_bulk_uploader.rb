@@ -89,10 +89,10 @@ module NurseBulkUploader
     
     def create_nurses
       start_row = sheet.first_row + 1 # skip header row
-      seniority_counter = 1
+      position_counter = 1
       start_row.upto(sheet.last_row) do |row|
-        create_nurse(row, seniority_counter)
-        seniority_counter += 1
+        create_nurse(row, position_counter)
+        position_counter += 1
       end
     end
     
@@ -104,7 +104,7 @@ module NurseBulkUploader
     
     # helper methods for create_nurses
     def create_nurse(row, count)
-      nurse_params = { :seniority => count, :unit => self.unit, :shift => self.shift }
+      nurse_params = { :position => count, :unit => self.unit, :shift => self.shift }
       PossibleColumns.each do |col_name|
         nurse_params[col_name] = sheet.cell(row, cols[col_name]) if cols[col_name]
       end

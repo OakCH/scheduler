@@ -3,7 +3,7 @@ class Uniti_Shift_list < ActiveRecord::Base
   def sort
     @unit_shift_list = Unit.find(params[:id])
     @unit_shift_list.nurses.each do | f |
-      f.seniority = params["unit-shift-list"].index(f.id.to_s)+1
+      f.position = params["unit-shift-list"].index(f.id.to_s)+1
       f.save
     end
   end
