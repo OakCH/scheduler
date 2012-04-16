@@ -211,4 +211,64 @@ describe AdminController do
       
     end
   end
+  
+   describe 'rules' do
+    context 'with 60 accrued vacation weeks' do
+      before(:each) do
+        @unit = FactoryGirl.create(:unit, :name => 'Surgery')
+        FactoryGirl.create_list(:nurse, 6, :unit => @unit, :shift => 'Days')
+      end
+      context 'with valid input' do
+        before(:each) do
+          @shift = 'Days'
+          @admin = {:unit => @unit.name, :shift => @shift}
+        end
+        it 'should set @readyToShow to true' do
+          post :rules, {:admin => @admin, :commit => 'Next'}
+          assigns[:readyToShow].should == true
+        end
+        it 'should set @num_months to 2' do
+          post :rules, {:admin => @admin, :commit => 'Next'}
+          assigns[:num_months].should == 2
+        end
+        it 'should redirect to rules page' do
+          post :rules, {:admin => @admin, :commit => 'Next'}
+          response.should redirect_to :action => :rules, :admin => @admin
+        end
+      end
+      context 'with invalid input' do
+        it 'should assign @readyToShow to false' do
+          @admin = {:unit => @unit.name}
+          post :rules, {:admin => @admin, :commit => 'Next'}
+          assigns[:readyToShow].should == false
+        end
+        it 'should redirect to rules page' do
+          @admin = {:unit => @unit.name, :shift => 'Not a shift'}
+          post :rules, {:admin => @admin, :commit => 'Next'}
+          response.should redirect_to :action => :rules, :admin => {:unit => @unit.name, :shift => nil}
+        end
+      end
+
+      describe 'after selecting the month' do
+        before(:each) do
+          @admin = {:unit => @unit.name, :shift => 'Days', :seg1 => 'January', :seg2 => 'March'}
+        end
+
+        it 'should add the month into the db' do
+          post :rules, {:admin => @admin, :commit => 'Done'}
+          @records = UnitAndShift.find_all_by_unit_id_and_shift(@unit.id, 'Days')
+          @result = []
+          @records.each do |r|
+            @result << r.additional_month
+          end
+          @result.should == [3, 1]
+        end
+
+        it 'should redirect to rules page' do
+          post :rules, {:admin => @admin, :commit => 'Done'}
+          response.should redirect_to :action => :rules, :admin => {:shift => 'Days', :unit => @unit.name}
+        end
+      end
+    end
+  end
 end

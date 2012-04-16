@@ -38,7 +38,7 @@ FactoryGirl.define do
       "NURSATRONIC SERIAL NO:#{n}"
     end
     start_at DateTime.new(2012,3,4,0,0,0)
-    end_at DateTime.new(2012,3,6,0,0,0)
+    end_at DateTime.new(2012,3,10,0,0,0)
     created_at DateTime.new(2012,1,1,0,0,0)
     all_day true
     nurse
