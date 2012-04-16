@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe AdminController do
+describe NurseController do
 
   before(:all) do
-    AdminController.skip_before_filter(:authenticate_admin!)
+    NurseController.skip_before_filter(:authenticate_admin!)
   end
 
   describe "Index" do
@@ -121,24 +121,24 @@ describe AdminController do
       end
 
       it 'should set @readyToUpload to true' do
-        AdminController.any_instance.stub(:copyFile)
-        AdminController.any_instance.stub(:deleteFile)
+        NurseController.any_instance.stub(:copyFile)
+        NurseController.any_instance.stub(:deleteFile)
         post :index, {:admin => @admin, :commit => 'Upload'}
         assigns[:readyToUpload].should == true
       end
 
       it 'should set @file' do
-        AdminController.any_instance.stub(:copyFile)
-        AdminController.any_instance.stub(:deleteFile)
+        NurseController.any_instance.stub(:copyFile)
+        NurseController.any_instance.stub(:deleteFile)
         post :index, {:admin => @admin, :commit => 'Upload'}
         assigns[:file].should == @basic_xls_file
       end
 
       it 'should create the temporary file' do
         String.any_instance.stub(:read)
-        AdminController.any_instance.stub(:deleteFile)
+        NurseController.any_instance.stub(:deleteFile)
         post :index, {:admin => @admin, :commit => 'Upload'}
-        #AdminController.any_instance.should_receive(:copyFile).with(@basic_xls_file)
+        #NurseController.any_instance.should_receive(:copyFile).with(@basic_xls_file)
         File.exist?(File.join(Rails.root, 'tmp', 'basic_spreadsheet.xls')).should == true
         File.delete(Rails.root.join('tmp', 'basic_spreadsheet.xls'))
       end
@@ -150,48 +150,48 @@ describe AdminController do
       end
 
       it 'should call model method' do
-        AdminController.any_instance.stub(:copyFile)
-        AdminController.any_instance.stub(:deleteFile)
+        NurseController.any_instance.stub(:copyFile)
+        NurseController.any_instance.stub(:deleteFile)
         Nurse.should_receive(:replace_from_spreadsheet).with(Rails.root.join('tmp', 'basic_spreadsheet.xls').to_path, @unit_obj, @shift)
         post :index, {:admin => @admin, :commit => 'Upload'}
       end
 
       it 'should get the nurses within the particular unit and shift' do
         nurses = FactoryGirl.create_list(:nurse, 2)
-        AdminController.any_instance.stub(:copyFile)
-        AdminController.any_instance.stub(:deleteFile)
+        NurseController.any_instance.stub(:copyFile)
+        NurseController.any_instance.stub(:deleteFile)
         @admin = {:unit => nurses[0].unit.name, :shift => nurses[0].shift, :upload => @basic_xls_file}
         post :index, {:admin => @admin, :commit => 'Upload'}
         assigns[:nurses].should == nurses[0, 1]
       end
 
       it 'should call parsing errors' do
-        AdminController.any_instance.stub(:copyFile)
-        AdminController.any_instance.stub(:deleteFile)
+        NurseController.any_instance.stub(:copyFile)
+        NurseController.any_instance.stub(:deleteFile)
 
         Nurse.should_receive(:parsing_errors).and_return({:messages => []})
         post :index, {:admin => @admin, :commit => 'Upload'}
       end
 
       it 'should set flash[:error]' do
-        AdminController.any_instance.stub(:copyFile)
+        NurseController.any_instance.stub(:copyFile)
         Nurse.stub(:parsing_errors).and_return({:messages => ['Some Error']})
-        AdminController.any_instance.stub(:deleteFile)
+        NurseController.any_instance.stub(:deleteFile)
         post :index, {:admin => @admin, :commit => 'Upload'}
         flash[:error].should == ['Some Error']
       end
 
       it 'should render same page' do
-        AdminController.any_instance.stub(:copyFile)
-        AdminController.any_instance.stub(:deleteFile)
+        NurseController.any_instance.stub(:copyFile)
+        NurseController.any_instance.stub(:deleteFile)
         post :index, {:admin => @admin, :commit => 'Upload'}
         response.should redirect_to :action => 'upload', :admin => {:unit => @unit, :shift => @shift}
       end
 
       context 'with no file given' do
         it 'should set flash[:error]' do
-          AdminController.any_instance.stub(:copyFile)
-          AdminController.any_instance.stub(:deleteFile)
+          NurseController.any_instance.stub(:copyFile)
+          NurseController.any_instance.stub(:deleteFile)
           @admin = {:unit => @unit, :shift => @shift}
           post :index, {:admin => @admin, :commit => 'Upload'}
           flash[:error].should == ['Please select a file']
