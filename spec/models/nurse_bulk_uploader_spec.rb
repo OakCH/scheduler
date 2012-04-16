@@ -13,7 +13,7 @@ describe NurseBulkUploader do
   
   describe 'replace from spreadsheet method of the Uploader class' do
     before(:each) do
-      @orig_nurse = FactoryGirl.create(:nurse, :name => 'nurse1', :seniority => 1, :shift => 'PMs', :unit => @unit, :num_weeks_off => 2)
+      @orig_nurse = FactoryGirl.create(:nurse, :name => 'nurse1', :position => 1, :shift => 'PMs', :unit => @unit, :num_weeks_off => 2)
     end
     
     context 'with a file that is not xls or xlsx' do
@@ -251,9 +251,9 @@ describe NurseBulkUploader do
     end
     it 'should remove the nurses that match shift/unit' do
       rem_nurse = @unit.nurses.create!(:name => 'nurse to stay', :shift => 'Days',
-                                       :seniority => 1, :num_weeks_off => 2, :email => 'mail@mail.com')
+                                       :position => 1, :num_weeks_off => 2, :email => 'mail@mail.com')
       gone_nurse = @unit.nurses.create!(:name => 'nurse to remove', :shift => 'PMs',
-                                        :seniority => 2, :num_weeks_off => 5, :email => 'mail2@mail.com')
+                                        :position => 2, :num_weeks_off => 5, :email => 'mail2@mail.com')
       @uploader.destroy_original_nurses
       @unit.reload
       @unit.nurses.should == [rem_nurse]
@@ -283,7 +283,7 @@ describe NurseBulkUploader do
         @unit.nurses.where(:shift => 'PMs').size.should == 1
       end
       
-      expected_vals = { :seniority => 1, :unit_id => 1, :shift => 'PMs', :name => 'only nurse',
+      expected_vals = { :position => 1, :unit_id => 1, :shift => 'PMs', :name => 'only nurse',
         :num_weeks_off => 3, :years_worked => 1 }
       expected_vals.each do |key, val|
         it "should set the attribute #{key} to #{val}" do

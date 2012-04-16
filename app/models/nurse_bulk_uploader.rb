@@ -104,7 +104,7 @@ module NurseBulkUploader
     
     # helper methods for create_nurses
     def create_nurse(row, count)
-      nurse_params = { :seniority => count, :unit => self.unit, :shift => self.shift }
+      nurse_params = { :position => count, :unit => self.unit, :shift => self.shift }
       PossibleColumns.each do |col_name|
         nurse_params[col_name] = sheet.cell(row, cols[col_name]) if cols[col_name]
       end

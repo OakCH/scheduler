@@ -15,7 +15,7 @@ FactoryGirl.define do
     sequence :name do |n|
       "NURSATRONIC SERIAL NO:#{n}"
     end
-    sequence :seniority do |n|
+    sequence :position do |n|
       n
     end
     sequence :email do |n|
