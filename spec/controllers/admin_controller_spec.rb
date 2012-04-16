@@ -18,28 +18,28 @@ describe AdminController do
 
         it 'should query the units model for units' do
           Unit.should_receive(:names)
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
         end
 
         it 'should query the units model for shifts' do
           Unit.should_receive(:shifts)
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
         end
 
         it 'should assign @unit' do
           #@unit_obj = Unit.create!(:name => @unit)
           Unit.stub(:find_by_name)#.with(@unit).and_return(@unit_obj)
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           assigns[:unit].should == @unit
         end
 
         it 'should assign @shift' do
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           assigns[:shift].should == @shift
         end
 
         it 'should reload the page' do
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           response.should redirect_to :action => 'upload', :admin => @admin
         end
       end
@@ -53,7 +53,7 @@ describe AdminController do
         it 'should set a flash[:error] message if no shift' do
           @unit_obj = Unit.create!(:name=>@unit)
           Unit.stub(:find_by_name).with(@unit).and_return(@unit_obj)
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           flash[:error].should == ["Invalid shift"]
         end
 
@@ -61,17 +61,17 @@ describe AdminController do
           @unit_obj = Unit.create!(:name=>@unit)
           Unit.stub(:find_by_name).with(@unit).and_return(@unit_obj)
           @admin[:shift] = 'Fake'
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           flash[:error].should == ["Invalid shift"]
         end
 
         it 'should assign @readyToUpload to false' do
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           assigns[:readyToUpload].should == false
         end
 
         it 'should reload the page' do
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           response.should redirect_to :action => 'upload', :admin => {:unit=>@unit, :shift=>nil}
         end
       end
@@ -82,23 +82,23 @@ describe AdminController do
         end
 
         it 'should set a flash[:error] message if no unit' do
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           flash[:error].should == ["Forgot to specify unit"]
         end
 
         it 'should set a flash[:error] message if unit does not exist' do
           @admin[:unit] = 'Fake'
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           flash[:error].should == ['Invalid unit']
         end
 
         it 'should assign @readyToUpload to false' do
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           assigns[:readyToUpload].should == false
         end
 
         it 'should reload the page' do
-          post :index, {:admin => @admin, :commit => 'Show'}
+          post :upload, {:admin => @admin, :commit => 'Show'}
           response.should redirect_to :action => 'upload', :admin => {:shift => "PMs", :unit => nil}
         end
       end
@@ -123,21 +123,21 @@ describe AdminController do
       it 'should set @readyToUpload to true' do
         AdminController.any_instance.stub(:copyFile)
         AdminController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         assigns[:readyToUpload].should == true
       end
 
       it 'should set @file' do
         AdminController.any_instance.stub(:copyFile)
         AdminController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         assigns[:file].should == @basic_xls_file
       end
 
       it 'should create the temporary file' do
         String.any_instance.stub(:read)
         AdminController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         #AdminController.any_instance.should_receive(:copyFile).with(@basic_xls_file)
         File.exist?(File.join(Rails.root, 'tmp', 'basic_spreadsheet.xls')).should == true
         File.delete(Rails.root.join('tmp', 'basic_spreadsheet.xls'))
@@ -145,7 +145,7 @@ describe AdminController do
 
       it 'should delete the temporary file' do
         String.any_instance.stub(:read)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         File.exist?(File.join(Rails.root, 'tmp', 'basic_spreadsheet.xls')).should == false
       end
 
@@ -153,7 +153,7 @@ describe AdminController do
         AdminController.any_instance.stub(:copyFile)
         AdminController.any_instance.stub(:deleteFile)
         Nurse.should_receive(:replace_from_spreadsheet).with(Rails.root.join('tmp', 'basic_spreadsheet.xls').to_path, @unit_obj, @shift)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
       end
 
       it 'should get the nurses within the particular unit and shift' do
@@ -161,7 +161,7 @@ describe AdminController do
         AdminController.any_instance.stub(:copyFile)
         AdminController.any_instance.stub(:deleteFile)
         @admin = {:unit => nurses[0].unit.name, :shift => nurses[0].shift, :upload => @basic_xls_file}
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         assigns[:nurses].should == nurses[0, 1]
       end
 
@@ -170,21 +170,21 @@ describe AdminController do
         AdminController.any_instance.stub(:deleteFile)
 
         Nurse.should_receive(:parsing_errors).and_return({:messages => []})
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
       end
 
       it 'should set flash[:error]' do
         AdminController.any_instance.stub(:copyFile)
         Nurse.stub(:parsing_errors).and_return({:messages => ['Some Error']})
         AdminController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         flash[:error].should == ['Some Error']
       end
 
       it 'should render same page' do
         AdminController.any_instance.stub(:copyFile)
         AdminController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         response.should redirect_to :action => 'upload', :admin => {:unit => @unit, :shift => @shift}
       end
 
@@ -193,7 +193,7 @@ describe AdminController do
           AdminController.any_instance.stub(:copyFile)
           AdminController.any_instance.stub(:deleteFile)
           @admin = {:unit => @unit, :shift => @shift}
-          post :index, {:admin => @admin, :commit => 'Upload'}
+          post :upload, {:admin => @admin, :commit => 'Upload'}
           flash[:error].should == ['Please select a file']
         end
       end
