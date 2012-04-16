@@ -36,7 +36,7 @@ module CalendarHelper
     calendar event_calendar_opts do |args|
       event, day = args[:event], args[:day]
       html = %(<a href="/nurse/#{event.nurse_id}/calendar/#{event.id}"
-               title="#{h(event.name + '-' + event.nurse.seniority.to_s)}" class="event">)
+               title="#{h(event.name + '-' + event.nurse.position.to_s)}" class="event">)
       html << display_event_time(event, day)
       html << %(#{h(event.name)}</a>)
       html

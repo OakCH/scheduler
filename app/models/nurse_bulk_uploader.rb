@@ -89,10 +89,10 @@ module NurseBulkUploader
     
     def create_nurses
       start_row = sheet.first_row + 1 # skip header row
-      seniority_counter = 1
+      position_counter = 1
       start_row.upto(sheet.last_row) do |row|
-        create_nurse(row, seniority_counter)
-        seniority_counter += 1
+        create_nurse(row, position_counter)
+        position_counter += 1
       end
     end
     
