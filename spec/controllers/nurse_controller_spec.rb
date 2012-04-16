@@ -203,14 +203,13 @@ describe AdminController do
   describe 'CRUD for Nurses' do
     before(:each) do
       @nurse = FactoryGirl.create(:nurse)
-      @attributes => {:name=>'Nurse2',:shift=>'Days',:unit_id=>1,
-        :num_weeks_off=>3,:years_worked=>5}
+      @attributes = {:name=>'Nurse2',:shift=>'Days',:unit_id=>1,:num_weeks_off=>3,:years_worked=>5}
     end
     describe 'CREATE' do
       context 'Happy Path' do
         it 'should call the nurse model method to create a nurse successfully' do
           post :create, @attributes
-          Nurse.find_by_name(@attributesi[:name]).should_not be_nil
+          Nurse.find_by_name(@attributes[:name]).should_not be_nil
         end
         it 'should redirect to index page w/ new unit & shift of new nurse' do
           post :create, @attributes

@@ -39,6 +39,12 @@ ActiveRecord::Schema.define(:version => 20120415230848) do
     t.integer "vacation_day_id"
   end
 
+  create_table "unit_and_shifts", :force => true do |t|
+    t.integer "unit_id"
+    t.string  "shift"
+    t.integer "additional_month"
+  end
+
   create_table "units", :force => true do |t|
     t.string "name"
   end
