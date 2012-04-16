@@ -1,11 +1,11 @@
 class CalendarController < ApplicationController
-  
+
   before_filter :authenticate_any!
   before_filter :authenticate_admin!, :only => [:admin_index]
-  
+
   before_filter :check_nurse_id
   before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
-  
+
   def index
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])
@@ -17,23 +17,23 @@ class CalendarController < ApplicationController
         redirect_to login_path
         return
       end
-      
+
       @shift = @nurse.shift
     end
     @col_names = Event.all_display_columns
   end
-  
+
   def admin_index
     setup_index do
       @shifts = Unit.shifts
       @units = Unit.find(:all)
       @shift = @shifts[0]
       @unit_id = 0
-      
+
       if @units.length > 0
         @unit_id = @units[0].id
-      end 
-      
+      end
+
       if params[:shift]
         if Unit.is_valid_shift(params[:shift])
           session[:shift] = params[:shift]
@@ -43,7 +43,7 @@ class CalendarController < ApplicationController
           return
         end
       end
-      
+
       if params[:unit_id]
         if Unit.is_valid_unit_id(params[:unit_id])
           session[:unit_id] = params[:unit_id]
@@ -53,14 +53,14 @@ class CalendarController < ApplicationController
           return
         end
       end
-      
+
       if session[:shift] and session[:unit_id]
         @unit_id = session[:unit_id]
         @shift = session[:shift]
       end
     end
   end
-  
+
   def show
     @event = Event.find_by_id(params[:id])
     if not @event
@@ -69,11 +69,11 @@ class CalendarController < ApplicationController
       return
     end
   end
-  
+
   def new
     @nurse_id = params[:nurse_id]
   end
-  
+
   def create
     nurse = Nurse.find_by_id(params[:nurse_id])
     if not nurse
@@ -94,7 +94,7 @@ class CalendarController < ApplicationController
       redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
     end
   end
-  
+
   def edit
     @event = Event.find_by_id(params[:id])
     if not @event
@@ -102,11 +102,11 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    
+
     @nurse_id = params[:nurse_id]
     @id = params[:id]
   end
-  
+
   def update
     @event = Event.find_by_id(params[:id])
     if not @event
@@ -114,7 +114,7 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    
+
     @event.all_day = 1
 
     @event.start_at = params[:event][:start_at]
@@ -128,7 +128,7 @@ class CalendarController < ApplicationController
       redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
     end
   end
-  
+
   def destroy
     @event = Event.find_by_id(params[:id])
     if not @event
@@ -136,7 +136,7 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    
+
     if not @event.destroy
       flash[:error] = 'Something went wrong. You still get to go on vacation.'
       redirect_to nurse_calendar_index_path
@@ -145,23 +145,23 @@ class CalendarController < ApplicationController
       redirect_to nurse_calendar_index_path
     end
   end
-  
+
   private
-  
+
   def setup_index
     @month = (params[:month] || (Time.zone || Time).now.month).to_i
     @year = (params[:year] || (Time.zone || Time).now.year).to_i
-    
+
     if @month == 0 or @year == 0
       flash[:error] = "An error has occurred."
       redirect_to login_path
       return
     end
-    
+
     @shown_month = Date.civil(@year, @month)
-    
+
     yield
-    
+
     # Event.event_strips_for_month will sanitize the input that has been
     # string interpolated
     if Unit.is_valid_shift(@shift) and Unit.is_valid_unit_id(@unit_id)
@@ -181,10 +181,10 @@ class CalendarController < ApplicationController
     return if admin_signed_in?
     permission_denied if current_nurse != Nurse.find(params[:nurse_id])
   end
-    
+
   def check_event_id
     return if admin_signed_in?
     permission_denied if current_nurse != Event.find(params[:id]).nurse
   end
-  
+
 end

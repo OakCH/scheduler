@@ -6,7 +6,6 @@ describe CalendarController do
  context 'With authentication' do
     describe 'as an admin' do
       before(:each) do
-        @admin = FactoryGirl.create(:admin)
         @nurse = FactoryGirl.create(:nurse)
         CalendarController.any_instance.stub(:validate_event?).and_return(false)
       end
@@ -22,7 +21,6 @@ describe CalendarController do
           @nurse.events.length.should == event_count + 1
         end
       end
-      
     end
   end
 
@@ -30,13 +28,13 @@ describe CalendarController do
    before(:all) do
      CalendarController.skip_before_filter :authenticate_any!,
      :authenticate_admin!, :check_nurse_id, :check_event_id
+     CalendarController.any_instance.stub(:validate_event?).and_return(true)
    end
 
    before(:each) do
      @unit = FactoryGirl.create(:unit)
      @nurse = FactoryGirl.create(:nurse, :unit => @unit)
      @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)
-     CalendarController.any_instance.stub(:validate_event?).and_return(true)
    end
 
    describe "nurse index action" do
