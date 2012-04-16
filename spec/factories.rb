@@ -6,7 +6,7 @@ FactoryGirl.define do
       "ADMINOMATIC#{n}20k"
     end
     sequence :email do |n|
-      "ADMINEMAIL#{n}@admin.com"
+      "admin#{n}@admin.com"
     end
     password 'admin_pw'
   end
@@ -19,7 +19,7 @@ FactoryGirl.define do
       n
     end
     sequence :email do |n|
-      "EMAILOTRONIC#{n}@SEMPERUBISUBUBI.com"
+      "nurse#{n}@nurse.com"
     end
     num_weeks_off 10
     shift "PMs"

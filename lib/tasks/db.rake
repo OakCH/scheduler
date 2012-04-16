@@ -5,7 +5,7 @@ namespace :db do
     raise "Task only works in development mode" unless Rails.env == 'development'
   end
 
-  desc "Clear then seed the development database"
+  desc "Reset then seed the development database"
   task :reset_and_seed => :environment do
     Rake::Task['db:development_environment_only'].invoke
     Rake::Task['db:reset'].invoke
