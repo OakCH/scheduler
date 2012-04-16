@@ -4,6 +4,50 @@ class AdminController < ApplicationController
   
   # attr_reader :unit, :shift
   
+  def rules
+    @units = Unit.names
+    @shifts = Unit.shifts
+    @months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+    if flash[:error] == nil
+      flash[:error] = []
+    end
+    
+    if params[:admin]
+      getNextParams
+      if @unit_obj && @shift
+        @readyToShow = true
+
+        max_per = @unit_obj.calculate_max_per_day(@unit_obj.id, @shift)
+        @num_months = max_per[:month]
+        @selected_months = UnitAndShift.get_additional_months(@unit_obj.id, @shift)
+      end
+    end
+    
+    if params[:commit] == 'Next'
+      valid = verify_shift_and_unit
+      if !valid
+        @readyToShow = false
+      end
+      flash.keep
+      redirect_to :admin => {:shift => @shift, :unit => @unit} and return
+    end
+    
+    if params[:commit] == 'Done'
+      # put into the unit_and_shift db
+      n = @num_months
+      while n > 0 do
+        month = @months.index(params[:admin]["seg#{n}"]) + 1
+        add_month = UnitAndShift.new(:unit => @unit_obj, :shift => @shift, :additional_month => month)
+        add_month.save
+        n -= 1
+      end
+      flash[:error] = 'Your changes have been saved'
+      flash.keep
+      redirect_to :admin => {:shift => @shift, :unit => @unit} and return
+    end
+  end
+  
   def upload
     @units = Unit.names
     @shifts = Unit.shifts
@@ -20,16 +64,8 @@ class AdminController < ApplicationController
     end
     
     if params[:commit] == 'Show'
-      if @unit == nil
-        flash[:error] << "Forgot to specify unit"
-        @readyToUpload = false
-      end
-      if @unit != nil && @unit_obj == nil
-        flash[:error] << 'Invalid unit'
-        @readyToUpload = false
-      end
-      if @shift == nil
-        flash[:error] << "Invalid shift"
+      valid = verify_shift_and_unit
+      if !valid
         @readyToUpload = false
       end
       flash.keep
@@ -73,4 +109,22 @@ class AdminController < ApplicationController
       @shift = nil
     end
   end
+  
+  def verify_shift_and_unit
+    valid = true
+    if @unit == nil
+      flash[:error] << "Forgot to specify unit"
+      valid = false
+    end
+    if @unit != nil && @unit_obj == nil
+      flash[:error] << 'Invalid unit'
+      valid = false
+    end
+    if @shift == nil
+      flash[:error] << "Invalid shift"
+      valid = false
+    end
+    return valid
+  end
+  
 end

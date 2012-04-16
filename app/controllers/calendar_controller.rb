@@ -84,8 +84,9 @@ class CalendarController < ApplicationController
     event = Event.new(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
     event.all_day = 1
     event.name = nurse.name
-    nurse.events << event
-    if not nurse.save
+    event.nurse_id = nurse.id
+    
+    if not event.save(:validate => validate_event?)
       flash[:error] = 'No vacation for you :(. Something went wrong!'
       redirect_to nurse_calendar_index_path
     else
@@ -116,7 +117,10 @@ class CalendarController < ApplicationController
 
     @event.all_day = 1
 
-    if not @event.update_attributes(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
+    @event.start_at = params[:event][:start_at]
+    @event.end_at = params[:event][:end_at]
+    
+    if not @event.save(:validate => validate_event?)
       flash[:error] = 'Update failed'
       redirect_to nurse_calendar_index_path
     else
@@ -167,6 +171,10 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
+  end
+  
+  def validate_event?
+    return (not admin_signed_in?)
   end
 
   def check_nurse_id
