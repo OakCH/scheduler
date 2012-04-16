@@ -17,7 +17,7 @@ Scheduler::Application.routes.draw do
   scope '/admin/' do
     match 'upload' => 'admin#upload', :as => 'admin_upload'
     match 'calendar' => 'calendar#admin_index', :as => 'admin_calendar'
-    resources :nurses, :except => [:show], :as => 'nurse_manager'
+    resources :nurse, :except => [:show], :as => 'nurse_manager'
 
     # if there become too many actions, we will instead use the following
     # match ':action' => 'admin#:action', :as => :admin

@@ -25,5 +25,5 @@ class Unit < ActiveRecord::Base
       return Unit.find_by_id(unit_id) || unit_id == 0
     end
   end
-  
+
 end
