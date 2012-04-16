@@ -87,7 +87,7 @@ class CalendarController < ApplicationController
     event.nurse_id = nurse.id
     
     if not event.save(:validate => validate_event?)
-      flash[:error] = "The vacation to schedule was not valid: #{event.errors}"
+      flash[:error] = "The vacation to schedule was not valid: #{event.errors.join(' ')}"
       redirect_to nurse_calendar_index_path
     else
       flash[:notice] = 'You successfully scheduled your vacation'
@@ -121,7 +121,7 @@ class CalendarController < ApplicationController
     @event.end_at = params[:event][:end_at]
     
     if not @event.save(:validate => validate_event?)
-      flash[:error] = "The update failed for the following reasons: #{@event.errors}"
+      flash[:error] = "The update failed for the following reasons: #{@event.errors.join(' ')}"
       redirect_to nurse_calendar_index_path
     else
       flash[:error] = 'You successfully scheduled your vacation'
