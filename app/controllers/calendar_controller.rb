@@ -7,7 +7,7 @@ class CalendarController < ApplicationController
   before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
 
   def index
-    redirect_to :action => "admin_index" and return if admin_signed_in?
+    redirect_to admin_calendar_path(:month => params[:month], :year => params[:year]) and return if admin_signed_in?
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])
       @unit_id = 0
@@ -88,7 +88,7 @@ class CalendarController < ApplicationController
     event.nurse_id = nurse.id
     
     if not event.save(:validate => (not admin_signed_in?))
-      flash[:error] = "The vacation to schedule was not valid: #{event.errors.join(' ')}"
+      flash[:error] = "The vacation to schedule was not valid: #{event.errors.full_messages.join(' ')}"
       redirect_to nurse_calendar_index_path
     else
       flash[:notice] = 'You successfully scheduled your vacation'
@@ -122,7 +122,7 @@ class CalendarController < ApplicationController
     @event.end_at = params[:event][:end_at]
     
     if not @event.save(:validate => (not admin_signed_in?))
-      flash[:error] = "The update failed for the following reasons: #{@event.errors.join(' ')}"
+      flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"
       redirect_to nurse_calendar_index_path
     else
       flash[:error] = 'You successfully scheduled your vacation'
