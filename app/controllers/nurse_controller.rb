@@ -2,23 +2,35 @@ class NurseController < ApplicationController
   before_filter :authenticate_admin!
 
   def new
+    @shifts = Unit.shifts
+    @units = Unit.names
   end
 
   def create
+    unit_name = params[:nurse][:unit]
+    params[:nurse][:unit] = Unit.find_by_name(params[:nurse][:unit])
+    params[:nurse][:position] = params[:nurse][:unit].nurses.count + 1
     @nurse = Nurse.create!(params[:nurse])
     flash[:notice] = "#{@nurse.name} was successfully added."
-    redirect_to index_nurse_manager_path
+    redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
   end
 
   def edit
     @nurse = Nurse.find params[:id]
+    @nurse[:unit] = Unit.find_by_id(@nurse[:unit_id]).name
+    @shifts = Unit.shifts
+    @units = Unit.names
   end
 
   def update
     @nurse = Nurse.find params[:id]
+    @shifts = Unit.shifts
+    @units = Unit.names
+    unit_name = params[:nurse][:unit]
+    params[:nurse][:unit] = Unit.find_by_name(params[:nurse][:unit])
     @nurse.update_attributes!(params[:nurse])
     flash[:notice] = "#{@nurse.name}'s information was successfully updated."
-    redirect_to nurse_manager_path(@nurse)
+    redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
   end
 
   def destroy
@@ -35,7 +47,7 @@ class NurseController < ApplicationController
     if flash[:error] == nil
       flash[:error] = []
     end
-    
+
     if params[:admin]
       getNextParams
       if (@unit_obj && @shift)
@@ -43,7 +55,7 @@ class NurseController < ApplicationController
         @nurses = @unit_obj.nurses.where(:shift => @shift).order(:position)
       end
     end
-    
+
     if params[:commit] == 'Show'
       valid = verify_shift_and_unit
       if !valid
@@ -52,7 +64,7 @@ class NurseController < ApplicationController
       flash.keep
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
-    
+
     if params[:commit] == 'Upload'
       @file = params[:admin][:upload]
       if @file
@@ -67,19 +79,19 @@ class NurseController < ApplicationController
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
   end
-  
+
   private
-  
+
   def copyFile(file)
     File.open(Rails.root.join('tmp', file.original_filename), 'wb') do |f|
       f.write(file.read)
     end
   end
-  
+
   def deleteFile(file)
     File.delete(Rails.root.join('tmp', file.original_filename))
   end
-  
+
   def getNextParams
     @unit = params[:admin][:unit]
     if @unit
@@ -90,7 +102,7 @@ class NurseController < ApplicationController
       @shift = nil
     end
   end
-  
+
   def verify_shift_and_unit
     valid = true
     if @unit == nil
@@ -107,5 +119,5 @@ class NurseController < ApplicationController
     end
     return valid
   end
- 
+
 end
