@@ -7,17 +7,19 @@ class NurseController < ApplicationController
   end
 
   def create
+    @shifts = Unit.shifts
+    @units = Unit.names
     unit_name = params[:nurse][:unit]
     params[:nurse][:unit] = Unit.find_by_name(params[:nurse][:unit])
     params[:nurse][:position] = params[:nurse][:unit].nurses.find(:first, :order => "id desc").id + 1
-    errors = invalid_inputs(params[:nurse])
-    if not errors.empty?
-      @nurse = Nurse.create!(params[:nurse])
+    @nurse = Nurse.new(params[:nurse])
+    if not @nurse.save
+      flash[:error] = @nurse.errors.full_messages
+      params[:nurse][:unit] = unit_name
+      render :action => 'new'
+    else
       flash[:notice] = "#{@nurse.name} was successfully added."
       redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
-    else
-      flash[:error] = errors
-      render :new
     end
   end
 
@@ -34,9 +36,15 @@ class NurseController < ApplicationController
     @units = Unit.names
     unit_name = params[:nurse][:unit]
     params[:nurse][:unit] = Unit.find_by_name(params[:nurse][:unit])
-    @nurse.update_attributes!(params[:nurse])
-    flash[:notice] = "#{@nurse.name}'s information was successfully updated."
-    redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
+    @nurse.attributes = params[:nurse]
+    if not @nurse.save
+      flash[:error] = @nurse.errors.full_messages
+      params[:nurse][:unit] = unit_name
+      render 'edit'
+    else
+      flash[:notice] = "#{@nurse.name}'s information was successfully updated."
+      redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
+    end
   end
 
   def destroy
@@ -45,22 +53,6 @@ class NurseController < ApplicationController
     @nurse.destroy
     flash[:notice] = "#{@nurse.name} was removed from the system."
     redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
-  end
-
-  def invalid_inputs(inputs)
-    errors = []
-    errors << "Please input a valid name." if not inputs[:name] or inputs[:name].strip.empty?
-    errors << "Please input a valid email." if not inputs[:email] or inputs[:email].strip.empty?
-    if not inputs[:num_weeks_off] or inputs[:num_weeks_off].strip.empty? or inputs[:num_weeks_off].strip.is_i?
-      errors << "Please input a valid number of vacation weeks."
-    end
-    if inputs[:years_worked] and (inputs[:years_worked].strip.empty? or inputs[:years_worked].strip.is_i?)
-      errors << "Please input a valid number of years worked."    
-    end
-    if inputs[:email] and User.find_by_email(inputs[:email].strip)
-      errors << "This email is already in use. Please check to see if you have already added this nurse to the system."
-    end
-    errors
   end
 
   def index
