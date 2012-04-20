@@ -1,20 +1,20 @@
 %h1 Upload Nurse List
 
 = form_tag({:action => :upload}, :multipart => true) do
-  
+
   %p#instruction1= 'Please select your Unit and Shift, then click "Show"'
   = label :admin, :shift, 'Shift'
   = select :admin, :shift, @shifts, :selected => @shift
-  
+
   = label :admin, :unit, 'Unit'
   = select :admin, :unit, @units, :selected => @unit
-  
+
   = submit_tag 'Show'
- 
+
   - if @readyToUpload
     %p#instruction2
-      = 'Please upload a .xls or .xlsx file where the columns are labeled "Name", "Years", "Number of weeks off", and "E-mail". Then click "Upload".'
-      = link_to "Click here to download a sample spreadsheet", "/sample_spreadsheet.xls"
+      = 'Please upload a .xls or .xlsx file where the columns are labeled "Name", "Number of weeks off", "E-mail", and optionally "Years Worked". Then click "Upload".'
+      = link_to "Click here to download a sample spreadsheet that can be filled out", "/sample_spreadsheet.xls"
     
     %p#warning= 'Note that if you upload a new file, it will overwrite any previous data.'
     
