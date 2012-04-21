@@ -18,7 +18,6 @@
 # * http://elabs.se/blog/15-you-re-cuking-it-wrong
 #
 
-
 require 'uri'
 require 'cgi'
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
@@ -111,7 +110,7 @@ Then /^(?:|I )should see "([^"]*)"$/ do |text|
 end
 
 Then /^(?:|I )should see a stripe "([^"]*)"$/ do |text|
-  myregex = /#{text}/ 
+  myregex = /#{text}/
   assert page.body =~ myregex
 end
 
@@ -128,6 +127,7 @@ end
 
 Then /^(?:|I )should not see "([^"]*)"$/ do |text|
   if page.respond_to? :should
+    save_and_open_page
     page.should have_no_content(text)
   else
     assert page.has_no_content?(text)
@@ -171,17 +171,17 @@ end
 Then /^the "([^"]*)" field should have the error "([^"]*)"$/ do |field, error_message|
   element = find_field(field)
   classes = element.find(:xpath, '..')[:class].split(' ')
-  
+
   form_for_input = element.find(:xpath, 'ancestor::form[1]')
   using_formtastic = form_for_input[:class].include?('formtastic')
   error_class = using_formtastic ? 'error' : 'field_with_errors'
-  
+
   if classes.respond_to? :should
     classes.should include(error_class)
   else
     assert classes.include?(error_class)
   end
-  
+
   if page.respond_to?(:should)
     if using_formtastic
       error_paragraph = element.find(:xpath, '../*[@class="inline-errors"][1]')
@@ -246,8 +246,8 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
-  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')} 
-  
+  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')}
+
   if actual_params.respond_to? :should
     actual_params.should == expected_params
   else
@@ -261,7 +261,7 @@ end
 
 Given /^I am logged in as an Admin$/ do
   sign_in(FactoryGirl.create(:admin))
-end  
+end
 
 Given /^I am logged in as the Nurse "([^"]*)"(?: with password "([^"]*)")?$/ do |name, password|
   sign_in(Nurse.find_by_name(name), password)

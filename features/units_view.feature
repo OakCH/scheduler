@@ -19,30 +19,30 @@ Scenario: Viewing list of units
   And I should see "Pediatrics"
 
 Scenario: Adding a unit
-  When I follow "add units"
+  When I follow "Add unit"
   And I fill in "Unit Name" with "Cardiology"
   And I press "Submit"
   Then I should see "Cardiology"
   And I should see "Surgery"
 
 Scenario: Adding an existing unit
-  When I follow "add units"
+  When I follow "Add unit"
   And I fill in "Unit Name" with "Surgery"
   And I press "Submit"
-  Then I should see "Unit name taken"
+  Then I should see "Name has already been taken"
 
 Scenario: Updating a unit
   When I follow "Surgery"
   And I fill in "Unit Name" with "Cardiology"
-  And I press "Submit"
+  And I press "Update Info"
   Then I should see "Cardiology"
   And I should not see "Surgery"
 
 Scenario: Changing a name to an existing unit
   When I follow "Surgery"
   And I fill in "Unit Name" with "Pediatrics"
-  And I press "Submit"
-  Then I should see "Unit name taken"
+  And I press "Update Info"
+  Then I should see "The update failed"
 
 Scenario: Deleting a unit
   When I follow "Surgery"

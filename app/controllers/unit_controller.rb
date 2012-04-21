@@ -3,14 +3,18 @@ class UnitController < ApplicationController
     @units = Unit.find(:all)
   end
 
+  def show
+    redirect_to units_path
+  end
+
   def new
   end
 
   def create
-    name = params[:name]
+    name = params[:unit][:name]
     new_unit = Unit.new(:name => name)
     if not new_unit.save then
-      flash[:error] = "Unit name is taken: #{new_unit.errors.full_messages.join(' ')}"
+      flash[:error] = "Error in making unit: #{new_unit.errors.full_messages.join(' ')}"
     end
     redirect_to units_path
   end
@@ -25,7 +29,7 @@ class UnitController < ApplicationController
 
   def update
     id = params[:id]
-    name = params[:new_name]
+    name = params[:unit][:name]
     unit = Unit.find_by_id(id)
     if not unit
       flash[:error] = "The unit you are trying to update could not be found."
@@ -36,7 +40,9 @@ class UnitController < ApplicationController
     if not unit.save
       flash[:error] = "The update failed for the following reasons: #{unit.errors.full_messages.join(' ')}"
       redirect_to units_path
+      return
     end
+    redirect_to units_path
   end
 
   def destroy
