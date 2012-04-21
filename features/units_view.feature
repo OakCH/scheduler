@@ -45,7 +45,6 @@ Scenario: Changing a name to an existing unit
   Then I should see "The update failed"
 
 Scenario: Deleting a unit
-  When I follow "Surgery"
-  And I press "Delete Unit"
+  When I press "Surgery_delete"
   Then I should see "Pediatrics"
   And I should not see "Surgery"
