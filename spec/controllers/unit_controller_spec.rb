@@ -32,7 +32,7 @@ describe UnitController do
       it 'should redirect to the index' do
         name = "ICU"
         post :create, :name => name
-        response.should redirect_to(unit_path)
+        response.should redirect_to(units_path)
       end
     end
 
@@ -40,21 +40,29 @@ describe UnitController do
       it 'should not update if there is a taken name' do
         name = @unit1.name
         post :create, :name => name
-        flash[:error].should == "Unit name taken."
+        flash[:error].should_not be_empty
       end
     end
   end
 
   describe "edit" do
       it 'should assign the given Unit' do
-        get :edit, :id => @unit1
-        assigns(:unit).id = @unit1.id
+      get :edit, :id => @unit1
+      assigns(:unit).id = @unit1.id
+    end
+
+    context "Given invalid id" do
+      it 'should flash an error if invalid id' do
+        get :edit, :id => 'asdfasdfadf'
+        flash[:error].should_not be_empty
       end
 
-    it 'should flash an error if invalid id' do
-        get :edit, :id => 'asdfasdfadf'
-        flash[:error].should == "Unit not found"
+      it 'should redirect to unit path' do
+        id = 'ajsoidfjef'
+        get :edit, :id => id
+        response.should redirect_to(units_path)
       end
+    end
   end
 
   describe "update" do
@@ -74,7 +82,7 @@ describe UnitController do
 
       it 'should redirect to unit' do
         put :update, :id => @unit1.id, :new_name => "sasafrass"
-        response.should redirect_to(unit_path)
+        response.should redirect_to(units_path)
       end
     end
 
@@ -82,7 +90,7 @@ describe UnitController do
       it 'should fail when you edit the name to another name' do
         name = @unit1.name
         put :update, :id => @unit2.id
-        flash[:error].should == "Unit name taken"
+        flash[:error].should_not be_empty
       end
 
       it 'should flash an error if invalid id' do
@@ -112,7 +120,7 @@ describe UnitController do
 
     it 'should redirect' do
       delete :destroy, :id => @unit1.id
-      response.should redirect_to(unit_path)
+      response.should redirect_to(units_path)
     end
   end
 
