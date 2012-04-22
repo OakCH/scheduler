@@ -1,13 +1,16 @@
 class CalendarController < ApplicationController
-
+  
   before_filter :authenticate_any!
   before_filter :authenticate_admin!, :only => [:admin_index]
-
+  
   before_filter :check_nurse_id
   before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
-
+  
   def index
-    redirect_to admin_calendar_path(:month => params[:month], :year => params[:year]) and return if admin_signed_in?
+    if admin_signed_in?
+      flash.keep
+      return redirect_to admin_calendar_path(:month => params[:month], :year => params[:year])
+    end
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])
       @unit_id = 0
