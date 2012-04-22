@@ -127,7 +127,6 @@ end
 
 Then /^(?:|I )should not see "([^"]*)"$/ do |text|
   if page.respond_to? :should
-    save_and_open_page
     page.should have_no_content(text)
   else
     assert page.has_no_content?(text)
