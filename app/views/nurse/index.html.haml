@@ -23,3 +23,6 @@
     = label :admin, :select_file, 'Select file'
     = file_field :admin, :upload
     = submit_tag 'Upload'#, :confirm => 'Are you sure?'
+
+    %h2
+      = link_to 'Add New Nurse', new_nurse_manager_path

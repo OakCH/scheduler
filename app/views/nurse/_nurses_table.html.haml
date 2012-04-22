@@ -12,4 +12,7 @@
         %tr{:class => cycle("even", "odd")}
           %td= i+1
           - Nurse.all_columns_as_sym.each do |attr|
-            %td= nurse.send(attr)
+            -if attr == :name
+              %td= link_to nurse.send(attr), edit_nurse_manager_path(nurse)
+            -else
+              %td= nurse.send(attr)

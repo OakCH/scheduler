@@ -12,7 +12,7 @@ class NurseController < ApplicationController
     unit_name = params[:nurse][:unit]
     params[:nurse][:unit] = Unit.find_by_name(params[:nurse][:unit])
     if params[:nurse][:unit]
-      params[:nurse][:position] = params[:nurse][:unit].nurses.find(:first, :order => "id desc").id + 1
+      params[:nurse][:position] = params[:nurse][:unit].nurses.find(:first, :order => "id desc").position + 1
     end
     @nurse = Nurse.new(params[:nurse])
     if not @nurse.save
