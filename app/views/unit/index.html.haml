@@ -1,0 +1,19 @@
+%h1 Units
+
+- if @units
+  %h2 Your units
+  %table
+    %thead
+      %tr
+        %th name
+        %th delete
+    %tbody
+      - @units.each do |unit|
+        %tr{:class => cycle("even", "odd")}
+          %td= link_to(unit.name, edit_unit_path(unit))
+          %td= button_to 'Delete', unit_path(unit), :method => 'delete', :confirm => 'Are you sure?', :id => "#{unit.name}_delete"
+- else
+  %h2 Imposter! You are not an admin.
+
+= link_to 'Add unit', new_unit_path
+
