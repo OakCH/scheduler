@@ -47,7 +47,7 @@ Scenario Outline: Upload an invalid file
 Scenario: Upload xls with invalid nurses
   And I choose "invalid_nurses.xls" to upload
   And I press "Upload"
-  Then I should see "Nurse in row 3: Name can't be blank"
+  Then I should see "Nurse in row 3: User name can't be blank"
   And I should see "Nurse in row 4: Num weeks off can't be blank"
   And I should see "Nurse1"
   And I should not see the following nurses: "Jane Doe, John Doe"

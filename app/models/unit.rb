@@ -1,8 +1,8 @@
 class Unit < ActiveRecord::Base
-  has_many :nurses
-  has_many :vacation_days
-  has_many :events, :through => :nurses
-  has_many :unit_and_shifts
+  has_many :nurses, :dependent => :destroy
+  has_many :vacation_days, :dependent => :destroy
+  has_many :events, :through => :nurses, :dependent => :destroy
+  has_many :unit_and_shifts, :dependent => :destroy
 
   validates_uniqueness_of :name
   validates_presence_of :name

@@ -19,7 +19,13 @@
       - i=0
       - while i < @num_months
         - j = i+1
-        = label :admin, "seg#{j}", "Segment #{j}", :selected => @selected_months[i]
-        = select :admin, "seg#{j}", @months, :selected => @selected_months[i]
+        = label :admin, "seg#{j}", "Segment #{j}"
+        - index = @start_months[i] - 1
+        - month_name = @month_names[index]
+        = select :admin, "seg#{j}", @month_names, :selected => month_name
         - i = j
-      = submit_tag 'Done'
+      = submit_tag 'Done with Segments'
+
+    %p#holidays= 'If you would like to limit the number of nurses during the time frame Dec 20-Jan 2, please indicate how many nurses off per day you would like.'
+    = select :admin, :holiday, ["N/A", 0, 1, 2, 3, 4, 5], :selected => @max_holidays
+    = submit_tag 'Done with Holidays'

@@ -31,5 +31,13 @@ Scenario: Choosing 3-month segments
   	And I press "Next"
 	And I select "January" from "Segment 1"
 	And I select "February" from "Segment 2"
-	And I press "Done"
+	And I press "Done with Segments"
 	Then I should see "Your changes have been saved"
+
+Scenario: Choosing to limit vacations during the holidays
+	Given I select "Days" from "Shift"
+  	And I select "Surgery" from "Unit"
+  	And I press "Next"
+	And I select "0" from "admin_holiday"
+	And I press "Done with Holidays"
+	Then I should see "You have updated the holiday nurse limit."

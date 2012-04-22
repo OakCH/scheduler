@@ -34,6 +34,10 @@ class Rules < ActiveModel::Validator
       record.errors[:max_day] << 'You have selected a day that has no more availability'
       return
     end
+    
+    unless holiday_restriction?(record)
+      record.errors[:holiday] << 'There are no more availabilities for this day due to the holidays'
+    end
 
   end
 
@@ -128,7 +132,8 @@ class Rules < ActiveModel::Validator
   def less_than_max_in_additional_month?(start_date)
     max_this_month = 0
     curr_month = start_date.month
-    @months = UnitAndShift.get_additional_months(@unit_id, @shift)
+    @start_months = UnitAndShift.get_additional_months(@unit_id, @shift)
+    @months = create_month_list(@start_months)
     @months.each do |month|
       if curr_month == month
       max_this_month += 1
@@ -136,7 +141,31 @@ class Rules < ActiveModel::Validator
     end
     return @num_on_this_day < @max_per[:year] + max_this_month
   end
-
+  
+  # admins can limit how many nurses can be off during the holidays
+  def holiday_restriction?(record)
+    @unit = record.nurse.unit_id
+    @shift = record.nurse.shift
+    holiday_limit = UnitAndShift.get_holiday_obj(@unit, @shift)
+    if holiday_limit != nil && during_holidays(record)# no holiday restriction
+      num_today = num_nurses_on_day(record.start_at, @shift, @unit)
+      return num_today < holiday_limit.holiday
+    else return true
+    end
+  end
+  
+ def create_month_list(start)
+    @rtn_months = []
+    if start != nil
+      start.each do |s|
+        @rtn_months << s
+        @rtn_months << (s + 1) % 12
+        @rtn_months << (s + 2) % 12
+      end
+    end
+    return @rtn_months
+  end
+    
   def num_nurses_on_day(start_date, shift, unit_id)
     max_weeks = 6 
     range_buffer = (max_weeks * 7) + 1
@@ -166,4 +195,19 @@ class Rules < ActiveModel::Validator
     return (end_at - start_at).to_i + 1
   end
 
+  def during_holidays(record)
+    @year = 2012 # TODO: need to replace when we have notion of time
+    @holiday_start = Date.new(@year, 12, 20)
+    @holiday_end =  Date.new(@year+1, 1, 2)
+    if record.start_at.to_date >= @holiday_start &&
+      record.start_at.to_date <= @holiday_end
+      return true
+    elsif record.end_at.to_date >= @holiday_start &&
+      record.end_at.to_date <= @holiday_end
+      return true
+    elsif record.start_at.to_date <= @holiday_start && record.end_at.to_date >= @holiday_end
+      return true
+    else return false
+    end
+  end
 end
