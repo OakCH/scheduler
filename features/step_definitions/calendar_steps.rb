@@ -5,6 +5,13 @@ Given /the following vacations exist/ do |vacations_table|
   end
 end
 
+Given /^I enter in the following vacations$/ do |vacations_table|
+   vacations_table.hashes.each do |vacation|
+    vacation[:nurse] = Nurse.find_by_name(vacation[:name])
+    FactoryGirl.create(:event, vacation)
+  end
+end
+
 Given /the following nurses exist/ do |nurses_table|
   nurses_table.hashes.each do |nurse_params|
     if nurse_params[:unit]

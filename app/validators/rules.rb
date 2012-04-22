@@ -128,7 +128,8 @@ class Rules < ActiveModel::Validator
   def less_than_max_in_additional_month?(start_date)
     max_this_month = 0
     curr_month = start_date.month
-    @months = UnitAndShift.get_additional_months(@unit_id, @shift)
+    @start_months = UnitAndShift.get_additional_months(@unit_id, @shift)
+    @months = create_month_list(@start_months)
     @months.each do |month|
       if curr_month == month
       max_this_month += 1
@@ -136,7 +137,19 @@ class Rules < ActiveModel::Validator
     end
     return @num_on_this_day < @max_per[:year] + max_this_month
   end
-
+  
+ def create_month_list(start)
+    @rtn_months
+    if start
+      start.each do |s|
+        @rtn_months << s
+        @rtn_months << (s + 1) % 12
+        @rtn_months << (s + 2) % 12
+      end
+    end
+    return @rtn_months
+  end
+    
   def num_nurses_on_day(start_date, shift, unit_id)
     max_weeks = 6 
     range_buffer = (max_weeks * 7) + 1
