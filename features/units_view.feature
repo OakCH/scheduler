@@ -6,7 +6,7 @@ So that I can have an up-to-date list of them.
 
 Background:
 
-  Given the following units exist:
+  Given the following units exist
   | name       |
   | Surgery    |
   | Pediatrics |
