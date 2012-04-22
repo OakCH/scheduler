@@ -27,5 +27,5 @@
       = submit_tag 'Done with Segments'
 
     %p#holidays= 'If you would like to limit the number of nurses during the holidays, please indicate how many nurses off per day you would like.'
-    = select :admin, :holiday, [0, 1, 2, 3, 4, 5], :selected => @max_holidays
+    = select :admin, :holiday, ["N/A", 0, 1, 2, 3, 4, 5], :selected => @max_holidays
     = submit_tag 'Done with Holidays'

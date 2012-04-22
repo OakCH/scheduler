@@ -34,6 +34,10 @@ class Rules < ActiveModel::Validator
       record.errors[:max_day] << 'You have selected a day that has no more availability'
       return
     end
+    
+    unless holiday_restriction?(record)
+      record.errors[:holiday] << 'There are no more availabilities for this day due to the holidays'
+    end
 
   end
 
@@ -138,9 +142,21 @@ class Rules < ActiveModel::Validator
     return @num_on_this_day < @max_per[:year] + max_this_month
   end
   
+  # admins can limit how many nurses can be off during the holidays
+  def holiday_restriction?(record)
+    @unit = record.nurse.unit_id
+    @shift = record.nurse.shift
+    holiday_limit = UnitAndShift.get_holiday_obj(@unit, @shift)
+    if holiday_limit != nil && during_holidays(record)# no holiday restriction
+      num_today = num_nurses_on_day(record.start_at, @shift, @unit)
+      return num_today < holiday_limit.holiday
+    else return true
+    end
+  end
+  
  def create_month_list(start)
-    @rtn_months
-    if start
+    @rtn_months = []
+    if start != nil
       start.each do |s|
         @rtn_months << s
         @rtn_months << (s + 1) % 12
@@ -179,4 +195,17 @@ class Rules < ActiveModel::Validator
     return (end_at - start_at).to_i + 1
   end
 
+  def during_holidays(record)
+    @year = 2012 # TODO: need to replace when we have notion of time
+    @holiday_start = {:month => 12, :date => 20}
+    @holiday_end = {:month => 1, :date => 2}
+    if record.start_at.to_date >= Date.new(@year, @holiday_start[:month], @holiday_start[:date]) &&
+      record.start_at.to_date <= Date.new(@year+1, @holiday_end[:month], @holiday_end[:date])
+      return true
+    elsif record.end_at.to_date >= Date.new(@year, @holiday_start[:month], @holiday_start[:date]) &&
+      record.end_at.to_date <= Date.new(@year+1, @holiday_end[:month], @holiday_end[:date])
+      return true
+    else return false
+    end
+  end
 end

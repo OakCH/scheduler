@@ -377,4 +377,63 @@ describe Rules do
       subject.should be_valid
     end
   end  
+  
+  describe 'checking holiday_restriction?' do
+    before(:each) do
+      @nurse = FactoryGirl.create(:nurse, :unit => @unit, :shift => 'Days')
+    end
+    
+    it 'should allow when not during holidays, no holiday restriction' do
+      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,4,7,0,0,0), :end_at => DateTime.new(2012,4,13,0,0,0))
+      subject.stub(:start_at).and_return(@new_event.start_at)
+      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:nurse_id).and_return(@nurse.id)
+      subject.stub(:id).and_return(@new_event.id)
+      subject.should be_valid
+    end
+    it 'should allow when during holidays and 1 nurse allowed' do
+      UnitAndShift.create(:unit => @unit, :shift => 'Days', :holiday => 1)
+      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,21,0,0,0), :end_at => DateTime.new(2012,12,27,0,0,0))
+      subject.stub(:start_at).and_return(@new_event.start_at)
+      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:nurse_id).and_return(@nurse.id)
+      subject.stub(:id).and_return(@new_event.id)
+      subject.should be_valid
+    end
+    
+    context 'with 0 nurses allowed during holidays' do
+      before(:each) do
+        UnitAndShift.create(:unit => @unit, :shift => 'Days', :holiday => 0)
+      end
+      it 'should not allow with dates completely inside holiday' do
+        @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,21,0,0,0), :end_at => DateTime.new(2012,12,27,0,0,0))
+        subject.stub(:start_at).and_return(@new_event.start_at)
+        subject.stub(:end_at).and_return(@new_event.end_at)
+        subject.stub(:nurse).and_return(@nurse)
+        subject.stub(:nurse_id).and_return(@nurse.id)
+        subject.stub(:id).and_return(@new_event.id)
+        subject.should have(1).error_on(:holiday)
+      end
+      it 'should not allow when date starts outside of holiday' do
+        @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,19,0,0,0), :end_at => DateTime.new(2012,12,27,0,0,0))
+        subject.stub(:start_at).and_return(@new_event.start_at)
+        subject.stub(:end_at).and_return(@new_event.end_at)
+        subject.stub(:nurse).and_return(@nurse)
+        subject.stub(:nurse_id).and_return(@nurse.id)
+        subject.stub(:id).and_return(@new_event.id)
+        subject.should have(1).error_on(:holiday)
+      end
+      it 'should not allow when date ends outside of holiday' do
+        @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,25,0,0,0), :end_at => DateTime.new(2013,1,3,0,0,0))
+        subject.stub(:start_at).and_return(@new_event.start_at)
+        subject.stub(:end_at).and_return(@new_event.end_at)
+        subject.stub(:nurse).and_return(@nurse)
+        subject.stub(:nurse_id).and_return(@nurse.id)
+        subject.stub(:id).and_return(@new_event.id)
+        subject.should have(1).error_on(:holiday)
+      end
+    end
+  end
 end
