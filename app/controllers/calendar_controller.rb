@@ -1,12 +1,16 @@
 class CalendarController < ApplicationController
-
+  
   before_filter :authenticate_any!
   before_filter :authenticate_admin!, :only => [:admin_index]
-
+  
   before_filter :check_nurse_id
   before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
-
+  
   def index
+    if admin_signed_in?
+      flash.keep
+      return redirect_to admin_calendar_path(:month => params[:month], :year => params[:year])
+    end
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])
       @unit_id = 0
@@ -86,7 +90,7 @@ class CalendarController < ApplicationController
     event.name = nurse.name
     event.nurse_id = nurse.id
     
-    if not event.save(:validate => validate_event?)
+    if not event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The vacation to schedule was not valid: #{event.errors.full_messages.join(' ')}"
       redirect_to nurse_calendar_index_path
     else
@@ -120,7 +124,7 @@ class CalendarController < ApplicationController
     @event.start_at = params[:event][:start_at]
     @event.end_at = params[:event][:end_at]
     
-    if not @event.save(:validate => validate_event?)
+    if not @event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"
       redirect_to nurse_calendar_index_path
     else
@@ -173,10 +177,6 @@ class CalendarController < ApplicationController
     end
   end
   
-  def validate_event?
-    return (not admin_signed_in?)
-  end
-
   def check_nurse_id
     return if admin_signed_in?
     permission_denied if current_nurse != Nurse.find(params[:nurse_id])
