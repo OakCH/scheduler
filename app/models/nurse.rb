@@ -1,8 +1,8 @@
 class Nurse < ActiveRecord::Base
   
   include Personable
-
-  has_many :events
+  
+  has_many :events, :dependent => :destroy
   belongs_to :unit
   
   validates_uniqueness_of :position, :scope => [:shift, :unit_id]

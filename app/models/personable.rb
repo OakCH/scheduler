@@ -1,6 +1,6 @@
 module Personable
   def self.included(base)
-    base.has_one :user, :as => :personable, :autosave => true
+    base.has_one :user, :as => :personable, :autosave => true, :dependent => :destroy
     base.alias_method_chain :user, :autobuild
     
     base.extend ClassMethods
