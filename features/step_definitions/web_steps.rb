@@ -273,3 +273,8 @@ def sign_in(user, password=nil)
   fill_in 'user_password', :with => password
   click_button "Sign in"
 end
+
+Given /^I log out$/ do
+  visit '/users/sign_out'
+end
+
