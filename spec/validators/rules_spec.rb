@@ -434,6 +434,15 @@ describe Rules do
         subject.stub(:id).and_return(@new_event.id)
         subject.should have(1).error_on(:holiday)
       end
+      it 'should not allow with start and end outside of holiday range' do
+        @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,19,0,0,0), :end_at => DateTime.new(2013,1,3,0,0,0))
+        subject.stub(:start_at).and_return(@new_event.start_at)
+        subject.stub(:end_at).and_return(@new_event.end_at)
+        subject.stub(:nurse).and_return(@nurse)
+        subject.stub(:nurse_id).and_return(@nurse.id)
+        subject.stub(:id).and_return(@new_event.id)
+        subject.should have(1).error_on(:holiday)
+      end
     end
   end
 end

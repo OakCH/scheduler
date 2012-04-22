@@ -38,14 +38,6 @@ Scenario: Choosing to limit vacations during the holidays
 	Given I select "Days" from "Shift"
   	And I select "Surgery" from "Unit"
   	And I press "Next"
-	And I fill in "admin_Holiday" with "0"
+	And I select "0" from "admin_holiday"
 	And I press "Done with Holidays"
-	And I log out
-	And I am on the Sign In page
-	And I am logged in as the Nurse "Jane Doe"
-	And I am on the Nurse Calendar page for "Jane Doe"
-	And I enter in the following vacations
-	 | name     | start_at    | end_at      |
-	 | Jane Doe | 21-Dec-2012 | 30-Dec-2012 |
-	Then I should see "The maximum number of nurses during the holidays is 0."
-	# Then I should not see the vacation
+	Then I should see "You have updated the holiday nurse limit."

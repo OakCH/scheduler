@@ -165,7 +165,7 @@ class AdminController < ApplicationController
     if obj != nil
       return obj.holiday
     else
-      return 0
+      return "N/A"
     end
   end
   

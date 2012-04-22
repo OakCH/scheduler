@@ -197,13 +197,15 @@ class Rules < ActiveModel::Validator
 
   def during_holidays(record)
     @year = 2012 # TODO: need to replace when we have notion of time
-    @holiday_start = {:month => 12, :date => 20}
-    @holiday_end = {:month => 1, :date => 2}
-    if record.start_at.to_date >= Date.new(@year, @holiday_start[:month], @holiday_start[:date]) &&
-      record.start_at.to_date <= Date.new(@year+1, @holiday_end[:month], @holiday_end[:date])
+    @holiday_start = Date.new(@year, 12, 20)
+    @holiday_end =  Date.new(@year+1, 1, 2)
+    if record.start_at.to_date >= @holiday_start &&
+      record.start_at.to_date <= @holiday_end
       return true
-    elsif record.end_at.to_date >= Date.new(@year, @holiday_start[:month], @holiday_start[:date]) &&
-      record.end_at.to_date <= Date.new(@year+1, @holiday_end[:month], @holiday_end[:date])
+    elsif record.end_at.to_date >= @holiday_start &&
+      record.end_at.to_date <= @holiday_end
+      return true
+    elsif record.start_at.to_date <= @holiday_start && record.end_at.to_date >= @holiday_end
       return true
     else return false
     end
