@@ -11,14 +11,16 @@ class NurseController < ApplicationController
     @units = Unit.names
     unit_name = params[:nurse][:unit]
     params[:nurse][:unit] = Unit.find_by_name(params[:nurse][:unit])
-    params[:nurse][:position] = params[:nurse][:unit].nurses.find(:first, :order => "id desc").id + 1
+    if params[:nurse][:unit]
+      params[:nurse][:position] = params[:nurse][:unit].nurses.find(:first, :order => "id desc").id + 1
+    end
     @nurse = Nurse.new(params[:nurse])
     if not @nurse.save
       flash[:error] = @nurse.errors.full_messages
       params[:nurse][:unit] = unit_name
       render :action => 'new'
     else
-      flash[:notice] = "#{@nurse.name} was successfully added."
+      flash[:notice] = "#{@nurse.name} was successfully added. Please don't forget to adjust for seniority."
       redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
     end
   end
@@ -42,17 +44,18 @@ class NurseController < ApplicationController
       params[:nurse][:unit] = unit_name
       render 'edit'
     else
-      flash[:notice] = "#{@nurse.name}'s information was successfully updated."
+      flash[:notice] = "#{params[:nurse][:name]} successfully updated. Please don't forget to adjust for seniority."
       redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
     end
   end
 
   def destroy
-    unit_name = params[:nurse][:unit]
     @nurse = Nurse.find(params[:id])
+    unit_name = Unit.find_by_id(@nurse.unit_id).name
+    shift_name = @nurse.shift
     @nurse.destroy
     flash[:notice] = "#{@nurse.name} was removed from the system."
-    redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
+    redirect_to nurse_manager_index_path(:admin => {:shift => shift_name, :unit => unit_name}) and return
   end
 
   def index
