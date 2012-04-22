@@ -2,7 +2,12 @@
   %li.first
     = link_to_unless_current 'Calendar', admin_calendar_path
   %li
-    = link_to_unless_current 'Upload', admin_upload_path    
+    = #link_to_unless_current 'Manage Nurses', nurse_manager_index_path
   %li
-    = link_to "Logout of admin: #{current_admin.name}", destroy_user_session_path, :method => :delete
-
+    = link_to_unless_current 'Rules', admin_rules_path
+  %li
+    = link_to_unless_current 'Units', unit_index_path
+  %li
+    = link_to "Logout", destroy_user_session_path, :method => :delete
+  %li
+    = "#{current_admin.name} (Admin)"
