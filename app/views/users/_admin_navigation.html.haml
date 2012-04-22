@@ -1,0 +1,8 @@
+%ul
+  %li.first
+    = link_to_unless_current 'Calendar', admin_calendar_path
+  %li
+    = link_to_unless_current 'Upload', admin_upload_path    
+  %li
+    = link_to "Logout of admin: #{current_admin.name}", destroy_user_session_path, :method => :delete
+

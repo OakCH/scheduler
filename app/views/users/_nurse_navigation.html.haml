@@ -1,0 +1,7 @@
+%ul
+  %li.first
+    = link_to_unless_current 'Calendar', nurse_calendar_index_path(current_nurse)    
+  %li
+    = link_to "Logout of nurse: #{current_nurse.name}", destroy_user_session_path, :method => :delete
+    
+    

@@ -17,7 +17,10 @@
           Nurse Scheduler
           %img{:src=>'/images/minimascot.png'}
         .right
-          = render 'shared/navigation'
+          - if admin_signed_in?
+            = render 'users/admin_navigation'
+          - if nurse_signed_in?
+            = render 'users/nurse_navigation'
         .clear
       .separator
       #flash
@@ -27,3 +30,4 @@
       .separator
       #footer
         (c) 2012 Team Awesome
+        
