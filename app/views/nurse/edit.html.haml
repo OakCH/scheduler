@@ -1,5 +1,7 @@
 %h1 Edit Nurse
 
-= form_tag edit_nurse_manager_path(@nurse), :method => :put do
+= form_tag nurse_manager_path(@nurse.id), :method => :put do
   = render 'form'
   = submit_tag 'Update Info'
+= button_to 'Delete', nurse_manager_path(@nurse), :method => 'delete', :confirm => 'Are you sure?'
+

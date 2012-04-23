@@ -1,5 +1,5 @@
 %h1 Add A Nurse
 
-= form_tag new_nurse_manager_path do
+= form_tag nurse_manager_index_path(@nurse) do
   = render 'form'
   = submit_tag 'Add New Nurse'
