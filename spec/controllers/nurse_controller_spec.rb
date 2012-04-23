@@ -222,7 +222,7 @@ describe NurseController do
         end
         it 'should flash a message if successfully created' do
           post :create, @attributes
-          flash[:notice].should == "#{@attributes[:nurse][:name]} was successfully added. Please don't forget to adjust for seniority."
+          flash[:notice].should == "#{@attributes[:nurse][:name]} was successfully added."
         end
       end
       context 'Sad Path' do
@@ -286,7 +286,7 @@ describe NurseController do
         it 'should flash a message if successfully updated' do
           @attributes[:nurse][:id]=@nurse.id
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
-          flash[:notice].should == "#{@attributes[:nurse][:name]} successfully updated. Please don't forget to adjust for seniority."
+          flash[:notice].should == "#{@attributes[:nurse][:name]} successfully updated."
         end
       end
       context 'Sad Path' do
