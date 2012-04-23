@@ -1,12 +1,19 @@
 = label :nurse, :name, 'Name'
-= text_field :name, 'name'
+= text_field :nurse, :name
 %br
-= label :movie, :years_worked, 'Years Worked'
-= text_field :movie, :years_worked
+= label :nurse, :unit, 'Unit'
+= select :nurse, :unit, @units
+
 %br
-= label :movie, :num_weeks_off, 'Number of Weeks Off'
-= text_field :movie, :num_weeks_off
+= label :nurse, :shift, 'Shift'
+= select :nurse, :shift, @shifts
 %br
-= label :movie, :email, 'Email'
-= text_field :movie, 'email'
+= label :nurse, :years_worked, 'Years Worked'
+= text_field :nurse, :years_worked
+%br
+= label :nurse, :num_weeks_off, 'Number of Weeks Off'
+= text_field :nurse, :num_weeks_off
+%br
+= label :nurse, :email, 'Email'
+= text_field :nurse, :email
 %br
