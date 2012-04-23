@@ -17,12 +17,14 @@
           Nurse Scheduler
           %img{:src=>'/images/minimascot.png'}
         .right
-          - if admin_signed_in?
-            = render 'users/admin_navigation'
-          - if nurse_signed_in?
-            = render 'users/nurse_navigation'
         .clear
       .separator
+      #navigation.right
+        - if admin_signed_in?
+          = render 'users/admin_navigation'
+        - if nurse_signed_in?
+          = render 'users/nurse_navigation'
+        .clear
       #flash
         = render 'shared/flash', :flash => flash
       #content
