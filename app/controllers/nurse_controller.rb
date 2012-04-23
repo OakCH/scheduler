@@ -20,7 +20,7 @@ class NurseController < ApplicationController
       params[:nurse][:unit] = unit_name
       render :action => 'new'
     else
-      flash[:notice] = "#{@nurse.name} was successfully added. Please don't forget to adjust for seniority."
+      flash[:notice] = "#{@nurse.name} was successfully added."
       redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
     end
   end
@@ -44,7 +44,7 @@ class NurseController < ApplicationController
       params[:nurse][:unit] = unit_name
       render 'edit'
     else
-      flash[:notice] = "#{params[:nurse][:name]} successfully updated. Please don't forget to adjust for seniority."
+      flash[:notice] = "#{params[:nurse][:name]} successfully updated."
       redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
     end
   end
