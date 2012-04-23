@@ -28,7 +28,7 @@ Scenario: Adding a new nurse
   When I select "PMs" from "Shift"
   And I select "Surgery" from "Unit"
   And I press "Show"
-  When I follow "Add New Nurse"
+  When I follow "Add A Single Nurse"
   And I fill in "Name" with "Jose Deer"
   And I select "Surgery" from "Unit"
   And I select "PMs" from "Shift"
@@ -42,7 +42,7 @@ Scenario: Adding a new nurse with existing email
   When I select "PMs" from "Shift"
   And I select "Surgery" from "Unit"
   And I press "Show"
-  When I follow "Add New Nurse"
+  When I follow "Add A Single Nurse"
   And I fill in "Name" with "Jose Deer"
   And I select "Surgery" from "Unit"
   And I select "PMs" from "Shift"
@@ -77,5 +77,20 @@ Scenario: Deleting a nurse
   And I press "Show"
   And I follow "Jane Doe"
   And I press "Delete"
+  Then I should see "johndoe@email.com"
+  But I should not see "janedoe@email.com"
+
+Scenario: Clicking on a nurse calendar
+  When I select "PMs" from "Shift"
+  And I select "Surgery" from "Unit"
+  And I press "Show"
+  And I follow "Jane Doe_calendar"
+  Then I should be on the Nurse Calendar page for "Jane Doe"
+
+Scenario: Deleting a nurse from the index page
+  When I select "PMs" from "Shift"
+  And I select "Surgery" from "Unit"
+  And I press "Show"
+  And I press "Jane Doe_delete"
   Then I should see "johndoe@email.com"
   But I should not see "janedoe@email.com"

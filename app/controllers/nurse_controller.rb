@@ -61,6 +61,7 @@ class NurseController < ApplicationController
   def index
     @units = Unit.names
     @shifts = Unit.shifts
+
     if flash[:error] == nil
       flash[:error] = []
     end
@@ -72,7 +73,6 @@ class NurseController < ApplicationController
         @nurses = @unit_obj.nurses.where(:shift => @shift).order(:position)
       end
     end
-
     if params[:commit] == 'Show'
       valid = verify_shift_and_unit
       if !valid
@@ -81,7 +81,16 @@ class NurseController < ApplicationController
       flash.keep
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
+  end
 
+  def upload
+    @units = Unit.names
+    @shifts = Unit.shifts
+    getNextParams
+    if flash[:error] == nil
+      flash[:error] = []
+    end
+ 
     if params[:commit] == 'Upload'
       @file = params[:admin][:upload]
       if @file
@@ -93,7 +102,7 @@ class NurseController < ApplicationController
         flash[:error] << "Please select a file"
       end
       flash.keep
-      redirect_to :admin => {:shift => @shift, :unit => @unit} and return
+      redirect_to :action => :index, :admin => {:shift => @shift, :unit => @unit} and return
     end
   end
 

@@ -40,7 +40,7 @@ describe NurseController do
 
         it 'should reload the page' do
           post :index, {:admin => @admin, :commit => 'Show'}
-          response.should redirect_to :action => 'upload', :admin => @admin
+          response.should redirect_to nurse_manager_index_path(:admin=> @admin)
         end
       end
 
@@ -72,7 +72,7 @@ describe NurseController do
 
         it 'should reload the page' do
           post :index, {:admin => @admin, :commit => 'Show'}
-          response.should redirect_to :action => 'upload', :admin => {:unit=>@unit, :shift=>nil}
+          response.should redirect_to nurse_manager_index_path(:admin=> {:unit=>@unit, :shift=>nil})
         end
       end
 
@@ -99,7 +99,7 @@ describe NurseController do
 
         it 'should reload the page' do
           post :index, {:admin => @admin, :commit => 'Show'}
-          response.should redirect_to :action => 'upload', :admin => {:shift => "PMs", :unit => nil}
+          response.should redirect_to nurse_manager_index_path(:admin=> {:unit=>nil, :shift=>"PMs"})
         end
       end
     end
@@ -110,7 +110,7 @@ describe NurseController do
         @unit_obj = Unit.create!(:name => @unit)
         @shift = 'Days'
         @basic_xls_file = path_helper 'basic_spreadsheet.xls'
-        @admin = {:unit => @unit, :shift => @shift, :index => @basic_xls_file}
+        @admin = {:unit => @unit, :shift => @shift, :upload => @basic_xls_file}
         String.any_instance.stub(:original_filename).and_return('basic_spreadsheet.xls')
         Nurse.stub(:replace_from_spreadsheet)
         Nurse.stub(:parsing_errors).and_return({:messages => []})
@@ -123,21 +123,21 @@ describe NurseController do
       it 'should set @readyToUpload to true' do
         NurseController.any_instance.stub(:copyFile)
         NurseController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        get :index, {:admin => @admin, :commit => 'Upload'}
         assigns[:readyToUpload].should == true
       end
 
       it 'should set @file' do
         NurseController.any_instance.stub(:copyFile)
         NurseController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         assigns[:file].should == @basic_xls_file
       end
 
       it 'should create the temporary file' do
         String.any_instance.stub(:read)
         NurseController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         #NurseController.any_instance.should_receive(:copyFile).with(@basic_xls_file)
         File.exist?(File.join(Rails.root, 'tmp', 'basic_spreadsheet.xls')).should == true
         File.delete(Rails.root.join('tmp', 'basic_spreadsheet.xls'))
@@ -145,7 +145,7 @@ describe NurseController do
 
       it 'should delete the temporary file' do
         String.any_instance.stub(:read)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         File.exist?(File.join(Rails.root, 'tmp', 'basic_spreadsheet.xls')).should == false
       end
 
@@ -153,15 +153,13 @@ describe NurseController do
         NurseController.any_instance.stub(:copyFile)
         NurseController.any_instance.stub(:deleteFile)
         Nurse.should_receive(:replace_from_spreadsheet).with(Rails.root.join('tmp', 'basic_spreadsheet.xls').to_path, @unit_obj, @shift)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
       end
 
       it 'should get the nurses within the particular unit and shift' do
         nurses = FactoryGirl.create_list(:nurse, 2)
-        NurseController.any_instance.stub(:copyFile)
-        NurseController.any_instance.stub(:deleteFile)
-        @admin = {:unit => nurses[0].unit.name, :shift => nurses[0].shift, :index => @basic_xls_file}
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        @admin = {:unit => nurses[0].unit.name, :shift => nurses[0].shift, :upload => @basic_xls_file}
+        get :index, {:admin => @admin, :commit => 'Commit'}
         assigns[:nurses].should == nurses[0, 1]
       end
 
@@ -170,22 +168,22 @@ describe NurseController do
         NurseController.any_instance.stub(:deleteFile)
 
         Nurse.should_receive(:parsing_errors).and_return({:messages => []})
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
       end
 
       it 'should set flash[:error]' do
         NurseController.any_instance.stub(:copyFile)
         Nurse.stub(:parsing_errors).and_return({:messages => ['Some Error']})
         NurseController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
         flash[:error].should == ['Some Error']
       end
 
       it 'should render same page' do
         NurseController.any_instance.stub(:copyFile)
         NurseController.any_instance.stub(:deleteFile)
-        post :index, {:admin => @admin, :commit => 'Upload'}
-        response.should redirect_to :action => 'upload', :admin => {:unit => @unit, :shift => @shift}
+        post :upload, {:admin => @admin, :commit => 'Upload'}
+        response.should redirect_to nurse_manager_index_path(:admin => {:unit => @unit, :shift => @shift})
       end
 
       context 'with no file given' do
@@ -193,7 +191,7 @@ describe NurseController do
           NurseController.any_instance.stub(:copyFile)
           NurseController.any_instance.stub(:deleteFile)
           @admin = {:unit => @unit, :shift => @shift}
-          post :index, {:admin => @admin, :commit => 'Upload'}
+          post :upload, {:admin => @admin, :commit => 'Upload'}
           flash[:error].should == ['Please select a file']
         end
       end
@@ -202,8 +200,8 @@ describe NurseController do
 
   describe 'CRUD for Nurses' do
     before(:each) do
-      @nurse = FactoryGirl.create(:nurse)
-      @unit = Unit.find_by_id(@nurse.unit_id)
+      @unit = FactoryGirl.create(:unit)
+      @nurse = FactoryGirl.create(:nurse, :unit_id => @unit.id)
       @attributes_hash = {:name=>'Nurse2',:email => 'nurse2email@email.com', :shift=>'Days',:unit=>@unit.name,:num_weeks_off=>3,:years_worked=>5}
       @attributes = {:nurse=>@attributes_hash}
     end
@@ -229,16 +227,13 @@ describe NurseController do
       end
       context 'Sad Path' do
         it 'should not create the nurse if unit does not exist' do
-          while Unit.find_by_name(@unit.name)
-            @unit.name += '325'
-          end
+          @unit.name += '325DUPLICATECOPY'
           @attributes[:nurse][:unit] = @unit.name
           post :create, @attributes
           User.find_by_name(@attributes[:nurse][:name]).should be_nil
         end
         it 'should not create the nurse if shift does not exist' do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
-          @attributes[:nurse][:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:nurse][:shift])
           post :create, @attributes
           User.find_by_name(@attributes[:nurse][:name]).should be_nil
         end
@@ -249,13 +244,11 @@ describe NurseController do
         end
         it 'should stay on the create page' do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
-          @attributes[:nurse][:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:nurse][:shift])
           post :create, @attributes
           response.should render_template('new')
         end
         it 'should flash a message telling you you had invalid inputs' do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
-          @attributes[:nurse][:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:nurse][:shift])
           post :create, @attributes
           flash[:error].should_not be_empty
         end
@@ -298,17 +291,13 @@ describe NurseController do
       end
       context 'Sad Path' do
         it 'should not update the nurse if unit does not exist' do
-          while Unit.find_by_name(@attributes[:unit])
-            @attribute[:unit] += 1
-          end
-          user_id = User.find_by_name(@nurse.name).id
+          @attributes[:nurse][:unit] += 'DUPLICATECOPYDOESNTEXIST'
           @attributes[:nurse][:id]=@nurse.id
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
-          Nurse.find_by_id(User.find_by_id(user_id).personable_id).unit_id.should == @nurse.unit_id
+          Nurse.find_by_name(@nurse.name).unit_id.should == @nurse.unit_id
         end
         it 'should not update the nurse if shift does not exist' do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
-          @attributes[:nurse][:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:nurse][:shift])
           @attributes[:nurse][:id]=@nurse.id
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
           User.find_by_name(@attributes[:nurse][:name]).should be_nil
@@ -329,7 +318,6 @@ describe NurseController do
         end
         it 'should flash a message telling you you had invalid inputs' do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
-          @attributes[:nurse][:shift] += 'BLAHBLAH' if Unit.shifts.include?(@attributes[:nurse][:shift])
           @attributes[:nurse][:id]=@nurse.id
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
           flash[:error].should_not be_empty
