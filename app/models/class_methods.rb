@@ -25,6 +25,8 @@ def method_missing(meth, *args, &blk)
     new_meth = meth.to_s + '_and_personable_type'
     args << self.to_s
     user = User.send(new_meth, *args, &blk)
+    return nil if !user
+    send(:find, user.personable_id)
   else
     super
   end
