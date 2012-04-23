@@ -25,23 +25,20 @@ Background:
   And I am on the Nurse Calendar page for "Jane Doe" in "April" of "2012"
 
 Scenario: Viewing calendar for April
-  Then I should see "Jane Doe"
-  But I should not see "J.D. Another Unit" 
-  And I should not see the vacation belonging to "J.D. Another Unit" from "1-Apr-2012" to "8-Apr-2012"
-  And I should not see "J.D. Another Shift" 
-  And I should not see the vacation belonging to "J.D. Another Shift" from "1-Apr-2012" to "8-Apr-2012"
+  Then I should see vacations belonging to "Jane Doe"
+  But I should not see vacations belonging to "J.D. Another Unit" 
+  And I should not see vacations belonging to "J.D. Another Shift"
 
 Scenario: Changing month to March
   When I follow "March"
-  Then I should not see "Jane Doe"
+  Then I should not see vacations belonging to "Jane Doe"
 
 Scenario: Changing month to May
   When I follow "May"
-  Then I should not see "John Doe"
-  But I should see the vacation belonging to "John Doe" from "2-May-2012" to "9-May-2012"
+  Then I should not see vacations belonging to "John Doe"
 
 Scenario: Overlapping vacations
-  Then I should see "Jane Doe"
+  Then I should see vacations belonging to "Jane Doe"
   Then I should see the vacation belonging to "Jane Doe" from "11-Apr-2012" to "19-Apr-2012"
-  Then I should not see "John Doe"
-  But I should see the vacation belonging to "John Doe" from "20-Apr-2012" to "27-Apr-2012"
+  Then I should not see vacations belonging to "John Doe"
+  
