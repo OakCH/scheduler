@@ -41,3 +41,15 @@ def event_finder(nurse, start_date, end_date)
   parsed_end = (DateTime.parse(end_date) + 1).to_time - 1
   Event.find_by_name_and_start_at_and_end_at(nurse, parsed_start, parsed_end)
 end
+
+def event_all_finder(nurse)
+  Event.find_all_by_name
+end
+
+Then /^(?:I )?(should|should not) see vacations belonging to "([^"]*)"$/ do |should_or_not, nurse|
+  events = event_all_finder(nurse)
+  events.each do |event|
+    page.send should_or_not.gsub(' ', '_'), have_css("*[data-event-id='#{event.id}']")
+  end
+end
+  
