@@ -79,3 +79,9 @@ label {
 
 .delete-button {
   display: none; }
+
+#print-link {
+  display: none; }
+
+#filter_cal {
+  display: none; }
