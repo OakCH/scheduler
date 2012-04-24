@@ -146,6 +146,24 @@ class CalendarController < ApplicationController
     end
   end
 
+  def multiple
+    @nurse = @current_nurse
+    @unit_id = @nurse.unit_id 
+    @shift = @nurse.shift
+
+    @month = (Time.zone || Time).now.month.to_i
+    @year = (Time.zone || Time).now.year.to_i
+    @shown_month = Date.civil(@year, @month)
+
+    @strips = Array.new
+    months = @month..12
+    months.each do |m|
+      cmonth = Date.civil(@year, m)
+      @strips << Event.event_strips_for_month(cmonth, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
+    end
+
+  end
+
   private
 
   def setup_index

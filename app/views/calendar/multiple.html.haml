@@ -1,0 +1,16 @@
+%h1 Calendar
+
+#calendar-links
+  #add-seg
+    = link_to 'Add a vacation segment', new_nurse_calendar_path
+  #print-link
+    = link_to_function("Print the calendar", "javascript:print()")
+
+#calendar
+  - @strips.each do |s|
+    - @event_strips = s
+    = raw(event_calendar)
+    - @month += 1
+    - if @month < 13
+      - @shown_month = Date.civil(@year, @month)
+      %br{:style => "page-break-before:always"}

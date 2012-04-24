@@ -29,7 +29,11 @@ Scheduler::Application.routes.draw do
   end
 
   scope 'nurse/:nurse_id/' do
-    resources :calendar, :as => 'nurse_calendar'
+    resources :calendar, :as => 'nurse_calendar' do
+      collection do
+        get 'multiple'
+      end
+    end
   end
 
    # Sample resource route (maps HTTP verbs to controller actions automatically):
