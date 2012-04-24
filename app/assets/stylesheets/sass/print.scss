@@ -1,4 +1,4 @@
-/* application.scss */
+/* print.scss */
 $dark-gray: #454545;
 $lite-gray: #d5d0cf;
 $gray: #7c7c7c;
@@ -7,12 +7,13 @@ $dark-teal: #00a198;
 $orange: #cd3301;
 $dark-orange: #a62900;
 $white: #ffffff;
+$print-font-size: 12;
 
 body {
-  background-color: $lite-gray;
-  color: $dark-gray;
+  background-color: $white;
+  color: black;
   font-family: 'Open Sans', sans-serif;
-
+  font-size: $print-font-size;
 }
 
 #container {
@@ -21,60 +22,14 @@ body {
 }
 
 #header {
-  position: relative;
-  text-transform: uppercase;
-  .left {
-    font-size: 200%;
-    float: left;
-    font-weight: bold;
-    text-shadow: 0 1px 0 #FFFFFF; 
-    position: absolute;
-    bottom: 10px;
-    vertical-align: text-bottom;
-  }
-  .right {
-    font-size: 12px;
-    float: right;
-    position: absolute;
-    bottom: 10px;
-    right: 0;
-    ul {
-      margin-left: 0;
-      padding-left: 0;
-      display: inline;
-      li {
-        padding: 0px 10px;
-        border-left: 1px solid $dark-gray;
-        list-style: none;
-        display: inline;
-      }
-      li.first {
-        border-left: 0px;
-      }
-    }
-  }
+  display:none;
 }
+
 #navigation {
-  ul {
-    float: right;
-    margin-top: -2px;
-    margin-left: 0;
-    padding-left: 0;
-    display: inline;
-    li {
-      padding: 0px 10px;
-      border-left: 1px solid $dark-gray;
-      list-style: none;
-      display: inline;
-    }
-    li.first {
-      border-left: 0px;
-    }
-  }
+  display:none; 
 }
 
 #content {padding: 0 0 30px 0;}
-
 
 .clear {clear: both;}
 
@@ -133,9 +88,7 @@ label {
 }
 
 #footer {
-  font-size: 95%;
-  text-align: center;
-  padding: 20px;
+  display:none;
 }
 
 #flash {
@@ -143,17 +96,10 @@ label {
   .notice { color: $orange; }
 }
 
-#add-seg {
-  width:500px; 
-  float:left;
+#calendar-links {
+  display:none;
 }
 
-#print-link{
-  width:400px; 
-  float:right; 
-  display:block; 
-}
-
-#calendar-links{
-  margin-bottom:40px;
+.delete-button {
+  display:none;
 }

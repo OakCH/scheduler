@@ -111,3 +111,15 @@ label {
   color: red; }
 #flash .notice {
   color: #cd3301; }
+
+#add-seg {
+  width: 500px;
+  float: left; }
+
+#print-link {
+  width: 400px;
+  float: right;
+  display: block; }
+
+#calendar-links {
+  margin-bottom: 40px; }

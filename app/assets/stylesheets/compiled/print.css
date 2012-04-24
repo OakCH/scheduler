@@ -1,0 +1,81 @@
+/* print.scss */
+body {
+  background-color: white;
+  color: black;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12; }
+
+#container {
+  margin: 80px auto 0 auto;
+  width: 960px; }
+
+#header {
+  display: none; }
+
+#navigation {
+  display: none; }
+
+#content {
+  padding: 0 0 30px 0; }
+
+.clear {
+  clear: both; }
+
+.separator {
+  width: 100%;
+  margin: 0 auto;
+  border-bottom: 2px solid #7c7c7c; }
+
+h1 {
+  text-align: center;
+  font-size: 300%;
+  font-family: 'Merriweather', serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-shadow: 0 1px 0 #FFFFFF; }
+
+a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #cd3301; }
+  a:hover {
+    color: #a62900; }
+    a:hover td {
+      color: #a62900; }
+
+table {
+  width: 95%;
+  margin: 0 auto;
+  font-size: 95%; }
+  table th {
+    background-color: #cd3301;
+    color: #d5d0cf;
+    text-transform: uppercase;
+    text-align: left; }
+  table td, table th {
+    padding: 0 8px; }
+  table tr.odd td {
+    background-color: #e4e3e3; }
+  table tr.odd:hover td {
+    background-color: #d2d1d1; }
+  table tr.even td {
+    background-color: #dadada; }
+  table tr.even:hover td {
+    background-color: #d2d1d1; }
+
+label {
+  padding: 10px 4px; }
+
+#footer {
+  display: none; }
+
+#flash .error {
+  color: red; }
+#flash .notice {
+  color: #cd3301; }
+
+#calendar-links {
+  display: none; }
+
+.delete-button {
+  display: none; }
