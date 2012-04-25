@@ -9,9 +9,11 @@
       %p="and there is 1 additional nurse off during the segment #{@month_names[(m-1)%12]}, #{@month_names[m]}, and #{@month_names[(m+1)%12]}"
     
   #add-seg
-    = link_to 'Add a vacation segment', new_nurse_calendar_path
+    %p
+      = link_to 'Add a vacation segment', new_nurse_calendar_path
   #print-link
-    = link_to_function("Print this month", "javascript:print()") + " or " +  link_to('View and print multiple months', print_nurse_calendar_index_path)
+    %p#left-link
+      = link_to_function("Print this month", "javascript:print()") + " or " + link_to('View and print entire schedule', print_nurse_calendar_index_path)
 
 #calendar
   = raw(event_calendar)

@@ -146,6 +146,36 @@ class CalendarController < ApplicationController
     end
   end
 
+  def admin_print
+    if not session[:unit_id]
+      redirect_to admin_calendar_path
+      flash[:error] = "Please select a unit and filter calendars."
+      return
+    end
+    if not session[:shift]
+      redirect_to admin_calendar_path
+      flash[:error] = "Please select a shift and filter calendars."
+      return
+    end
+
+    @unit_id = session[:unit_id]
+    @shift = session[:shift]
+    @year_month = Array.new
+# hard-coded => waiting for notion of time to be implemented
+    months = 1..12
+    months.each do |m|
+      @year_month << [2012, m]
+    end
+    @strips = Array.new
+    @year_month.each do |ym|
+      cmonth = Date.civil(ym[0], ym[1])
+      @strips << Event.event_strips_for_month(cmonth, 
+                                              :include => :nurse, 
+                                              :conditions => {"nurses.unit_id" => @unit_id, "nurses.shift" => @shift}
+                                              )
+    end
+  end
+
   def print
     @nurse = @current_nurse
     @unit_id = @nurse.unit_id 
