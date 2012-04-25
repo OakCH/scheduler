@@ -177,7 +177,7 @@ class CalendarController < ApplicationController
   end
 
   def print
-    @nurse = @current_nurse
+    @nurse = Nurse.find_by_id(params[:nurse_id])
     @unit_id = @nurse.unit_id 
     @shift = @nurse.shift
 
@@ -222,8 +222,6 @@ class CalendarController < ApplicationController
 
     yield
 
-    # Event.event_strips_for_month will sanitize the input that has been
-    # string interpolated
     if Unit.is_valid_shift(@shift) and Unit.is_valid_unit_id(@unit_id)
       @event_strips = Event.event_strips_for_month(@shown_month, 
                                                     :include => :nurse, 
@@ -235,7 +233,7 @@ class CalendarController < ApplicationController
       return
     end
   end
-  
+
   def check_nurse_id
     return if admin_signed_in?
     permission_denied if current_nurse != Nurse.find(params[:nurse_id])
