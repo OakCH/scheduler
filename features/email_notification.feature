@@ -13,6 +13,10 @@ Background:
   Given the following nurses exist:
   | name     | shift | unit    | email        |
   | Jane Doe | PMs   | Surgery | jane@doe.com |
+  
+  And the following admins exist:
+  | name       | email           |
+  | Jane Admin | admin@admin.com |
 
 Scenario: Next nurse receiving email after previous nurse has submitted vacation schedule
   And I am logged in as the Nurse "Jane Doe"
@@ -22,4 +26,17 @@ Scenario: Next nurse receiving email after previous nurse has submitted vacation
   Then I should see "It is now your turn to schedule your vacation" in the email subject
   And I should see "Please log in to schedule your vacation:" in the email body
   And I click the first link in the email
+  And I should see "Jane Doe"
+
+Scenario: Admin receives email when a nurse is done scheduling
+  And I am logged in as the Nurse "Jane Doe"
+  And I press "Finalize"
+  And I log out
+  And I am logged in as an Admin
+  Then "admin@admin.com" should receive an email
+  And I open the email
+  Then I should see "Jane Doe has finished scheduling his or her vacation" in the email subject
+  And I should see "The calendar has moved on to the next nurse." in the email body
+  And I click the first link in the email
+  And I should see "Admin"
   And I should see "Calendar"
