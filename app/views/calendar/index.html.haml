@@ -11,7 +11,7 @@
   #add-seg
     = link_to 'Add a vacation segment', new_nurse_calendar_path
   #print-link
-    = link_to_function("Print this month", "javascript:print()") + " or " +  link_to('View and print multiple months', multiple_nurse_calendar_index_path)
+    = link_to_function("Print this month", "javascript:print()") + " or " +  link_to('View and print multiple months', print_nurse_calendar_index_path)
 
 #calendar
   = raw(event_calendar)

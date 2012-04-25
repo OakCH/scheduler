@@ -17,6 +17,7 @@ Scheduler::Application.routes.draw do
   scope '/admin/' do
     match 'upload' => 'admin#upload', :as => 'admin_upload'
     match 'calendar' => 'calendar#admin_index', :as => 'admin_calendar'
+    match 'print' => 'calendar#admin_print', :as => 'admin_print'
     match 'rules' => 'admin#rules', :as => 'admin_rules'
     resources :nurse, :except => [:show], :as=> 'nurse_manager' do
       collection do
@@ -31,7 +32,7 @@ Scheduler::Application.routes.draw do
   scope 'nurse/:nurse_id/' do
     resources :calendar, :as => 'nurse_calendar' do
       collection do
-        get 'multiple'
+        get 'print'
       end
     end
   end

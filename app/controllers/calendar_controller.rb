@@ -146,22 +146,34 @@ class CalendarController < ApplicationController
     end
   end
 
-  def multiple
+  def print
     @nurse = @current_nurse
     @unit_id = @nurse.unit_id 
     @shift = @nurse.shift
 
-    @month = (Time.zone || Time).now.month.to_i
-    @year = (Time.zone || Time).now.year.to_i
-    @shown_month = Date.civil(@year, @month)
+    @year_month = Array.new
+    @nurse.events.each do |e|
+      edate = e.start_at.to_date
+      date_arr = [edate.year, edate.month]
+      if not @year_month.include?(date_arr)
+        @year_month << date_arr
+      end
 
-    @strips = Array.new
-    months = @month..12
-    months.each do |m|
-      cmonth = Date.civil(@year, m)
-      @strips << Event.event_strips_for_month(cmonth, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
+      edate = e.end_at.to_date
+      date_arr = [edate.year, edate.month]
+      if not @year_month.include?(date_arr)
+        @year_month << date_arr
+      end
     end
 
+    @strips = Array.new
+    @year_month.each do |ym|
+      cmonth = Date.civil(ym[0], ym[1])
+      @strips << Event.event_strips_for_month(cmonth, 
+                                              :include => :nurse, 
+                                              :conditions => {"nurses.unit_id" => @unit_id, "nurses.shift" => @shift, "nurses.id" => @nurse.id}
+                                              )
+    end
   end
 
   private
@@ -183,7 +195,10 @@ class CalendarController < ApplicationController
     # Event.event_strips_for_month will sanitize the input that has been
     # string interpolated
     if Unit.is_valid_shift(@shift) and Unit.is_valid_unit_id(@unit_id)
-      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
+      @event_strips = Event.event_strips_for_month(@shown_month, 
+                                                    :include => :nurse, 
+                                                    :conditions => {"nurses.unit_id" => @unit_id, "nurses.shift" => @shift}
+                                                    )
     else
       flash[:error] = "An error has happened. It's all your fault."
       redirect_to login_path

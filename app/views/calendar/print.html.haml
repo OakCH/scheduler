@@ -7,10 +7,13 @@
     = link_to_function("Print the calendar", "javascript:print()")
 
 #calendar
+  - counter = 0
   - @strips.each do |s|
     - @event_strips = s
+    - @year  = @year_month[counter][0]
+    - @month = @year_month[counter][1]
+    - @shown_month = Date.civil(@year, @month)
     = raw(event_calendar)
-    - @month += 1
-    - if @month < 13
-      - @shown_month = Date.civil(@year, @month)
+    - counter += 1
+    - if counter < @strips.length
       %br{:style => "page-break-before:always"}
