@@ -61,7 +61,9 @@
   width: 100%;
   background: white;
   overflow: hidden;
-  border-right: 1px solid #d5d5d5; }
+  border-right: 1px solid #d5d5d5;
+  border-top: solid black 1px;
+  border-bottom: solid #d5d0cf 1px; }
 
 .ec-row {
   position: absolute;

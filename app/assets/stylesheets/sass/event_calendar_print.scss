@@ -75,6 +75,8 @@ $orange: #cd3301;
   background: white;
   overflow: hidden;
   border-right: 1px solid #d5d5d5;
+  border-top: solid black 1px;
+  border-bottom: solid $lite-gray 1px;
 }
 
 .ec-row {
