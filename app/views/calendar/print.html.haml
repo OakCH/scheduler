@@ -15,5 +15,23 @@
     - @shown_month = Date.civil(@year, @month)
     = raw(event_calendar)
     - counter += 1
-    - if counter < @strips.length
-      %br{:style => "page-break-before:always"}
+    %br{:style => "page-break-before:always"}
+
+#calendar-dashboard
+  - if @nurse and (@nurse.events.length > 0)
+    %h2= "Vacations segments for #{@nurse.name}"
+    %table
+      %thead
+        %tr
+          %th= 'Start Date'
+          %th= 'End Date'
+      %tbody
+        - @nurse.events.each do |e|
+          %tr{:class => cycle("even", "odd")}
+            %td= e.start_at.strftime("%m/%d/%y")
+            %td= e.end_at.strftime("%m/%d/%y")
+  - elsif @nurse
+    %h2 There are no vacation segments scheduled.
+  - else
+    %h2 Impostor! You are not a nurse.
+
