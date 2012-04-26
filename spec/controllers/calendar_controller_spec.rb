@@ -113,7 +113,7 @@ describe CalendarController do
       end
     end
   end
-  
+
   describe 'admin index action' do
     
     it 'should assign the right month if given' do
@@ -301,7 +301,77 @@ describe CalendarController do
       end
     end
   end
-  
+
+  describe 'nurse print action' do
+
+    it 'should assign the right unit id' do
+      get :print, :nurse_id => @nurse.id
+      assigns(:unit_id).should == @nurse.unit_id 
+    end
+    it 'should assign the right shift' do
+      get :print, :nurse_id => @nurse.id
+      assigns(:shift).should == @nurse.shift 
+    end
+    it 'should assign the right array of year-month pairs' do
+      get :print, :nurse_id => @nurse.id
+      assigns(:year_month).should == [[@event.start_at.to_date.year,  @event.start_at.to_date.month]]
+    end
+    it 'should query the Event model for events' do
+      Event.should_receive(:event_strips_for_month)
+      get :index, :nurse_id => @nurse.id
+    end
+    it 'should query the Nurse model for nurses' do
+      Nurse.should_receive(:find_by_id).and_return(@nurse)
+      get :index, :nurse_id => @nurse.id
+    end
+
+  end
+
+  describe 'admin print action' do
+
+    context 'valid shift and unit' do
+      before(:each) do
+        session[:unit_id] = @unit.id.to_s
+        session[:shift] = 'PMs'
+      end
+      it 'should assign shift and unit_id' do
+        get :admin_print
+        assigns(:shift).should == 'PMs'
+        assigns(:unit_id).should == @unit.id.to_s
+      end
+      it 'should assign an array with all months and years in entire schedule' do
+        test_year_month = Array.new
+        months = 1..12
+        months.each do |m|
+          test_year_month << [2012, m]
+        end
+        get :admin_print
+        assigns(:year_month).should == test_year_month
+      end
+      it 'should query the event model for events' do
+        Event.should_receive(:event_strips_for_month).exactly(12).times
+        get :admin_print
+      end
+    end
+
+    context 'invalid shift or unit' do
+      it 'should redirect to admin_index if unit is not in session' do
+        session['shift'] = 'PMs'
+        get :admin_print
+        response.should redirect_to admin_calendar_path
+        flash[:error].should_not be_empty
+      end
+      it 'should redirect to admin_index if shift is not in session' do
+        session['unit_id'] = @unit.id
+        get :admin_print
+        response.should redirect_to admin_calendar_path
+        flash[:error].should_not be_empty
+      end
+
+    end
+
+  end
+
   describe "Show" do
     context 'valid event id' do
       it 'should find right event given id' do
