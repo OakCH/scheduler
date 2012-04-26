@@ -1,5 +1,8 @@
 class NurseController < ApplicationController
-  before_filter :authenticate_admin!
+  before_filter :authenticate_any!
+  before_filter :authenticate_admin!, :except => ['seniority']
+
+  before_filter :check_nurse_id, :only => ['seniority']
 
   def new
     @shifts = Unit.shifts
@@ -106,6 +109,12 @@ class NurseController < ApplicationController
     end
   end
 
+  def seniority
+    @nurse = Nurse.find_by_id(params[:nurse_id])
+    @nurses = Nurse.find_all_by_unit_id_and_shift(@nurse.unit_id, @nurse.shift, :order=>"years_worked DESC")
+    @columns = ['name', 'seniority']
+  end
+
   private
 
   def copyFile(file)
@@ -144,6 +153,11 @@ class NurseController < ApplicationController
       valid = false
     end
     return valid
+  end
+
+  def check_nurse_id
+    return if admin_signed_in?
+    permission_denied if current_nurse != Nurse.find(params[:nurse_id])
   end
 
 end

@@ -29,6 +29,7 @@ Scheduler::Application.routes.draw do
   end
 
   scope 'nurse/:nurse_id/' do
+    match 'seniority' => 'nurse#seniority'
     resources :calendar, :as => 'nurse_calendar'
   end
 
