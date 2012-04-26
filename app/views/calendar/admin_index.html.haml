@@ -22,7 +22,7 @@
     - else
       %h2 There are no units.
   #print-link
-    = link_to_function("Print this month", "javascript:print()") + " or " + link_to('View and print entire schedule', admin_print_path)
+    = link_to_function("Print this month", "javascript:print()") + " or " + link_to('View and print entire schedule', admin_print_path, :id => 'admin_print')
 
 #calendar
   = raw(admin_event_calendar)

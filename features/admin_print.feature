@@ -26,6 +26,10 @@ Background:
   And I select "Surgery" from "Unit"
   And I select "Days" from "Shift"
   And I press "Filter calendars"
-  And 
+  And I follow "View and print entire schedule"
 
 Scenario: Print calendar for the Surgery unit and the PMs shift
+  Then I should see vacations belonging to "John Doe"
+  And I should see vacations belonging to "J.P. Morgan"
+  And I should not see vacations belonging to "Jane Doe"
+  And I should not see vacations belonging to "K.D. Tang"
