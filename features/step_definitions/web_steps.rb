@@ -18,7 +18,6 @@
 # * http://elabs.se/blog/15-you-re-cuking-it-wrong
 #
 
-
 require 'uri'
 require 'cgi'
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "support", "paths"))
@@ -111,7 +110,7 @@ Then /^(?:|I )should see "([^"]*)"$/ do |text|
 end
 
 Then /^(?:|I )should see a stripe "([^"]*)"$/ do |text|
-  myregex = /#{text}/ 
+  myregex = /#{text}/
   assert page.body =~ myregex
 end
 
@@ -232,7 +231,7 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label
     end
   end
 end
- 
+
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
@@ -246,8 +245,8 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
-  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')} 
-  
+  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')}
+
   if actual_params.respond_to? :should
     actual_params.should == expected_params
   else
@@ -258,3 +257,24 @@ end
 Then /^show me the page$/ do
   save_and_open_page
 end
+
+Given /^I am logged in as an Admin$/ do
+  sign_in(FactoryGirl.create(:admin))
+end
+
+Given /^I am logged in as the Nurse "([^"]*)"(?: with password "([^"]*)")?$/ do |name, password|
+  sign_in(Nurse.find_by_name(name), password)
+end
+
+def sign_in(user, password=nil)
+  visit '/users/sign_in'
+  fill_in 'user_email', :with => user.email
+  password ||= "#{user.class.to_s.downcase}_pw"
+  fill_in 'user_password', :with => password
+  click_button "Sign in"
+end
+
+Given /^I log out$/ do
+  visit '/users/sign_out'
+end
+

@@ -17,11 +17,14 @@
       }
     });
   });
-
-%h2 Update your vacation time
-
-= form_tag "/nurse/#{@nurse_id}/calendar/#{@id}", :method => :put do
+  
+%h1
+  Change
+  
+= form_tag nurse_calendar_path(:nurse_id=>@nurse_id, :id=>@id), :method => :put do
   = render :partial => 'event_form'
   = submit_tag 'Update vacation time'
-
-= link_to 'Back to calendar', nurse_calendar_index_path
+  
+= link_to 'Back to nurse calendar', nurse_calendar_index_path
+- if admin_signed_in?
+  = link_to 'Back to admin calendar', admin_calendar_path

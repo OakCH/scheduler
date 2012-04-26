@@ -2,16 +2,22 @@
 
 = form_tag({:action => :upload}, :multipart => true) do
 
+  %p#instruction1= 'Please select your Unit and Shift, then click "Show"'
   = label :admin, :shift, 'Shift'
   = select :admin, :shift, @shifts, :selected => @shift
-  
+
   = label :admin, :unit, 'Unit'
   = select :admin, :unit, @units, :selected => @unit
-  
-  = submit_tag 'Next' if !@readyToUpload
- 
+
+  = submit_tag 'Show'
+
   - if @readyToUpload
-    -# instructions
+    %p#instruction2
+      = "Please upload a .xls or .xlsx file where the columns are labeled #{Nurse.required_columns.join(', ')} and optionally #{Nurse.optional_columns.join(', ')}. Then click 'Upload'."
+      = link_to "Click here to download a sample spreadsheet that can be filled out", "/sample_spreadsheet.xls"
+
+    %p#warning= 'Note that if you upload a new file, it will overwrite any previous data.'
+  
     = label :admin, :select_file, 'Select file'
     = file_field :admin, :upload
     = submit_tag 'Upload'#, :confirm => 'Are you sure?'

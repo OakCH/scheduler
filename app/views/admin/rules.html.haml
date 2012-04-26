@@ -1,0 +1,31 @@
+%h1 Rules
+
+= form_tag({:action => :rules}, :multipart => true) do
+  
+  %p#instruction1= 'Please select your Unit and Shift, then click "Next"'
+  = label :admin, :shift, 'Shift'
+  = select :admin, :shift, @shifts, :selected => @shift
+  
+  = label :admin, :unit, 'Unit'
+  = select :admin, :unit, @units, :selected => @unit
+  
+  = submit_tag 'Next'
+  
+  - if @readyToShow
+    %p= 'For each 3-month segment below, please select the month you would like the segment to start at:'
+    - if @num_months == 0
+      %p#nomonths= 'There are no additional 3-month segments this year.'
+    - else
+      - i=0
+      - while i < @num_months
+        - j = i+1
+        = label :admin, "seg#{j}", "Segment #{j}"
+        - index = @start_months[i] - 1
+        - month_name = @month_names[index]
+        = select :admin, "seg#{j}", @month_names, :selected => month_name
+        - i = j
+      = submit_tag 'Done with Segments'
+
+    %p#holidays= 'If you would like to limit the number of nurses during the time frame Dec 20-Jan 2, please indicate how many nurses off per day you would like.'
+    = select :admin, :holiday, ["N/A", 0, 1, 2, 3, 4, 5], :selected => @max_holidays
+    = submit_tag 'Done with Holidays'

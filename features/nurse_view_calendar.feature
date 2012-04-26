@@ -7,22 +7,38 @@ So that I can start planning my vacation time
 Background:
 
   Given the following nurses exist:
-  | name       | shift | unit_id | seniority  | num_weeks_off | email           | years_worked |
-  | Jane Doe   | PMs   | 1       | 23         | 3            | jad@example.com | 12           |
-  | John Doe   | PMs   | 1       | 24         | 4            | jod@example.com | 5            |
+  | name               | shift | unit       |
+  | Jane Doe           | PMs   | Surgery    |
+  | John Doe           | PMs   | Surgery    |
+  | J.D. Another Unit  | PMs   | Cardiology |
+  | J.D. Another Shift | Days  | Surgery    |
   
-  And the following events exist:
-  | name       | start_at    | end_at      | nurse_id |
-  | Jane Doe   | 17-Mar-2012 | 24-Mar-2012 | 1        |
-  | John Doe   | 2-Apr-2012  | 9-Apr-2012  | 2        |
+  And the following vacations exist:
+  | name               | start_at    | end_at      |
+  | Jane Doe           | 11-Apr-2012 | 19-Apr-2012 |
+  | John Doe           | 20-Apr-2012 | 27-Apr-2012 |
+  | John Doe           | 2-May-2012  | 9-May-2012  |
+  | J.D. Another Unit  | 1-Apr-2012  | 8-Apr-2012  |
+  | J.D. Another Shift | 1-Apr-2012  | 8-Apr-2012  |
 
+  And I am logged in as the Nurse "Jane Doe"
+  And I am on the Nurse Calendar page for "Jane Doe" in "April" of "2012"
 
-  And I am on the Nurse Calendar page for "Jane Doe" in the month "3"
+Scenario: Viewing calendar for April
+  Then I should see vacations belonging to "Jane Doe"
+  But I should not see vacations belonging to "J.D. Another Unit" 
+  And I should not see vacations belonging to "J.D. Another Shift"
 
-Scenario: Viewing calendar for March 
-  Then I should see "Jane Doe"
+Scenario: Changing month to March
+  When I follow "March"
+  Then I should not see vacations belonging to "Jane Doe"
 
-Scenario: Changing month to February 
-  When I follow "month_4"
-  Then I should see a stripe "a href="
-  Then I should see a stripe "#"
+Scenario: Changing month to May
+  When I follow "May"
+  Then I should not see vacations belonging to "John Doe"
+
+Scenario: Overlapping vacations
+  Then I should see vacations belonging to "Jane Doe"
+  Then I should see the vacation belonging to "Jane Doe" from "11-Apr-2012" to "19-Apr-2012"
+  Then I should not see vacations belonging to "John Doe"
+  

@@ -11,10 +11,9 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120325215256) do
+ActiveRecord::Schema.define(:version => 20120419231122) do
 
   create_table "admins", :force => true do |t|
-    t.string "name"
   end
 
   create_table "events", :force => true do |t|
@@ -28,12 +27,10 @@ ActiveRecord::Schema.define(:version => 20120325215256) do
   end
 
   create_table "nurses", :force => true do |t|
-    t.string  "name"
     t.string  "shift"
     t.integer "unit_id"
-    t.integer "seniority"
+    t.integer "position"
     t.integer "num_weeks_off"
-    t.string  "email"
     t.integer "years_worked"
   end
 
@@ -42,9 +39,30 @@ ActiveRecord::Schema.define(:version => 20120325215256) do
     t.integer "vacation_day_id"
   end
 
+  create_table "unit_and_shifts", :force => true do |t|
+    t.integer "unit_id"
+    t.string  "shift"
+    t.integer "additional_month"
+    t.integer "holiday"
+  end
+
   create_table "units", :force => true do |t|
     t.string "name"
   end
+
+  create_table "users", :force => true do |t|
+    t.string   "email"
+    t.string   "name"
+    t.integer  "personable_id"
+    t.string   "personable_type",        :default => "Nurse"
+    t.string   "encrypted_password",     :default => "",      :null => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+  end
+
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "vacation_days", :force => true do |t|
     t.date    "date"

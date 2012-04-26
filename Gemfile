@@ -18,6 +18,7 @@ group :development, :test do
   gem 'simplecov'
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
+  gem 'email_spec'
 end
 
 group :production do
@@ -27,7 +28,7 @@ end
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'therubyracer'
+#  gem 'therubyracer'
   gem 'sass-rails',   '~> 3.1.5'
   gem 'coffee-rails', '~> 3.1.1'
   gem 'uglifier', '>= 1.0.3'
@@ -47,3 +48,7 @@ gem 'jquery-rails'
 gem 'haml'
 gem 'event-calendar', :require => 'event_calendar'
 gem 'roo', '~> 1.2.3'
+gem 'hoe', '2.3.3'
+gem 'devise', '>=2.0.0'
+gem 'devise_invitable'
+

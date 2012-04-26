@@ -17,9 +17,10 @@
     });
   });
 
-%h2 Choose vacation time
+%h1 
+  Choose
 
-= form_tag "/nurse/#{@nurse_id}/calendar" do
+= form_tag nurse_calendar_index_path(:nurse_id=>@nurse_id) do
   = render :partial => 'event_form'
   = submit_tag 'Save Changes'
 

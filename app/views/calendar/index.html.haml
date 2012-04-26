@@ -1,18 +1,34 @@
 %h1 Calendar
 
-= link_to 'Schedule your vacation', new_nurse_calendar_path
-= raw(event_calendar)
-
+%p="There are #{@nurse.unit.calculate_max_per_day(@nurse.unit_id, @nurse.shift)[:year]} nurse(s) off per year"
+- @month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+- @months = UnitAndShift.get_additional_months(@nurse.unit_id, @nurse.shift)
+- if @months != nil
+  - @months.each do |m|
+    %p="and there is 1 additional nurse off during the segment #{@month_names[(m-1)%12]}, #{@month_names[m]}, and #{@month_names[(m+1)%12]}"
+  
+= link_to 'Add a vacation segment', new_nurse_calendar_path
+#calendar
+  = raw(event_calendar)
+  
 - if @nurse and (@nurse.events.length > 0)
-  %h2 Your vacations weeks
-  %tbody
-    - @nurse.events.each do |e|
+  %h2= "Vacations segments for #{@nurse.name}"
+  %table
+    %thead
       %tr
-        %td= e.start_at.strftime("%d/%m/%y")
-        %td= e.end_at.strftime("%d/%m/%y")
-        %td= link_to 'Edit vacation week', edit_nurse_calendar_path(e.nurse, e)
-        %td= button_to 'Delete', nurse_calendar_path(e.nurse, e), :method => 'delete', :confirm => 'Are you sure?'
+        - @col_names.each do |name|
+          %th= name
+    %tbody
+      - @nurse.events.each do |e|
+        %tr{:class => cycle("even", "odd")}
+          %td= e.start_at.strftime("%d/%m/%y")
+          %td= e.end_at.strftime("%d/%m/%y")
+          %td= link_to 'Edit vacation segment', edit_nurse_calendar_path(e.nurse, e)
+          %td= button_to 'Delete', nurse_calendar_path(e.nurse, e), :method => 'delete', :confirm => 'Are you sure?'
 - elsif @nurse
-  %h2 You have not scheduled your vacations.  All work and no play makes us go psycho. Just saying.
+  %h2 There are no vacation segments scheduled.
 - else
   %h2 Impostor! You are not a nurse.
+
+- if admin_signed_in?  
+  = link_to 'Back to Admin Calendar', admin_calendar_path(:month => params[:month], :year => params[:year])

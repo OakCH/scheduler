@@ -2,17 +2,34 @@
 %html
   %head
     %title Nurse Scheduler
-    = stylesheet_link_tag 'application'
-    = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600'
+    = stylesheet_link_tag 'compiled/application'
+    = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600|Merriweather:900'
+    = stylesheet_link_tag 'compiled/event_calendar'
+    = stylesheet_link_tag 'jquery-ui'
+    = javascript_include_tag 'application'
+    = favicon_link_tag 'favicon.ico'
     = csrf_meta_tags
 
   %body
     #container
       #header
-        NURSE SCHEDULER
+        .left
+          Nurse Scheduler
+          %img{:src=>'/images/minimascot.png'}
+        .right
+        .clear
+      .separator
+      #navigation.right
+        - if admin_signed_in?
+          = render 'users/admin_navigation'
+        - if nurse_signed_in?
+          = render 'users/nurse_navigation'
+        .clear
       #flash
         = render 'shared/flash', :flash => flash
       #content
         = yield
+      .separator
       #footer
         (c) 2012 Team Awesome
+        

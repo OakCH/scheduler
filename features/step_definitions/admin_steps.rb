@@ -6,14 +6,9 @@ Given /^"(.*)" is a type of Unit$/ do |type|
   Unit.create!(:name => type)
 end
 
-Given /the following events exist/ do |events_table|
-  events_table.hashes.each do |event|
-    Event.create!(event)
+Then /^(?:I )?(should|should not) see the following nurses: "([^"]*)"$/ do |should_or_not, nurses|
+  nurses.split(', ').each do |nurse|
+    step %Q{I #{should_or_not} see "#{nurse}"}
   end
 end
 
-Given /the following nurses exist/ do |nurses_table|
-  nurses_table.hashes.each do |nurse|
-    Nurse.create!(nurse)
-  end
-end

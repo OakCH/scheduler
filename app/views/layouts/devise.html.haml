@@ -1,0 +1,17 @@
+!!! 5
+%html
+  %head
+    %title Nurse Scheduler
+    = stylesheet_link_tag 'compiled/login'
+    = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600'
+    = csrf_meta_tags
+    
+  %body      
+    #container
+      #login
+        #header
+          NURSE SCHEDULER
+        #content.container
+          = yield
+        #footer
+          (c) 2012 Team Awesome
