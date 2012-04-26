@@ -5,8 +5,8 @@ class ApplicationController < ActionController::Base
     authenticate_user!
   end
   
-  def authenticate_admin!
-    authenticate_user!
+  def authenticate_admin!(opt_args={})
+    authenticate_user!(opt_args)
     permission_denied if !current_admin
   end
   
