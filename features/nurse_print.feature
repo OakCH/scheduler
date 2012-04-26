@@ -1,7 +1,8 @@
-Feature: Print nurse calendar 
+Feature: Print Calendar As Nurse
 
 As a nurse, 
 I want to be able to print my vacation schedule.
+So I can use it when I'm using a computer.
 
 Background:
 
