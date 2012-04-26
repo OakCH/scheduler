@@ -146,6 +146,66 @@ class CalendarController < ApplicationController
     end
   end
 
+  def admin_print
+    if not session[:unit_id]
+      redirect_to admin_calendar_path
+      flash[:error] = "Please select a unit and filter calendars."
+      return
+    end
+    if not session[:shift]
+      redirect_to admin_calendar_path
+      flash[:error] = "Please select a shift and filter calendars."
+      return
+    end
+
+    @unit_id = session[:unit_id]
+    @shift = session[:shift]
+    @year_month = Array.new
+# hard-coded => waiting for notion of time to be implemented
+    months = 1..12
+    months.each do |m|
+      @year_month << [2012, m]
+    end
+    @strips = Array.new
+    @year_month.each do |ym|
+      cmonth = Date.civil(ym[0], ym[1])
+      @strips << Event.event_strips_for_month(cmonth, 
+                                              :include => :nurse, 
+                                              :conditions => {"nurses.unit_id" => @unit_id, "nurses.shift" => @shift}
+                                              )
+    end
+  end
+
+  def print
+    @nurse = Nurse.find_by_id(params[:nurse_id])
+    @unit_id = @nurse.unit_id 
+    @shift = @nurse.shift
+
+    @year_month = Array.new
+    @nurse.events.each do |e|
+      edate = e.start_at.to_date
+      date_arr = [edate.year, edate.month]
+      if not @year_month.include?(date_arr)
+        @year_month << date_arr
+      end
+
+      edate = e.end_at.to_date
+      date_arr = [edate.year, edate.month]
+      if not @year_month.include?(date_arr)
+        @year_month << date_arr
+      end
+    end
+
+    @strips = Array.new
+    @year_month.each do |ym|
+      cmonth = Date.civil(ym[0], ym[1])
+      @strips << Event.event_strips_for_month(cmonth, 
+                                              :include => :nurse, 
+                                              :conditions => {"nurses.unit_id" => @unit_id, "nurses.shift" => @shift, "nurses.id" => @nurse.id}
+                                              )
+    end
+  end
+
   private
 
   def setup_index
@@ -162,17 +222,18 @@ class CalendarController < ApplicationController
 
     yield
 
-    # Event.event_strips_for_month will sanitize the input that has been
-    # string interpolated
     if Unit.is_valid_shift(@shift) and Unit.is_valid_unit_id(@unit_id)
-      @event_strips = Event.event_strips_for_month(@shown_month, :include => :nurse, :conditions => "nurses.unit_id = #{@unit_id} and nurses.shift = '#{@shift}'")
+      @event_strips = Event.event_strips_for_month(@shown_month, 
+                                                    :include => :nurse, 
+                                                    :conditions => {"nurses.unit_id" => @unit_id, "nurses.shift" => @shift}
+                                                    )
     else
       flash[:error] = "An error has happened. It's all your fault."
       redirect_to login_path
       return
     end
   end
-  
+
   def check_nurse_id
     return if admin_signed_in?
     permission_denied if current_nurse != Nurse.find(params[:nurse_id])
