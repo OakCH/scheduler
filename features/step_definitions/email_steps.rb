@@ -204,3 +204,13 @@ end
 Then /^save and open all raw emails$/ do
   EmailSpec::EmailViewer::save_and_open_all_raw_emails
 end
+
+Then /^I send the nurse email$/ do
+  Notifier.notify_nurse(Nurse.find(:first)).deliver
+end
+
+Then /^I send the admin email$/ do
+  Admin.all.each do |admin|
+    Notifier.notify_admin(admin, Nurse.find(:first)).deliver
+  end
+end
