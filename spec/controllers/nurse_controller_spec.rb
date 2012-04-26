@@ -345,4 +345,56 @@ describe NurseController do
       end
     end
   end
+  describe 'FINALIZE' do
+    context 'happy path' do
+      before :each: do
+        @unit = FactoryGirl.create(:unit)
+        @bad_unit = FactoryGirl.create(:unit)
+        @shift = 'Days'
+        @bad_shift = 'PMs'
+        @nurse = FactoryGirl.create(:nurse, :unit_id => @unit.id, :shift => @shift
+        @bad_nurse = FactoryGirl.create(:nurse, :unit_id => @bad_unit, :shift => @bad_shift)
+        @email = "blahblahblah"
+      end
+      it 'should flash a message indicating success' do
+        post :finalize, :email => @email
+        flash[:notice].should = "Nurses for Unit #{@unit} and Shift #{@shift} have been finalized."
+      end
+      it 'should redirect to nurse view unit & shift page upon success' do
+        post :finalize, :email => @email
+        response.should redirect_to nurse_manager_index_path(:admin=> {:unit=>@unit, :shift=>@shift})
+      end
+      it 'should not allow the list to be edited after finalization' do
+        post :finalize, :email => @email
+        Nurse.stub(:find_by_id).and_return(@nurse)
+        @nurse.name = "New Name Editing"
+        @nurse.save.should be_nil
+      end
+      it 'should still allow other nurses to be edited after finalization' do
+        post :finalize, @email
+        Nurse.stub(:find_by_id).and_return(@bad_nurse)
+        @bad_nurse.name = "New Name Editing"
+        @bad_nurse.save.should_not be_nil
+      end
+      it 'should not allow you to update another nurse to a finalized unit and shift' do
+        post :finalize, @email
+        Nurse.stub(:find_by_id).and_return(@bad_nurse)
+        @bad_nurse.shift = @shift
+        @bad_nurse.unit_id = @unit.id
+        @bad_nurse.save.should be_nil
+      end
+      it 'should flash an error if you try to update another nurse to a finalized unit and shift' do
+        post :finalize, @email
+        Nurse.stub(:find_by_id).and_return(@bad_nurse)
+        @bad_nurse.shift = @shift
+        @bad_nurse.unit_id = @unit.id
+        @bad_nurse.save
+        flash[:error].should == "#{@unit},#{@shift} has been finalized and can no longer be edited."
+      end
+      it 'should flash an error if the email message is blank' do
+        post :finalize, :email => ""
+        flash[:error].should == "Email message cannot be blank."
+      end
+    end
+  end
 end
