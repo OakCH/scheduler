@@ -50,6 +50,9 @@ module NavigationHelpers
     when /^the Manage Nurses page$/
       nurse_manager_index_path
 
+    when /^the Nurse Print page for "([^"]*)"$/
+      print_nurse_calendar_index_path(Nurse.find_by_name($1))
+
     # Add more mappings here.
       # Here is an example that pulls values out of the Regexp:
     #
