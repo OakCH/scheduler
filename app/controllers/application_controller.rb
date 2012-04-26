@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
     permission_denied if !current_admin
   end
   
+  def authenticate_inviter!
+    authenticate_admin!(:force => true)
+  end
+  
   def permission_denied
     flash[:error] = 'You cannot access that page'
     redirect_to root_path 
