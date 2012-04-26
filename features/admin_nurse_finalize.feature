@@ -26,9 +26,6 @@ Background:
   And I select "Surgery" from "Unit"
   And I press "Show"
   And I press "Finalize Nurses"
-  And I am on the Finalize Nurses page
-  And I fill in "Message" with "Your Vacation Scheduling Account Information"
-  And I press "Finalize Nurse"
 
 Scenario: After finalizing, should be on Manage Nurse with no more edit or delete nurse options
   Then I should be on the Manage Nurses page

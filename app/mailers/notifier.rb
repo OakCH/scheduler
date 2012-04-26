@@ -13,4 +13,10 @@ class Notifier < ActionMailer::Base
     subject = "#{nurse.name} has finished scheduling his or her vacation"
     mail(:to => @admin.email, :subject => subject)
   end
+
+  def initialize_nurse(nurse)
+    @nurse = nurse
+    subject = "Your Vacation Scheduling Account Information"
+    mail(:to => nurse.email, :subject => subject)
+  end
 end
