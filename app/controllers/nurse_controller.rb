@@ -1,7 +1,7 @@
 class NurseController < ApplicationController
-  before_filter :authenticate_any!
+  before_filter :authenticate_any!, :only => ['seniority']
   before_filter :authenticate_admin!, :except => ['seniority']
-
+  
   before_filter :check_nurse_id, :only => ['seniority']
 
   def new
@@ -111,8 +111,8 @@ class NurseController < ApplicationController
 
   def seniority
     @nurse = Nurse.find_by_id(params[:nurse_id])
-    @nurses = Nurse.find_all_by_unit_id_and_shift(@nurse.unit_id, @nurse.shift, :order=>"years_worked DESC")
-    @columns = ['name', 'seniority']
+    @nurses = Nurse.where(:unit_id => @nurse.unit_id, :shift => @nurse.shift).order(:position)
+    @columns = ['name']
   end
 
   private

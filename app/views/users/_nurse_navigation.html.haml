@@ -1,9 +1,11 @@
 %ul
   %li.first
-    = link_to_unless_current 'Calendar', nurse_calendar_index_path(current_nurse)    
+    = link_to_unless_current 'Calendar', nurse_calendar_index_path(current_nurse)
+  %li
+    = link_to_unless_current 'Seniority List', seniority_path(current_nurse)
   %li
     = link_to "Logout", destroy_user_session_path, :method => :delete
   %li
     = "#{current_nurse.name} (Nurse)"
-  
+    
   
