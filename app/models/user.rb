@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   
-  devise :database_authenticatable, :recoverable, :rememberable#, :validatable (to be included when invitations are implemented)
+  devise :invitable, :database_authenticatable, :recoverable, :rememberable#, :validatable (to be included when invitations are implemented)
   
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
