@@ -345,4 +345,31 @@ describe NurseController do
       end
     end
   end
+  describe 'Seniority List' do
+
+    before(:each) do
+      @unit = FactoryGirl.create(:unit)
+      @nurses = FactoryGirl.create_list(:nurse, 5, :unit_id => @unit.id)
+      @nurses.each_with_index do |n, i|
+        n.years_worked = 5 - i
+        n.save!
+      end
+      @nurse = @nurses[0]
+    end
+    context 'Valid inputs' do
+      it 'should query the Nurse model for nurse' do
+        Nurse.should_receive(:find_by_id).and_return(@nurse)
+        get :seniority, :nurse_id => @nurse.id
+      end
+      it 'should query the Nurse mode for all nurses in unit and shift' do
+        Nurse.should_receive(:find_all_by_unit_id_and_shift)
+        get :seniority, :nurse_id => @nurse.id
+      end
+      it 'should assign a list with nurses in descending order by seniority' do
+        get :seniority, :nurse_id => @nurse.id
+        assigns(:nurses) == @nurses
+      end
+    end
+
+  end
 end
