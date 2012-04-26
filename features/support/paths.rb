@@ -50,6 +50,9 @@ module NavigationHelpers
     when /^the Manage Nurses page$/
       nurse_manager_index_path
 
+    when /^the Finalize Nurses page/
+      finalize_nurse_manager_index_path
+
     # Add more mappings here.
       # Here is an example that pulls values out of the Regexp:
     #
