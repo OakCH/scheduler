@@ -31,8 +31,19 @@ Scenario: After finalizing, show that the list has been finalized.
   Then I should see "This nurse list has been finalized and account creation emails have been sent for nurses in Unit Surgery, PMs."
 
 Scenario: Nurses in given unit and shift should receive email sent from admin
-  When I am logged in as the Nurse "Jane Doe"
   Then "jane@doe.com" should receive an email
   And I open the email
   Then I should see "Instructions to set up your Vacation Scheduler account" in the email subject
   And I should see "Your nurse administrator has set up an account for you" in the email body
+
+Scenario: Nurse can finish creating account based on email
+  And I log out
+  And "jane@doe.com" should receive an email
+  And I open the email
+  And I follow "Accept invitation" in the email
+  And I fill in "Email" with "changed_mail@doe.com"
+  And I fill in "Password" with "new_password"
+  And I fill in "Password confirmation" with "new_password"
+  And I press "Save and Login"
+  And I log out
+  Then I should be able to log in as the Nurse "changed_mail@doe.com" with password "new_password"
