@@ -4,8 +4,10 @@ describe NurseController do
 
   before(:all) do
     NurseController.skip_before_filter(:authenticate_admin!)
+    NurseController.skip_before_filter(:authenticate_any!)
+    NurseController.skip_before_filter(:check_nurse_id)
   end
-
+  
   describe "Index" do
     describe 'upon clicking Show' do
       context 'with valid inputs' do
@@ -43,7 +45,7 @@ describe NurseController do
           response.should redirect_to nurse_manager_index_path(:admin=> @admin)
         end
       end
-
+      
       context 'with invalid shift' do
         before(:each) do
           @unit = 'Surgery'
@@ -103,7 +105,7 @@ describe NurseController do
         end
       end
     end
-
+    
     describe 'upon clicking upload' do
       before (:each) do
         @unit = 'Surgery'
@@ -133,7 +135,7 @@ describe NurseController do
         post :upload, {:admin => @admin, :commit => 'Upload'}
         assigns[:file].should == @basic_xls_file
       end
-
+      
       it 'should create the temporary file' do
         String.any_instance.stub(:read)
         NurseController.any_instance.stub(:deleteFile)
@@ -178,7 +180,7 @@ describe NurseController do
         post :upload, {:admin => @admin, :commit => 'Upload'}
         flash[:error].should == ['Some Error']
       end
-
+      
       it 'should render same page' do
         NurseController.any_instance.stub(:copyFile)
         NurseController.any_instance.stub(:deleteFile)
@@ -345,31 +347,27 @@ describe NurseController do
       end
     end
   end
+  
   describe 'Seniority List' do
-
+    
     before(:each) do
       @unit = FactoryGirl.create(:unit)
-      @nurses = FactoryGirl.create_list(:nurse, 5, :unit_id => @unit.id)
-      @nurses.each_with_index do |n, i|
-        n.years_worked = 5 - i
-        n.save!
-      end
+      @nurses = FactoryGirl.create_list(:nurse, 5, :unit_id => @unit.id) # FactoryGirl creates this list in seniority order
       @nurse = @nurses[0]
     end
-    context 'Valid inputs' do
-      it 'should query the Nurse model for nurse' do
-        Nurse.should_receive(:find_by_id).and_return(@nurse)
-        get :seniority, :nurse_id => @nurse.id
-      end
-      it 'should query the Nurse mode for all nurses in unit and shift' do
-        Nurse.should_receive(:find_all_by_unit_id_and_shift)
-        get :seniority, :nurse_id => @nurse.id
-      end
-      it 'should assign a list with nurses in descending order by seniority' do
-        get :seniority, :nurse_id => @nurse.id
-        assigns(:nurses) == @nurses
-      end
+    
+    it 'should query the Nurse model for nurse' do
+      Nurse.should_receive(:find_by_id).and_return(@nurse)
+      get :seniority, :nurse_id => @nurse.id
     end
-
+    it 'should assign a list with nurses in descending order by seniority' do
+      get :seniority, :nurse_id => @nurse.id
+      assigns(:nurses).should == @nurses
+    end
+    it 'should assign columns to only display a name' do
+      get :seniority, :nurse_id => @nurse.id
+      assigns(:columns).should == ['name']
+    end
   end
+  
 end

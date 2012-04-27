@@ -1,5 +1,5 @@
 class NurseController < ApplicationController
-  before_filter :authenticate_any!, :only => ['seniority']
+  before_filter :authenticate_any!
   before_filter :authenticate_admin!, :except => ['seniority']
   
   before_filter :check_nurse_id, :only => ['seniority']
@@ -114,9 +114,9 @@ class NurseController < ApplicationController
     @nurses = Nurse.where(:unit_id => @nurse.unit_id, :shift => @nurse.shift).order(:position)
     @columns = ['name']
   end
-
+  
   private
-
+  
   def copyFile(file)
     File.open(Rails.root.join('tmp', file.original_filename), 'wb') do |f|
       f.write(file.read)
