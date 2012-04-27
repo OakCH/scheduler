@@ -31,7 +31,6 @@ Scenario: After finalizing, show that the list has been finalized.
   Then I should see "This nurse list has been finalized and account creation emails have been sent for nurses in Unit Surgery, PMs."
 
 Scenario: Nurses in given unit and shift should receive email sent from admin
-  When I am logged in as the Nurse "Jane Doe"
   Then "jane@doe.com" should receive an email
   And I open the email
   Then I should see "Instructions to set up your Vacation Scheduler account" in the email subject
