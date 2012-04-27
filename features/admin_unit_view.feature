@@ -12,6 +12,7 @@ Background:
   | name    |
   | Surgery |
   | ICU     |
+  | Trauma  |
 
   And I am logged in as an Admin
   And I am on the Associate Units page
@@ -23,22 +24,26 @@ Scenario: Seeing all the units
 Scenario: I should see the Surgery checkbox marked
   The "Surgery" checkbox should be checked
   And the "ICU" checkbox should not be checked
+  And the "Trauma" checkbox should not be checked
 
 Scenario: Adding ICU
   When I check "ICU"
-  And I press "Submit"
-  I should see "ICU added to list of units"
-  The "ICU" checkbox should be checked
+  When I press "Submit"
+  Then I should see "ICU added to list of units"
+  And the "ICU" checkbox should be checked
 
 Scenario: Removing surgery
   When I uncheck "Surgery"
   And I press "Submit"
-  I should see "Surgery removed from list of units"
-  The "Surgery" checkbox should not be checked
+  Then I should see "Surgery removed from list of units"
+  And the "Surgery" checkbox should not be checked
 
-
-
-
-
-
-
+Scenario: Removing surgery and adding Trauma
+  When I uncheck "Surgery"
+  And I check "Trauma"
+  When I press "Submit"
+  Then I should see "Surgery removed from list of units"
+  And I should see "Trauma added to list of units"
+  And the "Surgery" checkbox should not be checked
+  And the "Trauma" checkbox should be checked
+  
