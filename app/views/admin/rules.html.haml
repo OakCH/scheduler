@@ -20,9 +20,9 @@
       - while i < @num_months
         - j = i+1
         = label :admin, "seg#{j}", "Segment #{j}"
-        - index = @start_months[i] - 1
-        - month_name = @month_names[index]
-        = select :admin, "seg#{j}", @month_names, :selected => month_name
+        - index = @start_months[i]
+        - month_name = Date::MONTHNAMES[index]
+        = select :admin, "seg#{j}", Date::MONTHNAMES, :selected => month_name
         - i = j
       = submit_tag 'Done with Segments'
 
