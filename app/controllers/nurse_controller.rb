@@ -85,7 +85,7 @@ class NurseController < ApplicationController
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
   end
-
+  
   def upload
     @units = Unit.names
     @shifts = Unit.shifts
