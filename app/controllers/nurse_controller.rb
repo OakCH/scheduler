@@ -106,6 +106,14 @@ class NurseController < ApplicationController
     end
   end
 
+  def finalize
+    unit = Unit.find_by_name(params[:admin][:unit].strip)
+    shift = params[:admin][:shift].strip
+    NurseBulkUploader.create_nurse_invites!(unit,shift)
+    flash[:notice] = "This nurse list has been finalized."
+    redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => params[:admin][:unit].strip})
+  end
+
   private
 
   def copyFile(file)
@@ -145,11 +153,6 @@ class NurseController < ApplicationController
     end
     return valid
   end
-
 end
 
-class String
-  def is_i?
-    !!(self =~ /^[-+]?[0-9]+$/)
-  end
-end
+
