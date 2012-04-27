@@ -32,7 +32,7 @@ Scenario: After finalizing, show that the list has been finalized.
 
 Scenario: Nurses in given unit and shift should receive email sent from admin
   When I am logged in as the Nurse "Jane Doe"
-  Then "jane@doe.come" should receive an email
+  Then "jane@doe.com" should receive an email
   And I open the email
   Then I should see "Instructions to set up your Vacation Scheduler account" in the email subject
-  And I should see "You can confirm your account email through the link below:" in the email body
+  And I should see "Your nurse administrator has set up an account for you" in the email body
