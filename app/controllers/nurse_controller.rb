@@ -165,15 +165,12 @@ class NurseController < ApplicationController
     end
     return valid
   end
-<<<<<<< HEAD
-=======
 
   def check_nurse_id
     return if admin_signed_in?
     permission_denied if current_nurse != Nurse.find(params[:nurse_id])
   end
 
->>>>>>> 1236b828a811c83fa075a993af331c5cff5d406c
 end
 
 
