@@ -360,5 +360,18 @@ describe NurseBulkUploader do
       Temp.all_columns_as_sym.should == expected_array
     end
   end
+
+  describe 'sending nurse invitations' do
+    class Temp; extend NurseBulkUploader; end
+    
+    it 'should call the invite! method for each nurse in a particular unit and shift' do
+      unit = FactoryGirl.create(:unit)
+      matching_nurses = FactoryGirl.create_list(:nurse, 2, :unit => unit)
+      Nurse.stub(:where).and_return(matching_nurses)
+      matching_nurses.each { |nurse| nurse.user.should_receive(:invite!) }
+      Temp.create_nurse_invites!(unit, 'PMs')
+    end
+    
+  end
   
 end

@@ -85,7 +85,7 @@ class NurseController < ApplicationController
       redirect_to :admin => {:shift => @shift, :unit => @unit} and return
     end
   end
-
+  
   def upload
     @units = Unit.names
     @shifts = Unit.shifts
@@ -115,7 +115,7 @@ class NurseController < ApplicationController
     shift = params[:admin][:shift].strip
     Nurse.create_nurse_invites!(unit,shift)
     flash[:notice] = "This nurse list has been finalized and account creation emails have been sent for nurses in Unit #{unit.name}, #{shift}."
-    redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => params[:admin][:unit].strip})
+    redirect_to nurse_manager_index_path(:admin => {:shift => params[:admin][:shift], :unit => params[:admin][:unit].strip})
   end
 
 
