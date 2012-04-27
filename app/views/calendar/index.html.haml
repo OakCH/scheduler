@@ -6,7 +6,7 @@
   - @months = UnitAndShift.get_additional_months(@nurse.unit_id, @nurse.shift)
   - if @months != nil
     - @months.each do |m|
-      %p="and there is 1 additional nurse off during the segment #{@month_names[(m-1)%12]}, #{@month_names[m]}, and #{@month_names[(m+1)%12]}"
+      %p="and there is 1 additional nurse off during the segment #{@month_names[(m-1)%12]}, #{@month_names[m%12]}, and #{@month_names[(m+1)%12]}"
     
   #add-seg
     %p
