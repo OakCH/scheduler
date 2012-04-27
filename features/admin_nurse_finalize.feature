@@ -27,8 +27,8 @@ Background:
   And I press "Show"
   And I press "Finalize Nurses"
 
-Scenario: After finalizing, should that the list has been finalized.
-  Then I should see "This nurse list has been finalized."
+Scenario: After finalizing, show that the list has been finalized.
+  Then I should see "This nurse list has been finalized and account creation emails have been sent for nurses in Unit Surgery, PMs."
 
 Scenario: Nurses in given unit and shift should receive email sent from admin
   When I am logged in as the Nurse "Jane Doe"

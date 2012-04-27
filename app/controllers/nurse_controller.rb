@@ -114,7 +114,7 @@ class NurseController < ApplicationController
     unit = Unit.find_by_name(params[:admin][:unit].strip)
     shift = params[:admin][:shift].strip
     Nurse.create_nurse_invites!(unit,shift)
-    flash[:notice] = "This nurse list has been finalized."
+    flash[:notice] = "This nurse list has been finalized and account creation emails have been sent for nurses in Unit #{unit.name}, #{shift}."
     redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => params[:admin][:unit].strip})
   end
 
