@@ -5,7 +5,6 @@ class AdminController < ApplicationController
   def rules
     @units = Unit.names
     @shifts = Unit.shifts
-    @month_names = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     if flash[:error] == nil
       flash[:error] = []
     end
@@ -38,10 +37,10 @@ class AdminController < ApplicationController
       # check if need to update
       @records = UnitAndShift.get_add_month_objs(@unit_obj.id, @shift)
       if @records.empty?
-        create_records(@unit_obj, @shift, @num_months, @month_names)
+        create_records(@unit_obj, @shift, @num_months)
         @start_months = set_up_start_months(@unit_obj.id, @shift, @num_months)
       else
-        update_records(@records, @month_names)
+        update_records(@records)
         @start_months = set_up_start_months(@unit_obj.id, @shift, @num_months)
       end
       flash[:error] = 'Your changes have been saved'
@@ -169,20 +168,20 @@ class AdminController < ApplicationController
     end
   end
   
-  def create_records(unit, shift, num_months, month_names)
+  def create_records(unit, shift, num_months)
     i = 1
     while i <= num_months do
-      month = month_names.index(params[:admin]["seg#{i}"]) + 1
+      month = Date::MONTHNAMES.index(params[:admin]["seg#{i}"])
       add_month = UnitAndShift.new(:unit => unit, :shift => shift, :additional_month => month)
       add_month.save
       i += 1
     end
   end
   
-  def update_records(records, month_names)
+  def update_records(records)
     i = 1
     records.each do |r|
-      month = month_names.index(params[:admin]["seg#{i}"]) + 1
+      month = Date::MONTHNAMES.index(params[:admin]["seg#{i}"])
       r.update_attributes!(:additional_month => month)
       i += 1
     end
