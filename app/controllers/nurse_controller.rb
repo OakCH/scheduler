@@ -1,5 +1,8 @@
 class NurseController < ApplicationController
-  before_filter :authenticate_admin!
+  before_filter :authenticate_any!
+  before_filter :authenticate_admin!, :except => ['seniority']
+  
+  before_filter :check_nurse_id, :only => ['seniority']
 
   def new
     @shifts = Unit.shifts
@@ -106,6 +109,7 @@ class NurseController < ApplicationController
     end
   end
 
+
   def finalize
     unit = Unit.find_by_name(params[:admin][:unit].strip)
     shift = params[:admin][:shift].strip
@@ -114,8 +118,16 @@ class NurseController < ApplicationController
     redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => params[:admin][:unit].strip})
   end
 
-  private
 
+  def seniority
+    @nurse = Nurse.find_by_id(params[:nurse_id])
+    @nurses = Nurse.where(:unit_id => @nurse.unit_id, :shift => @nurse.shift).order(:position)
+    @columns = ['name']
+  end
+  
+
+  private
+  
   def copyFile(file)
     File.open(Rails.root.join('tmp', file.original_filename), 'wb') do |f|
       f.write(file.read)
@@ -153,6 +165,15 @@ class NurseController < ApplicationController
     end
     return valid
   end
+<<<<<<< HEAD
+=======
+
+  def check_nurse_id
+    return if admin_signed_in?
+    permission_denied if current_nurse != Nurse.find(params[:nurse_id])
+  end
+
+>>>>>>> 1236b828a811c83fa075a993af331c5cff5d406c
 end
 
 

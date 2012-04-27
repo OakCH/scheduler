@@ -35,10 +35,10 @@ Scenario: Changing month to March
 
 Scenario: Changing month to May
   When I follow "May"
-  Then I should not see vacations belonging to "John Doe"
+  Then I should see the vacation belonging to "John Doe" from "2-May-2012" to "9-May-2012"
 
 Scenario: Overlapping vacations
   Then I should see vacations belonging to "Jane Doe"
   Then I should see the vacation belonging to "Jane Doe" from "11-Apr-2012" to "19-Apr-2012"
-  Then I should not see vacations belonging to "John Doe"
+  Then I should see vacations belonging to "John Doe"
   

@@ -1,0 +1,15 @@
+%h2 Nurse Seniority List
+%p Below are the nurses currently in the database for your unit and shift. Nurses are ordered by vacation scheduling priority (nurses higher up, go first!).
+%table#nurses
+  %thead
+    %tr
+      %th= ""
+      - @columns.each do |col_name|
+        %th= col_name
+  %tbody
+    - if @nurses
+      - @nurses.each_with_index do |nurse,i|
+        %tr{:class => cycle("even", "odd")}
+          %td= i+1
+          - @columns.each do |attr|
+            %td= nurse.send(attr)
