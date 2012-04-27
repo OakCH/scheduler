@@ -22,6 +22,7 @@ Scheduler::Application.routes.draw do
     resources :nurse, :except => [:show], :as=> 'nurse_manager' do
       collection do
         post 'upload'
+        post 'finalize'
       end
     end
     # if there become too many actions, we will instead use the following

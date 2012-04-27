@@ -347,6 +347,46 @@ describe NurseController do
       end
     end
   end
+
+  describe 'FINALIZE' do
+    before :each do
+      @unit = FactoryGirl.create(:unit)
+      @bad_unit = FactoryGirl.create(:unit)
+      @shift = 'Days'
+      @bad_shift = 'PMs'
+      @nurse = FactoryGirl.create(:nurse, :unit_id => @unit.id, :shift => @shift)
+      @bad_nurse = FactoryGirl.create(:nurse, :unit_id => @bad_unit, :shift => @bad_shift)
+      @email = "blahblahblah"
+    end
+    it 'should flash a message indicating success' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      flash[:notice].should = "Nurses for Unit #{@unit} and Shift #{@shift} have been finalized."
+    end
+    it 'should redirect to nurse view unit & shift page upon success' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      response.should redirect_to nurse_manager_index_path(:admin=> {:unit=>@unit, :shift=>@shift})
+    end
+    it 'should not allow the list to be edited after finalization' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      Nurse.stub(:find_by_id).and_return(@nurse)
+      @nurse.name = "New Name Editing"
+      @nurse.save.should be_nil
+    end
+    it 'should still allow other nurses to be edited after finalization' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      Nurse.stub(:find_by_id).and_return(@bad_nurse)
+      @bad_nurse.name = "New Name Editing"
+      @bad_nurse.save.should_not be_nil
+    end
+    it 'should not allow you to update another nurse to a finalized unit and shift' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      Nurse.stub(:find_by_id).and_return(@bad_nurse)
+      @bad_nurse.shift = @shift
+      @bad_nurse.unit_id = @unit.id
+      @bad_nurse.save.should be_nil
+    end
+  end
+
   
   describe 'Seniority List' do
     
@@ -370,4 +410,5 @@ describe NurseController do
     end
   end
   
+
 end
