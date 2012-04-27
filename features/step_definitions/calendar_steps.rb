@@ -43,7 +43,7 @@ def event_finder(nurse, start_date, end_date)
 end
 
 def event_all_finder(nurse)
-  Event.find_all_by_name
+  Event.find_all_by_name(nurse)
 end
 
 Then /^(?:I )?(should|should not) see vacations belonging to "([^"]*)"$/ do |should_or_not, nurse|

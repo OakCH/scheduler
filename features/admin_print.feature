@@ -28,8 +28,8 @@ Background:
   And I press "Filter calendars"
   And I follow "View and print entire schedule"
 
-Scenario: Print calendar for the Surgery unit and the PMs shift
-  Then I should see vacations belonging to "John Doe"
-  And I should see vacations belonging to "J.P. Morgan"
-  And I should not see vacations belonging to "Jane Doe"
+Scenario: Print calendar for the Surgery unit and the Days shift
+  Then I should not see vacations belonging to "John Doe"
+  And I should not see vacations belonging to "J.P. Morgan"
+  And I should see vacations belonging to "Jane Doe"
   And I should not see vacations belonging to "K.D. Tang"
