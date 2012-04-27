@@ -4,8 +4,10 @@ describe NurseController do
 
   before(:all) do
     NurseController.skip_before_filter(:authenticate_admin!)
+    NurseController.skip_before_filter(:authenticate_any!)
+    NurseController.skip_before_filter(:check_nurse_id)
   end
-
+  
   describe "Index" do
     describe 'upon clicking Show' do
       context 'with valid inputs' do
@@ -43,7 +45,7 @@ describe NurseController do
           response.should redirect_to nurse_manager_index_path(:admin=> @admin)
         end
       end
-
+      
       context 'with invalid shift' do
         before(:each) do
           @unit = 'Surgery'
@@ -103,7 +105,7 @@ describe NurseController do
         end
       end
     end
-
+    
     describe 'upon clicking upload' do
       before (:each) do
         @unit = 'Surgery'
@@ -133,7 +135,7 @@ describe NurseController do
         post :upload, {:admin => @admin, :commit => 'Upload'}
         assigns[:file].should == @basic_xls_file
       end
-
+      
       it 'should create the temporary file' do
         String.any_instance.stub(:read)
         NurseController.any_instance.stub(:deleteFile)
@@ -178,7 +180,7 @@ describe NurseController do
         post :upload, {:admin => @admin, :commit => 'Upload'}
         flash[:error].should == ['Some Error']
       end
-
+      
       it 'should render same page' do
         NurseController.any_instance.stub(:copyFile)
         NurseController.any_instance.stub(:deleteFile)
@@ -345,4 +347,68 @@ describe NurseController do
       end
     end
   end
+
+  describe 'FINALIZE' do
+    before :each do
+      @unit = FactoryGirl.create(:unit)
+      @bad_unit = FactoryGirl.create(:unit)
+      @shift = 'Days'
+      @bad_shift = 'PMs'
+      @nurse = FactoryGirl.create(:nurse, :unit_id => @unit.id, :shift => @shift)
+      @bad_nurse = FactoryGirl.create(:nurse, :unit_id => @bad_unit, :shift => @bad_shift)
+      @email = "blahblahblah"
+    end
+    it 'should flash a message indicating success' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      flash[:notice].should = "Nurses for Unit #{@unit} and Shift #{@shift} have been finalized."
+    end
+    it 'should redirect to nurse view unit & shift page upon success' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      response.should redirect_to nurse_manager_index_path(:admin=> {:unit=>@unit, :shift=>@shift})
+    end
+    it 'should not allow the list to be edited after finalization' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      Nurse.stub(:find_by_id).and_return(@nurse)
+      @nurse.name = "New Name Editing"
+      @nurse.save.should be_nil
+    end
+    it 'should still allow other nurses to be edited after finalization' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      Nurse.stub(:find_by_id).and_return(@bad_nurse)
+      @bad_nurse.name = "New Name Editing"
+      @bad_nurse.save.should_not be_nil
+    end
+    it 'should not allow you to update another nurse to a finalized unit and shift' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      Nurse.stub(:find_by_id).and_return(@bad_nurse)
+      @bad_nurse.shift = @shift
+      @bad_nurse.unit_id = @unit.id
+      @bad_nurse.save.should be_nil
+    end
+  end
+
+  
+  describe 'Seniority List' do
+    
+    before(:each) do
+      @unit = FactoryGirl.create(:unit)
+      @nurses = FactoryGirl.create_list(:nurse, 5, :unit_id => @unit.id) # FactoryGirl creates this list in seniority order
+      @nurse = @nurses[0]
+    end
+    
+    it 'should query the Nurse model for nurse' do
+      Nurse.should_receive(:find_by_id).and_return(@nurse)
+      get :seniority, :nurse_id => @nurse.id
+    end
+    it 'should assign a list with nurses in descending order by seniority' do
+      get :seniority, :nurse_id => @nurse.id
+      assigns(:nurses).should == @nurses
+    end
+    it 'should assign columns to only display a name' do
+      get :seniority, :nurse_id => @nurse.id
+      assigns(:columns).should == ['name']
+    end
+  end
+  
+
 end

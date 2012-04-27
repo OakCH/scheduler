@@ -262,6 +262,10 @@ Given /^I am logged in as an Admin$/ do
   sign_in(FactoryGirl.create(:admin))
 end
 
+Given /^I am logged in as the Admin "([^"]*)"$/ do |name|
+  sign_in(Admin.find_by_name(name))
+end
+
 Given /^I am logged in as the Nurse "([^"]*)"(?: with password "([^"]*)")?$/ do |name, password|
   sign_in(Nurse.find_by_name(name), password)
 end

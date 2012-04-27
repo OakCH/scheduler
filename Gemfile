@@ -51,4 +51,3 @@ gem 'roo', '~> 1.2.3'
 gem 'hoe', '2.3.3'
 gem 'devise', '>=2.0.0'
 gem 'devise_invitable'
-

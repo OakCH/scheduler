@@ -3,11 +3,11 @@
 = form_tag({:action => :rules}, :multipart => true) do
   
   %p#instruction1= 'Please select your Unit and Shift, then click "Next"'
-  = label :admin, :shift, 'Shift'
-  = select :admin, :shift, @shifts, :selected => @shift
-  
   = label :admin, :unit, 'Unit'
   = select :admin, :unit, @units, :selected => @unit
+  
+  = label :admin, :shift, 'Shift'
+  = select :admin, :shift, @shifts, :selected => @shift
   
   = submit_tag 'Next'
   
