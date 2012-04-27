@@ -57,6 +57,9 @@ module NavigationHelpers
     when /^the Nurses Seniority page for "([^"]*)"$/
       seniority_path(Nurse.find_by_name($1))
 
+    when /^the Finalize Nurses page/
+      finalize_nurse_manager_index_path
+
     # Add more mappings here.
       # Here is an example that pulls values out of the Regexp:
     #
