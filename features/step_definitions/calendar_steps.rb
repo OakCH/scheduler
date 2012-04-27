@@ -12,7 +12,7 @@ Given /^I enter in the following vacations$/ do |vacations_table|
   end
 end
 
-Given /the following nurses exist/ do |nurses_table|
+Given /the following nurses exist(?: in this seniority order)?/ do |nurses_table|
   nurses_table.hashes.each do |nurse_params|
     if nurse_params[:unit]
       unit = Unit.find_by_name(nurse_params[:unit])
@@ -43,7 +43,7 @@ def event_finder(nurse, start_date, end_date)
 end
 
 def event_all_finder(nurse)
-  Event.find_all_by_name
+  Event.find_all_by_name(nurse)
 end
 
 Then /^(?:I )?(should|should not) see vacations belonging to "([^"]*)"$/ do |should_or_not, nurse|
