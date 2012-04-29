@@ -4,4 +4,4 @@
   = render 'form'
   = submit_tag 'Update Info'
 = button_to 'Delete', nurse_manager_path(@nurse), :method => 'delete', :confirm => 'Are you sure?'
-
+= link_to 'Back to nurse list', nurse_manager_index_path(:admin => { :unit => @unit, :shift => @shift }) 

@@ -3,22 +3,28 @@ class NurseController < ApplicationController
   before_filter :authenticate_admin!, :except => ['seniority']
   
   before_filter :check_nurse_id, :only => ['seniority']
-
+  
   def new
     @shifts = Unit.shifts
     @units = Unit.names
+    if params[:admin][:unit] and params[:admin][:shift]
+      @unit = params[:admin][:unit]
+      @shift = params[:admin][:shift]
+      @rank = Unit.find_by_name(params[:admin][:unit]).nurses.where(:shift => params[:admin][:shift]).count + 1
+    end
   end
-
+  
   def create
     @shifts = Unit.shifts
     @units = Unit.names
     unit_name = params[:nurse][:unit]
     params[:nurse][:unit] = Unit.find_by_name(params[:nurse][:unit])
     if params[:nurse][:unit]
-      params[:nurse][:position] = params[:nurse][:unit].nurses.find(:first, :order => "id desc").position + 1
+      params[:nurse][:nurse_order_position] = params[:nurse][:rank].to_i - 1
     end
-    @nurse = Nurse.new(params[:nurse])
+    @nurse = Nurse.new(params[:nurse].except(:rank))
     if not @nurse.save
+      @rank = params[:nurse][:rank]
       flash[:error] = @nurse.errors.full_messages
       params[:nurse][:unit] = unit_name
       render :action => 'new'
@@ -27,21 +33,24 @@ class NurseController < ApplicationController
       redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
     end
   end
-
+  
   def edit
     @nurse = Nurse.find params[:id]
-    @nurse[:unit] = Unit.find_by_id(@nurse[:unit_id]).name
     @shifts = Unit.shifts
     @units = Unit.names
+    @shift = @nurse.shift
+    @unit = @nurse.unit.name
+    @rank = @nurse.unit.nurses.where(:shift => @shift).rank(:nurse_order).index(@nurse) + 1
   end
-
+  
   def update
-    @nurse = Nurse.find params[:id]
     @shifts = Unit.shifts
     @units = Unit.names
+    @nurse = Nurse.find params[:id]
     unit_name = params[:nurse][:unit]
     params[:nurse][:unit] = Unit.find_by_name(params[:nurse][:unit])
-    @nurse.attributes = params[:nurse]
+    params[:nurse][:nurse_order_position] = params[:nurse][:rank].to_i - 1
+    @nurse.attributes = params[:nurse].except(:rank)
     if not @nurse.save
       flash[:error] = @nurse.errors.full_messages
       params[:nurse][:unit] = unit_name
@@ -51,7 +60,7 @@ class NurseController < ApplicationController
       redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
     end
   end
-
+  
   def destroy
     @nurse = Nurse.find(params[:id])
     unit_name = Unit.find_by_id(@nurse.unit_id).name
@@ -60,11 +69,11 @@ class NurseController < ApplicationController
     flash[:notice] = "#{@nurse.name} was removed from the system."
     redirect_to nurse_manager_index_path(:admin => {:shift => shift_name, :unit => unit_name}) and return
   end
-
+  
   def index
     @units = Unit.names
     @shifts = Unit.shifts
-
+    
     if flash[:error] == nil
       flash[:error] = []
     end
@@ -93,7 +102,7 @@ class NurseController < ApplicationController
     if flash[:error] == nil
       flash[:error] = []
     end
- 
+    
     if params[:commit] == 'Upload'
       @file = params[:admin][:upload]
       if @file
@@ -108,8 +117,8 @@ class NurseController < ApplicationController
       redirect_to :action => :index, :admin => {:shift => @shift, :unit => @unit} and return
     end
   end
-
-
+  
+  
   def finalize
     unit = Unit.find_by_name(params[:admin][:unit].strip)
     shift = params[:admin][:shift].strip
@@ -117,15 +126,15 @@ class NurseController < ApplicationController
     flash[:notice] = "This nurse list has been finalized and account creation emails have been sent for nurses in Unit #{unit.name}, #{shift}."
     redirect_to nurse_manager_index_path(:admin => {:shift => params[:admin][:shift], :unit => params[:admin][:unit].strip})
   end
-
-
+  
+  
   def seniority
-    @nurse = Nurse.find_by_id(params[:nurse_id])
-    @nurses = Nurse.where(:unit_id => @nurse.unit_id, :shift => @nurse.shift).order(:position)
+    @nurse = Nurse.find(params[:nurse_id])
+    @nurses = Nurse.where(:unit_id => @nurse.unit_id, :shift => @nurse.shift).rank(:nurse_order)
     @columns = ['name']
   end
   
-
+  
   private
   
   def copyFile(file)
@@ -133,11 +142,11 @@ class NurseController < ApplicationController
       f.write(file.read)
     end
   end
-
+  
   def deleteFile(file)
     File.delete(Rails.root.join('tmp', file.original_filename))
   end
-
+  
   def getNextParams
     @unit = params[:admin][:unit]
     if @unit
