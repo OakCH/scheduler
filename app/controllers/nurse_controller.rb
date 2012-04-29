@@ -114,20 +114,29 @@ class NurseController < ApplicationController
     unit = Unit.find_by_name(params[:admin][:unit].strip)
     shift = params[:admin][:shift].strip
     Nurse.create_nurse_invites!(unit,shift)
+    first_nurse = Nurse.order("position").find_all_by_unit_id_and_shift(1,"PMs").first
+    NurseBaton.create!(:unit_id=>unit,:shift=>shift, :current_nurse=>first_nurse)
     flash[:notice] = "This nurse list has been finalized and account creation emails have been sent for nurses in Unit #{unit.name}, #{shift}."
     redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => params[:admin][:unit].strip})
   end
-
 
   def seniority
     @nurse = Nurse.find_by_id(params[:nurse_id])
     @nurses = Nurse.where(:unit_id => @nurse.unit_id, :shift => @nurse.shift).order(:position)
     @columns = ['name']
   end
-  
+
+  def finalize_schedule
+    nurse_id = params[:nurse_id]
+    shift = params[:admin][:shift].strip
+    unit = Unit.find_by_name(params[:admin][:unit].strip)
+    current_nurse = NurseBaton.find_by_unit_and_shift(unit,shift).current_nurse
+    next_nurse = Nurse.order('position').find(:all, :conditions => ['unit = ? and shift = ? and position > ?', unit,shift,current_nurse.position])
+    NurseBaton.update_nurse(unit,shift,next_nurse)
+  end
 
   private
-  
+
   def copyFile(file)
     File.open(Rails.root.join('tmp', file.original_filename), 'wb') do |f|
       f.write(file.read)

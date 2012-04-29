@@ -12,6 +12,11 @@ class CalendarController < ApplicationController
       @unit_id = 0
       if @nurse
         @unit_id = @nurse.unit_id
+        @shift = @nurse.shift
+        @cur_nurse = false
+        if current_nurse == @nurse
+          @cur_nurse = true
+        end
       else
         flash[:error] = "An error has occurred."
         redirect_to login_path
@@ -96,6 +101,12 @@ class CalendarController < ApplicationController
   end
   
   def edit
+    @nurse = Nurse.find_by_id(params[:id])
+    @cur_nurse = false
+    if current_nurse == @nurse
+      @cur_nurse = true
+    end
+
     @event = Event.find_by_id(params[:id])
     if not @event
       flash[:error] = "The vacation you are trying to edit could not be found."
@@ -103,7 +114,7 @@ class CalendarController < ApplicationController
       return
     end
     
-    @nurse_id = params[:nurse_id]
+    @nurse_id = @nurse.id
     @id = params[:id]
   end
   

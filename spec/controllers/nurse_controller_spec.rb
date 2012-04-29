@@ -366,11 +366,11 @@ describe NurseController do
       post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
       response.should redirect_to nurse_manager_index_path(:admin=> {:unit=>@unit, :shift=>@shift})
     end
-    it 'should not allow the list to be edited after finalization' do
+    it 'should allow the list to be edited after finalization' do
       post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
       Nurse.stub(:find_by_id).and_return(@nurse)
       @nurse.name = "New Name Editing"
-      @nurse.save.should be_nil
+      @nurse.save.should_not be_nil
     end
     it 'should still allow other nurses to be edited after finalization' do
       post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
@@ -378,12 +378,20 @@ describe NurseController do
       @bad_nurse.name = "New Name Editing"
       @bad_nurse.save.should_not be_nil
     end
-    it 'should not allow you to update another nurse to a finalized unit and shift' do
-      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
-      Nurse.stub(:find_by_id).and_return(@bad_nurse)
-      @bad_nurse.shift = @shift
-      @bad_nurse.unit_id = @unit.id
-      @bad_nurse.save.should be_nil
+  end
+
+  describe 'Finalize Vacation Schedule' do
+    before :each do
+      @shift = 'Days'
+      @unit = FactoryGirl.create(:unit)
+      @nurse = FactoryGirl.create(:nurse, :position=>1,:shift=>@shift,:unit=>@unit)
+      @nurse_next = FactoryGirl.create(:nurse,:position=>2,:shift=>@shift,:unit=>@unit)
+      @nurse_other = FactoryGirl.create(:nurse,:position=>1,:shift=>"PMs",:unit=>@unit)
+      post :finalize_schedule, :id=>@nurse.id
+    end
+    it 'should make the current nurse the next nurse' do
+      nurse = NurseBaton.find_by_unit_and_shift(@unit,@shift)
+      nurse.current_nurse.should == @nurse_next.id
     end
   end
 
