@@ -2,11 +2,11 @@
 = text_field :nurse, :name
 %br
 = label :nurse, :unit, 'Unit'
-= select :nurse, :unit, @units
+= select :nurse, :unit, @units, :selected => @unit
 
 %br
 = label :nurse, :shift, 'Shift'
-= select :nurse, :shift, @shifts
+= select :nurse, :shift, @shifts, :selected => @shift
 %br
 = label :nurse, :years_worked, 'Years Worked'
 = text_field :nurse, :years_worked
@@ -16,4 +16,7 @@
 %br
 = label :nurse, :email, 'Email'
 = text_field :nurse, :email
+%br 
+= label :nurse, :rank, 'Rank'
+= text_field_tag 'nurse[rank]', @rank
 %br

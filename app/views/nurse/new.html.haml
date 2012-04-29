@@ -3,3 +3,5 @@
 = form_tag nurse_manager_index_path(@nurse) do
   = render 'form'
   = submit_tag 'Add New Nurse'
+= link_to 'Back to nurse list', nurse_manager_index_path(:admin => { :unit => @unit, :shift => @shift }) 
+  
