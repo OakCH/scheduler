@@ -1,0 +1,21 @@
+%h1 Manage Admins
+
+%h2 Admin List
+
+%table#admins
+  %thead
+    %tr
+      %th= ""
+      %th Name
+      %th Email
+      %th= ""
+  %tbody  
+    - @admins.each_with_index do |admin,i|
+      %tr{:class => cycle("even", "odd")}
+        %td= i+1
+        %td= link_to admin.name, edit_admin_path(admin)          
+        %td= admin.email        
+        %td= button_to 'Delete', admin_path(admin), :method => 'delete', :confirm => 'Are you sure?', :id => "#{admin.name}_delete" 
+        
+= link_to 'Add a New Administrator', new_admin_path
+

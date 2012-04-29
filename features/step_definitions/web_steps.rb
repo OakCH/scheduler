@@ -270,8 +270,9 @@ Given /^I am logged in as the Nurse "([^"]*)"(?: with password "([^"]*)")?$/ do 
   sign_in(Nurse.find_by_name(name), password)
 end
 
-Then /^I should be able to log in as the Nurse "([^"]*)"(?: with password "([^"]*)")?$/ do |email, password|
-  sign_in(Nurse.find_by_email(email), password)
+Then /^I should be able to log in as the (Nurse|Admin) "([^"]*)"(?: with password "([^"]*)")?$/ do |type, email, password|
+  class_const = Kernel.const_get(type)
+  sign_in(class_const.send(:find_by_email, email), password)
 end
 
 def sign_in(user, password=nil)
