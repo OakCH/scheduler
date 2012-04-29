@@ -1,11 +1,20 @@
 class Users::InvitationsController < Devise::InvitationsController
   
   def new
-    redirect_to :root
+    build_resource
+    render 'admin_manager/new_admin', :layout => 'application'
   end
   
   def create
-    redirect_to :root
+    admin = Admin.new(params[:user])
+    self.resource = admin.user
+    if admin.save
+      admin.user.invite!
+      set_flash_message :notice, :send_instructions, :email => admin.email
+      respond_with resource, :location => admins_path
+    else
+      render 'admin_manager/new_admin', :layout => 'application'
+    end
   end
   
   def edit

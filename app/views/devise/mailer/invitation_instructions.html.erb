@@ -1,8 +1,12 @@
 <p>Hello <%= @resource.name %>!</p>
 
+<% if @resource.personable_type == 'Nurse' %>
 <p>Your nurse administrator has set up an account for you at <%= root_url %>. At this site, you will be able to scehdule your vacations. You can finish setting up your account through the link below.</p>
+<% else %>
+<p> A current nurse administrator has set up an administrator account for you at <%= root_url %>. You can finish setitng up your account through the link below.</p>
+<% end %>
 
 <p><%= link_to 'Accept invitation', accept_invitation_url(@resource, :invitation_token => @resource.invitation_token) %></p>
 
-<p> Please contact your nurse administrator for further assistance.<br />
+<p> Please contact a nurse administrator for further assistance.<br />
   Your account won't be useable until you access the link above and set your password.</p>

@@ -50,7 +50,12 @@ module NavigationHelpers
     when /^the Manage Nurses page$/
       nurse_manager_index_path
       
-      
+    when /^the Manage Admins page$/
+      admins_path
+
+    when /the Edit Admin page for "([^"]*)"$/
+      admin_path(Admin.find_by_name($1))
+
     when /^the Nurse Print page for "([^"]*)"$/
       print_nurse_calendar_index_path(Nurse.find_by_name($1))
       
