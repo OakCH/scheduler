@@ -3,10 +3,10 @@
 = form_tag admin_path(@admin), :method => :put do
   = label :admin, :name, 'Name'
   = text_field :admin, :name
-  
+
   = label :admin, :email, 'Email'
   = text_field :admin, :email
-
+  
   = submit_tag 'Update Info'
 = button_to 'Delete', admin_path(@admin), :method => 'delete', :confirm => 'Are you sure?'
-
+= link_to 'Back to admin list', admins_path
