@@ -6,11 +6,11 @@ So that I can have an up-to-date list of them.
 
 Background:
   Given the following nurses exist:
-  | name               | shift | unit       | email               |
-  | Jane Doe           | PMs   | Surgery    | janedoe@email.com   |
-  | John Doe           | PMs   | Surgery    | johndoe@email.com   |
-  | J.D. Another Unit  | PMs   | Cardiology | otherjane@email.com |
-  | J.D. Another Shift | Days  | Surgery    | otherjohn@email.com |
+  | name               | shift | unit       | email               | nurse_order_position |
+  | Jane Doe           | PMs   | Surgery    | janedoe@email.com   |                    1 |
+  | John Doe           | PMs   | Surgery    | johndoe@email.com   |                    2 |
+  | J.D. Another Unit  | PMs   | Cardiology | otherjane@email.com |                    1 |
+  | J.D. Another Shift | Days  | Surgery    | otherjohn@email.com |                    1 |
 
   And I am logged in as an Admin
   And I am on the Manage Nurses page
@@ -52,15 +52,17 @@ Scenario: Adding a new nurse with existing email
   And I press "Add New Nurse"
   Then I should see "User email has already been taken"
 
-Scenario: Updating a nurse name
+Scenario: Updating a nurse name and position
   When I select "PMs" from "Shift"
   And I select "Surgery" from "Unit"
   And I press "Show"
   And I follow "Jane Doe"
   And I fill in "Name" with "Jane New Doe"
+  And I fill in "Rank" with "2"
   And I press "Update Info"
   Then I should see "Jane New Doe"
   And I should not see "Jane Doe"
+  And I should see "John Doe" before "Jane New Doe"
 
 Scenario: Updating a nurse email to an existing email
   When I select "PMs" from "Shift"
