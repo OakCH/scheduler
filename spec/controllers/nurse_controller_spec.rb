@@ -384,7 +384,7 @@ describe NurseController do
     end
     
     it 'should query the Nurse model for nurse' do
-      Nurse.should_receive(:find_by_id).and_return(@nurse)
+      Nurse.should_receive(:find).and_return(@nurse)
       get :seniority, :nurse_id => @nurse.id
     end
     it 'should assign a list with nurses in descending order by seniority' do
