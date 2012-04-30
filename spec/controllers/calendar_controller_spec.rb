@@ -611,12 +611,12 @@ describe CalendarController do
       @nurse = FactoryGirl.create(:nurse, :position=>1,:shift=>@shift,:unit=>@unit)
       @nurse_next = FactoryGirl.create(:nurse,:position=>2,:shift=>@shift,:unit=>@unit)
       @nurse_other = FactoryGirl.create(:nurse,:position=>1,:shift=>"PMs",:unit=>@unit)
-      @baton = NurseBaton.create(:unit_id => @unit.id, :shift => @shift, :current_nurse_id => @nurse.id)
+      @baton = FactoryGirl.create(:nurse_baton, :unit => @unit, :shift => @shift, :nurse => @nurse)
       post :finalize_schedule, :nurse_id => @nurse.id
     end
     it 'should make the current nurse the next nurse' do
-      nurse = NurseBaton.find_by_unit_id_and_shift(@unit.id,@shift)
-      nurse.current_nurse.should == @nurse_next
+      baton = NurseBaton.find_by_unit_id_and_shift(@unit.id,@shift)
+      baton.nurse.should == @nurse_next
     end
   end
 end

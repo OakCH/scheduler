@@ -123,7 +123,7 @@ class NurseController < ApplicationController
     shift = params[:admin][:shift].strip
     Nurse.create_nurse_invites!(unit,shift)
     first_nurse = Nurse.where(:unit_id => unit.id, :shift => shift).rank(:nurse_order).first
-    NurseBaton.create!(:unit=>unit,:shift=>shift, :current_nurse_id=>first_nurse.id)
+    NurseBaton.create!(:unit=>unit,:shift=>shift, :nurse=>first_nurse)
     flash[:notice] = "This nurse list has been finalized and account creation emails have been sent for nurses in Unit #{unit.name}, #{shift}."
     redirect_to nurse_manager_index_path(:admin => {:shift => params[:admin][:shift], :unit => params[:admin][:unit].strip})
   end

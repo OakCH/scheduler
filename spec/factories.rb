@@ -44,4 +44,9 @@ FactoryGirl.define do
     nurse
   end
 
+  factory :nurse_baton do
+    nurse
+    shift 'PMs'
+    unit
+  end
 end

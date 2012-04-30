@@ -350,9 +350,8 @@ describe NurseController do
       @bad_unit = FactoryGirl.create(:unit)
       @shift = 'Days'
       @bad_shift = 'PMs'
-      @nurse = FactoryGirl.create(:nurse, :unit_id => @unit.id, :shift => @shift)
-      @bad_nurse = FactoryGirl.create(:nurse, :unit_id => @bad_unit, :shift => @bad_shift)
-      @email = "blahblahblah"
+      @nurse = FactoryGirl.create(:nurse, :unit => @unit, :shift => @shift)
+      @bad_nurse = FactoryGirl.create(:nurse, :unit => @bad_unit, :shift => @bad_shift)
     end
     it 'should flash a message indicating success' do
       post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
@@ -368,23 +367,16 @@ describe NurseController do
       @bad_nurse.name = "New Name Editing"
       @bad_nurse.save.should_not be_nil
     end
-  end
-
-  describe 'Finalize Vacation Schedule' do
-    before :each do
-      @shift = 'Days'
-      @unit = FactoryGirl.create(:unit)
-      @nurse = FactoryGirl.create(:nurse, :position=>1,:shift=>@shift,:unit=>@unit)
-      @nurse_next = FactoryGirl.create(:nurse,:position=>2,:shift=>@shift,:unit=>@unit)
-      @nurse_other = FactoryGirl.create(:nurse,:position=>1,:shift=>"PMs",:unit=>@unit)
-      post :finalize_schedule, :id=>@nurse.id
+    it 'should create a nurse baton to start the scheduling process' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      NurseBaton.find_by_unit_id_and_shift(@unit.id,@shift).should_not be_nil
     end
-    it 'should make the current nurse the next nurse' do
-      nurse = NurseBaton.find_by_unit_and_shift(@unit,@shift)
-      nurse.current_nurse.should == @nurse_next.id
+    it 'should have a valid nurse in the nurse baton' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      baton = NurseBaton.find_by_unit_id_and_shift(@unit.id,@shift)
+      baton.nurse.should_not be_nil
     end
   end
-
 
   describe 'Seniority List' do
     before(:each) do

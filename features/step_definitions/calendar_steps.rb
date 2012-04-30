@@ -30,6 +30,21 @@ Given /the following admins exist/ do |admin_table|
   end
 end
 
+Given /the following nurse batons exist/ do |batons_table|
+  batons_table.hashes.each do |baton_params|
+    unit = Unit.find_by_name(baton_params[:unit])
+    unit = Unit.create!(:name => baton_params[:unit]) if !unit
+    nurse = Nurse.find_by_name(baton_params[:nurse])
+    nurse = Nurse.create!(:name => baton_params[:nurse]) if !nurse
+    baton_params[:unit_id] = unit.id
+    baton_params[:unit] = nil
+    baton_params[:nurse_id] = nurse.id
+    baton_params[:nurse] = nil
+    FactoryGirl.create(:nurse_baton, baton_params)
+  end
+end
+
+
 Then /^(?:I )?(should|should not) see the vacation belonging to "([^"]*)" from "([^"]*)" to "([^"]*)"$/ do |should_or_not, nurse, start_date, end_date|
   event = event_finder(nurse, start_date, end_date)
   #page.find("*[data-event-id='#{event.id}']")
