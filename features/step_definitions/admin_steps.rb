@@ -23,6 +23,6 @@ Given /^I follow the calendar for "([^"]*)"$/ do |name|
 end
 
 Given /^I press delete for "([^"]*)"$/ do |name|
-  nurse = Nurse.find_by_name(name)
-  step %Q{I press "#{nurse.id}_delete"}
+  user = User.find_by_name(name).personable_id
+  step %Q{I press "#{user}_delete"}
 end
