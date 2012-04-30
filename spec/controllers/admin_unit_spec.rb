@@ -1,6 +1,5 @@
 # this is basically CRUD on admin_units
-
-require 'sepc_helper'
+require 'spec_helper'
 
 describe AdminUnitController do
   before(:all) do
@@ -31,21 +30,24 @@ describe AdminUnitController do
   describe "update" do
     it 'add unit to admin' do
       @unit4 = FactoryGirl.create(:unit)
-      new_units = @admin.units + [@unit4]
-      put :update, :units => { new_units.map { |u|.name } }
+      new_units = (@admin.units + [@unit4]).map { |u| u.name }
+      put :update, :units => { new_units[0] => true, new_units[1] => true,
+                               new_units[2] => true, new_units[2] => true }
       @admin.units.length.should == 4
     end
 
     it 'remove unit to admin' do
-      new_units = @admin.units[0..2]
-      put :update, :units => { new_units.map { |u|.name } }
+      new_units = @admin.units[0..2].map { |u| u.name }
+      put :update, :units => { new_units[0] => true, new_units[1] => true,
+                               new_units[2] => true }
       @admin.units.length.should == 3
     end
 
     it 'remove unit and add another to admin' do
       other_unit = FactoryGirl.create(:unit)
-      new_units = @admin.units[0..2] + [other_unit]
-      put :update, :units => { new_units.map { |u|.name } }
+      new_units = (@admin.units[0..2] + [other_unit]).map { |u| u.name }
+      put :update, :units => { new_units[0] => true, new_units[1] => true,
+                               new_units[2] => true, new_units[3] => true }
       @admin.units.length.should == 4
       @admin.units.should include(other_unit)
       @admin.units.should_not include(@admin.units[2])
