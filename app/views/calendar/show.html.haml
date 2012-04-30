@@ -1,13 +1,13 @@
 %h2
   = "Details about #{@event.nurse.name} vacation week"
-
+  
 %ul
   %li
     Start date:
-    = @event.start_at.strftime("%d/%m/%y")
+    = @event.start_at.strftime("%m/%d/%y")
   %li
     End date:
-    = @event.end_at.strftime("%d/%m/%y")
+    = @event.end_at.strftime("%m/%d/%y")
 
 = link_to 'Edit vacation week', edit_nurse_calendar_path(@event.nurse, @event)
 = button_to 'Delete', nurse_calendar_path(@event.nurse, @event), :method => 'delete', :confirm => 'Are you sure?'

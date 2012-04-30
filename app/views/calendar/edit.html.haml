@@ -2,10 +2,10 @@
 
   :javascript
     $(function() {
-      $.datepicker.setDefaults({dateFormat: 'dd/mm/yy'});
+      $.datepicker.setDefaults({dateFormat: 'mm/dd/yy'});
       var dates = $( "#event_start_at, #event_end_at" ).datepicker({
-        minDate: "#{Time.now.strftime("%d/%m/%y")}",
-        defaultDate: "#{@event.start_at.strftime("%d/%m/%y")}",
+        minDate: "#{Time.now.strftime("%m/%d/%y")}",
+        defaultDate: "#{@event.start_at.strftime("%m/%d/%y")}",
         changeMonth: true,
         numberOfMonths: 3,
         onSelect: function( selectedDate ) {

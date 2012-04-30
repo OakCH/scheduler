@@ -14,10 +14,9 @@
   #print-link
     %p#left-link
       = link_to_function("Print this month", "javascript:print()") + " or " + link_to('View and print entire schedule', print_nurse_calendar_index_path)
-
 #calendar
   = raw(event_calendar)
-  
+
 #calendar-dashboard
   - if @nurse and (@nurse.events.length > 0)
     %h2= "Vacations segments for #{@nurse.name}"
@@ -29,8 +28,8 @@
       %tbody
         - @nurse.events.each do |e|
           %tr{:class => cycle("even", "odd")}
-            %td= e.start_at.strftime("%d/%m/%y")
-            %td= e.end_at.strftime("%d/%m/%y")
+            %td= e.start_at.strftime("%m/%d/%y")
+            %td= e.end_at.strftime("%m/%d/%y")
             - if @cur_nurse
               %td= link_to 'Edit vacation segment', edit_nurse_calendar_path(e.nurse, e)
               %td= button_to 'Delete', nurse_calendar_path(e.nurse, e), :method => 'delete', :confirm => 'Are you sure?', :class => 'delete-button'
