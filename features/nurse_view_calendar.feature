@@ -15,7 +15,7 @@ Background:
   
   And the following vacations exist:
   | name               | start_at    | end_at      | pto |
-  | Jane Doe           | 11-Apr-2012 | 19-Apr-2012 | 1   |
+  | Jane Doe           | 11-Apr-2012 | 17-Apr-2012 | 1   |
   | John Doe           | 20-Apr-2012 | 27-Apr-2012 | 0   |
   | John Doe           | 2-May-2012  | 9-May-2012  | 0   |
   | J.D. Another Unit  | 1-Apr-2012  | 8-Apr-2012  | 0   |
@@ -42,6 +42,6 @@ Scenario: Changing month to May
 
 Scenario: Overlapping vacations
   Then I should see vacations belonging to "Jane Doe"
-  Then I should see the vacation belonging to "Jane Doe" from "11-Apr-2012" to "19-Apr-2012"
+  Then I should see the vacation belonging to "Jane Doe" from "11-Apr-2012" to "17-Apr-2012"
   Then I should see vacations belonging to "John Doe"
   

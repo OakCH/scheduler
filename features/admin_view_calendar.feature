@@ -15,7 +15,7 @@ Background:
 
   And the following vacations exist
   | name        | start_at    | end_at      | pto |
-  | Jane Doe    | 17-Feb-2012 | 24-Feb-2012 | 1   |
+  | Jane Doe    | 17-Feb-2012 | 23-Feb-2012 | 1   |
   | John Doe    | 1-Mar-2012  | 8-Mar-2012  | 0   |
   | Jane Doe    | 4-Mar-2012  | 12-Mar-2012 | 0   |
   | J.P. Morgan | 17-Jan-2012 | 24-Jan-2012 | 0   |
@@ -29,7 +29,7 @@ Background:
 
 Scenario: Viewing calendar by Day Time shift
   Then I should see "Jane Doe" 
-  And I should see the vacation belonging to "Jane Doe" from "17-Feb-2012" to "24-Feb-2012"
+  And I should see the vacation belonging to "Jane Doe" from "17-Feb-2012" to "23-Feb-2012"
   And I should see "PTO"
   
 Scenario: Changing month with two possible nurses per month
