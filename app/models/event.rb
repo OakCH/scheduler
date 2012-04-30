@@ -18,7 +18,7 @@ class Event < ActiveRecord::Base
 # default color to gray
   def color
     if self.pto
-      "green"
+      "#791275"
     else
       "#7c7c7c" # gray
     end

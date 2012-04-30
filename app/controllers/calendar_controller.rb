@@ -163,6 +163,7 @@ class CalendarController < ApplicationController
     @shift = session[:shift]
     @year_month = Array.new
 # hard-coded => waiting for notion of time to be implemented
+# TODO: change as soon as we know the year the calendar is for
     months = 1..12
     months.each do |m|
       @year_month << [2012, m]
