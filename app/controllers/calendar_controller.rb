@@ -224,20 +224,24 @@ class CalendarController < ApplicationController
     shift = nurse.shift
     unit = nurse.unit
     nurse_baton = NurseBaton.find_by_unit_id_and_shift(unit.id,shift)
-    cur_nurse = Nurse.find_by_id(nurse_baton.current_nurse)
-    ranked_nurses = Nurse.where(:unit_id => unit.id, :shift => shift).rank('nurse_order')
-    next_nurse = ranked_nurses[ranked_nurses.index(nurse) + 1]
-    nurse_baton.current_nurse = next_nurse
-    if nurse_baton.save
-      Notifier.notify_nurse(next_nurse).deliver
-      #refactor this to only admin who are watching
-      admin_list = Admin.find(:all)
-      admin_list.each do |admin|
-        Notifier.notify_admin(admin, next_nurse).deliver
+    if nurse_baton
+      cur_nurse = Nurse.find_by_id(nurse_baton.current_nurse)
+      ranked_nurses = Nurse.where(:unit_id => unit.id, :shift => shift).rank('nurse_order')
+      next_nurse = ranked_nurses[ranked_nurses.index(nurse) + 1]
+      nurse_baton.current_nurse = next_nurse
+      if nurse_baton.save
+        Notifier.notify_nurse(next_nurse).deliver
+        #refactor this to only admin who are watching
+        admin_list = Admin.find(:all)
+        admin_list.each do |admin|
+          Notifier.notify_admin(admin, next_nurse).deliver
+        end
+        flash[:notice] = "Your schedule has been finalized and you can no longer update your vacations for this year."
+      else
+        flash[:error] = "Unsuccessful finalization."
       end
-      flash[:notice] = "Your schedule has been finalized and you can no longer update your vacations for this year."
     else
-      flash[:error] = "Unsuccessful finalization."
+      flash[:notice] = "The scheduling process has not yet begun."
     end
     redirect_to nurse_calendar_index_path
   end
@@ -284,7 +288,7 @@ class CalendarController < ApplicationController
     return if admin_signed_in?
     nurse = Nurse.find_by_id(params[:nurse_id])
     baton = NurseBaton.find_by_unit_id_and_shift(nurse.unit_id,nurse.shift)
-    permission_denied if current_nurse != baton.current_nurse
+    permission_denied if !baton or current_nurse != baton.current_nurse
   end
 
 

@@ -43,4 +43,5 @@ FactoryGirl.define do
     all_day true
     nurse
   end
+
 end
