@@ -18,5 +18,6 @@
               %td= link_to nurse.send(attr), edit_nurse_manager_path(nurse)
             -else
               %td= nurse.send(attr)
-          %td= link_to 'View Calendar', nurse_calendar_index_path(nurse), :id=>"#{nurse.name}_calendar"
-          %td= button_to 'Delete', nurse_manager_path(nurse), :method => 'delete', :confirm => 'Are you sure?', :id => "#{nurse.name}_delete"
+          %td= link_to 'View Calendar', nurse_calendar_index_path(nurse), :id=>"#{nurse.id}_calendar"
+          %td= button_to 'Delete', nurse_manager_path(nurse), :method => 'delete', :confirm => 'Are you sure?', :id => "#{nurse.id}_delete"
+          
