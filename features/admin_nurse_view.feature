@@ -86,13 +86,13 @@ Scenario: Clicking on a nurse calendar
   When I select "PMs" from "Shift"
   And I select "Surgery" from "Unit"
   And I press "Show"
-  And I follow "Jane Doe_calendar"
+  And I follow the calendar for "Jane Doe"
   Then I should be on the Nurse Calendar page for "Jane Doe"
 
 Scenario: Deleting a nurse from the index page
   When I select "PMs" from "Shift"
   And I select "Surgery" from "Unit"
   And I press "Show"
-  And I press "Jane Doe_delete"
+  And I press delete for "Jane Doe"
   Then I should see "johndoe@email.com"
   But I should not see "janedoe@email.com"
