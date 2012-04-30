@@ -17,7 +17,11 @@ class Event < ActiveRecord::Base
 # on the calendar is with 'color' in the model. this sets the
 # default color to gray
   def color
-    "#7c7c7c" # gray
+    if self.pto
+      "green"
+    else
+      "#7c7c7c" # gray
+    end
   end
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120426073154) do
+ActiveRecord::Schema.define(:version => 20120430044416) do
 
   create_table "admins", :force => true do |t|
   end
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20120426073154) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "nurse_id"
+    t.boolean  "pto",        :default => false
   end
 
   create_table "nurses", :force => true do |t|

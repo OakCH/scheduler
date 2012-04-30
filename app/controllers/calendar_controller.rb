@@ -81,7 +81,7 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    event = Event.new(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
+    event = Event.new(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at], :pto => params[:event][:pto])
     event.all_day = 1
     event.name = nurse.name
     event.nurse_id = nurse.id
@@ -119,6 +119,7 @@ class CalendarController < ApplicationController
     
     @event.start_at = params[:event][:start_at]
     @event.end_at = params[:event][:end_at]
+    @event.pto = params[:event][:pto]
     
     if not @event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"

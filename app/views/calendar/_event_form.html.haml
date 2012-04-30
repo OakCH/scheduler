@@ -4,3 +4,5 @@
 = label :event, :end_at, 'To'
 = text_field :event, 'end_at', :value => (@event ? @event.end_at.strftime('%d/%m/%Y') : '')
 
+= label :event, :pto, 'PTO?'
+= check_box :event, :pto 
