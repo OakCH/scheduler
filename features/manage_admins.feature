@@ -33,7 +33,7 @@ Scenario: Editing admin email with invalid email
   And I should see "User email is invalid"
 
 Scenario: Deleting an admin
-  When I press "admin2_delete"
+  When I press delete for "admin2"
   Then I should be on the Manage Admins page
   And I should see "admin2 has been deleted."
   And I should not see "second@admin.com"

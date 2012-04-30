@@ -16,3 +16,13 @@ Given /^the admin "([^"]*)" with email "([^"]*)" has been invited$/ do |name, em
   admin =  FactoryGirl.create(:admin, :name => name, :email => email)
   admin.user.invite!
 end
+
+Given /^I follow the calendar for "([^"]*)"$/ do |name|
+  nurse = Nurse.find_by_name(name)
+  step %Q{I follow "#{nurse.id}_calendar"}
+end
+
+Given /^I press delete for "([^"]*)"$/ do |name|
+  user = User.find_by_name(name).personable_id
+  step %Q{I press "#{user}_delete"}
+end
