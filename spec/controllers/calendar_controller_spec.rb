@@ -413,9 +413,9 @@ describe CalendarController do
   
   describe "Create" do
     before(:each) do
-      @start = DateTime.parse("4-Apr-2012")
-      @end = DateTime.parse("11-Apr-2012")
-        @new_event = { :start_at => @start, :end_at => @end }
+      @start = "4/4/2012"
+      @end = "4/11/2012"
+      @new_event = { :start_at => @start, :end_at => @end }
     end
     
     it 'should increase the count of events assoc with nurse' do
@@ -427,7 +427,8 @@ describe CalendarController do
     
     it 'should redirect' do
       post :create, :nurse_id => @nurse.id, :event => @new_event
-      response.should redirect_to(nurse_calendar_index_path(@nurse, :month => @new_event[:start_at].month, :year => @new_event[:start_at].year) )
+      start_date = Date.strptime @start, '%m/%d/%Y'
+      response.should redirect_to(nurse_calendar_index_path(@nurse, :month => start_date.month, :year => start_date.year) )
     end
     
     it 'should assign the proper start at' do
@@ -456,21 +457,10 @@ describe CalendarController do
       event.should be_nil
     end
     
-     it 'should redirect to the nurse calendar index page if nurse.save fails' do
-      invalid_event = {:start_at=>'poppies', :end_at=>'4/5/2012'}
-      post :create, :nurse_id => @nurse.id, :event => invalid_event
-      response.should redirect_to nurse_calendar_index_path
-     end
-    it 'should flash an error message if nurse.save fails' do
-      invalid_event = {:start_at=>'poppies', :end_at=>'4/5/2012'}
-      post :create, :nurse_id => @nurse.id, :event => invalid_event
-      flash[:error].should_not be_empty
-    end
-    
     it 'should allow an admin to create a vacation that is less than one week' do
       controller.stub(:admin_signed_in?).and_return(true)
       event_count = @nurse.events.length
-      event = { :start_at => '5/6/2012', :end_at => '6/6/2012' }
+      event = { :start_at => '6/5/2012', :end_at => '6/6/2012' }
       post :create, :nurse_id => @nurse.id, :event => event
       @nurse.reload
       @nurse.events.length.should == event_count + 1
@@ -499,7 +489,7 @@ describe CalendarController do
   end
   
   describe "Edit" do
-
+    
     context 'Edit with valid event id' do
       before { get :edit, :id => @event.id, :nurse_id => @nurse.id }
       it "should assign id to event.id" do
@@ -542,8 +532,8 @@ describe CalendarController do
   describe "Update" do
     
     before do
-       @start = DateTime.parse("4-Apr-2012")
-      @end = DateTime.parse("11-Apr-2012")
+      @start = "4/4/2012"
+      @end = "4/11/2012"
       @event_attr = { :start_at => @start, :end_at => @end }
     end
     
@@ -560,7 +550,7 @@ describe CalendarController do
     
     it 'should update the start at' do
       put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
-      assigns(:event).start_at.should == @start.to_time
+      assigns(:event).start_at.should == Date.strptime(@start, '%m/%d/%Y')
     end
     
     it 'should update the end at' do
