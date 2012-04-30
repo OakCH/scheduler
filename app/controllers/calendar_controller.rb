@@ -17,23 +17,23 @@ class CalendarController < ApplicationController
         redirect_to login_path
         return
       end
-
+      
       @shift = @nurse.shift
     end
     @col_names = Event.all_display_columns
   end
-
+  
   def admin_index
     setup_index do
       @shifts = Unit.shifts
       @units = Unit.find(:all)
       @shift = @shifts[0]
       @unit_id = 0
-
+      
       if @units.length > 0
         @unit_id = @units[0].id
       end
-
+      
       if params[:shift]
         if Unit.is_valid_shift(params[:shift])
           session[:shift] = params[:shift]
@@ -81,7 +81,10 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    event = Event.new(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
+    
+    start_date = Date.strptime params[:event][:start_at], '%m/%d/%Y'
+    end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    event = Event.new(:start_at => start_date, :end_at => end_at)
     event.all_day = 1
     event.name = nurse.name
     event.nurse_id = nurse.id
@@ -117,8 +120,8 @@ class CalendarController < ApplicationController
     
     @event.all_day = 1
     
-    @event.start_at = params[:event][:start_at]
-    @event.end_at = params[:event][:end_at]
+    @event.start_at = Date.strptime params[:event][:start_at], '%m/%d/%Y'
+    @event.end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
     
     if not @event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"
