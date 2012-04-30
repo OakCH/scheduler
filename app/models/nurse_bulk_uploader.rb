@@ -1,7 +1,7 @@
 module NurseBulkUploader
   
   attr_reader :parsing_errors
-
+  
   # to add another column, add the symbol representing the database field
   # to PossibleColumns and optionally to RequiredColumns and define
   # a match_col_name function below
@@ -30,14 +30,20 @@ module NurseBulkUploader
   def all_columns_as_sym
     PossibleColumns
   end
-
-  
+   
   def nice_col_name(sym)
     sym.to_s.split('_').map{ |word| word.capitalize }.join(' ')
   end
   
   def nice_col_names(col_collection)
     col_collection.map { |sym| nice_col_name(sym) }
+  end
+  
+  def create_nurse_invites!(unit, shift)
+    nurses = Nurse.where(:unit_id => unit.id, :shift => shift)
+    nurses.each do |nurse|
+      nurse.user.invite!
+    end
   end
   
   class Uploader

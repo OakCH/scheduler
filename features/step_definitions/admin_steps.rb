@@ -12,3 +12,7 @@ Then /^(?:I )?(should|should not) see the following nurses: "([^"]*)"$/ do |shou
   end
 end
 
+Given /^the admin "([^"]*)" with email "([^"]*)" has been invited$/ do |name, email|
+  admin =  FactoryGirl.create(:admin, :name => name, :email => email)
+  admin.user.invite!
+end

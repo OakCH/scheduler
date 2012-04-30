@@ -1,30 +1,36 @@
 Scheduler::Application.routes.draw do
-
-  devise_for :users
-
+  
+  devise_for :users, :controllers => { :invitations => 'users/invitations' }
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
-
+  
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
-
+  
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
   match '' => 'home#index', :as => :login
 
+  devise_scope :user do
+    match 'admin/new_admin' => 'users/invitations#new', :as => 'new_admin'
+    match 'admin/invite_admin' => 'users/invitations#create', :as => 'invite_admin'
+  end
+  
   scope '/admin/' do
     match 'upload' => 'admin#upload', :as => 'admin_upload'
     match 'calendar' => 'calendar#admin_index', :as => 'admin_calendar'
     match 'print' => 'calendar#admin_print', :as => 'admin_print'
     match 'rules' => 'admin#rules', :as => 'admin_rules'
-    resources :nurse, :except => [:show], :as=> 'nurse_manager' do
+    resources :nurse, :except => [:show], :as => 'nurse_manager' do
       collection do
         post 'upload'
         post 'finalize'
       end
     end
+    resources :admins, :except => [:new, :create, :show], :controller => 'admin_manager'
     # if there become too many actions, we will instead use the following
     # match ':action' => 'admin#:action', :as => :admin
     resources :unit, :as => 'units'

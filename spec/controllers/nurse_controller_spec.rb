@@ -7,7 +7,7 @@ describe NurseController do
     NurseController.skip_before_filter(:authenticate_any!)
     NurseController.skip_before_filter(:check_nurse_id)
   end
-  
+
   describe "Index" do
     describe 'upon clicking Show' do
       context 'with valid inputs' do
@@ -45,7 +45,7 @@ describe NurseController do
           response.should redirect_to nurse_manager_index_path(:admin=> @admin)
         end
       end
-      
+
       context 'with invalid shift' do
         before(:each) do
           @unit = 'Surgery'
@@ -105,7 +105,7 @@ describe NurseController do
         end
       end
     end
-    
+
     describe 'upon clicking upload' do
       before (:each) do
         @unit = 'Surgery'
@@ -135,7 +135,7 @@ describe NurseController do
         post :upload, {:admin => @admin, :commit => 'Upload'}
         assigns[:file].should == @basic_xls_file
       end
-      
+
       it 'should create the temporary file' do
         String.any_instance.stub(:read)
         NurseController.any_instance.stub(:deleteFile)
@@ -180,7 +180,7 @@ describe NurseController do
         post :upload, {:admin => @admin, :commit => 'Upload'}
         flash[:error].should == ['Some Error']
       end
-      
+
       it 'should render same page' do
         NurseController.any_instance.stub(:copyFile)
         NurseController.any_instance.stub(:deleteFile)
@@ -212,11 +212,7 @@ describe NurseController do
         it 'should call the nurse model method to create a nurse successfully' do
           post :create, @attributes
           @unit.should_not be_nil
-          User.find_by_name(@attributes[:nurse][:name]).should_not be_nil
-        end
-        it 'should make sure the user created is a nurse' do
-          post :create, @attributes
-          User.find_by_name(@attributes[:nurse][:name]).personable_type.should == 'Nurse'
+          Nurse.find_by_name(@attributes[:nurse][:name]).should_not be_nil
         end
         it 'should redirect to index page w/ new unit & shift of new nurse' do
           post :create, @attributes
@@ -232,17 +228,17 @@ describe NurseController do
           @unit.name += '325DUPLICATECOPY'
           @attributes[:nurse][:unit] = @unit.name
           post :create, @attributes
-          User.find_by_name(@attributes[:nurse][:name]).should be_nil
+          Nurse.find_by_name(@attributes[:nurse][:name]).should be_nil
         end
         it 'should not create the nurse if shift does not exist' do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
           post :create, @attributes
-          User.find_by_name(@attributes[:nurse][:name]).should be_nil
+          Nurse.find_by_name(@attributes[:nurse][:name]).should be_nil
         end
         it 'should not create the nurse if the email is not unique' do
           @attributes[:nurse][:email] = @nurse.email
           post :create, @attributes
-          User.find_by_name(@attributes[:nurse][:name]).should be_nil
+          Nurse.find_by_name(@attributes[:nurse][:name]).should be_nil
         end
         it 'should stay on the create page' do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
@@ -264,21 +260,21 @@ describe NurseController do
           @attributes[:nurse][:name] += "duplicate"
           @attributes[:nurse].should_not be_nil
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
-          User.find_by_name(@attributes[:nurse][:name]).should_not be_nil
+          Nurse.find_by_name(@attributes[:nurse][:name]).should_not be_nil
         end
         it 'should make sure it updated a nurse' do
           Nurse.stub(:find_by_id).and_return(@nurse)
           @attributes[:nurse][:id]=@nurse.id
           @attributes[:nurse][:name] += "duplicate" if @nurse.name == @attributes[:nurse][:name]
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
-          User.find_by_name(@attributes[:nurse][:name]).should_not be_nil
+          Nurse.find_by_name(@attributes[:nurse][:name]).should_not be_nil
         end
         it 'should call the nurse model method and not keep the old attributes' do
           Nurse.stub(:find_by_id).and_return(@nurse)
           @attributes[:nurse][:id]=@nurse.id
           @attributes[:nurse][:name] += "duplicate" if @nurse.name == @attributes[:nurse][:name]
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
-          User.find_by_name(@nurse.name).should == nil
+          Nurse.find_by_name(@nurse.name).should == nil
         end
         it 'should redirect to index page w/ new unit & shift of updated nurse' do
           @attributes[:nurse][:id]=@nurse.id
@@ -302,14 +298,14 @@ describe NurseController do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
           @attributes[:nurse][:id]=@nurse.id
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
-          User.find_by_name(@attributes[:nurse][:name]).should be_nil
+          Nurse.find_by_name(@attributes[:nurse][:name]).should be_nil
         end
         it 'should not update the nurse if the email is not unique' do
           new_nurse = FactoryGirl.create(:nurse, :email => 'tester@test.com')
           @attributes[:nurse][:email] = @nurse.email
           @attributes[:nurse][:id] = new_nurse.id
           post :update, :id => @attributes[:nurse][:id], :nurse => @attributes[:nurse]
-          User.find_by_name(@attributes[:nurse][:name]).should be_nil
+          Nurse.find_by_name(@attributes[:nurse][:name]).should be_nil
         end
         it 'should stay on the edit page' do
           @attributes[:nurse][:shift] = 'djfja3fjf823tasjflkjjg'
@@ -331,7 +327,7 @@ describe NurseController do
         it 'should call the nurse model method to delete a nurse successfully' do
           Nurse.stub(:find_by_id).and_return(@nurse)
           post :destroy, :id => @nurse.id
-          User.find_by_name(@attributes[:nurse][:name]).should == nil
+          Nurse.find_by_name(@attributes[:nurse][:name]).should == nil
         end
         it 'should redirect to index page w/ new unit & shift of updated nurse' do
           shift_name = @nurse.shift
@@ -360,17 +356,11 @@ describe NurseController do
     end
     it 'should flash a message indicating success' do
       post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
-      flash[:notice].should = "Nurses for Unit #{@unit} and Shift #{@shift} have been finalized."
+      flash[:notice].should == "This nurse list has been finalized and account creation emails have been sent for nurses in Unit #{@unit.name}, Days."
     end
     it 'should redirect to nurse view unit & shift page upon success' do
       post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
-      response.should redirect_to nurse_manager_index_path(:admin=> {:unit=>@unit, :shift=>@shift})
-    end
-    it 'should allow the list to be edited after finalization' do
-      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
-      Nurse.stub(:find_by_id).and_return(@nurse)
-      @nurse.name = "New Name Editing"
-      @nurse.save.should_not be_nil
+      response.should redirect_to nurse_manager_index_path(:admin=> {:unit=>@unit.name, :shift=>@shift})
     end
     it 'should still allow other nurses to be edited after finalization' do
       post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
@@ -395,17 +385,16 @@ describe NurseController do
     end
   end
 
-  
+
   describe 'Seniority List' do
-    
     before(:each) do
       @unit = FactoryGirl.create(:unit)
       @nurses = FactoryGirl.create_list(:nurse, 5, :unit_id => @unit.id) # FactoryGirl creates this list in seniority order
       @nurse = @nurses[0]
     end
-    
+
     it 'should query the Nurse model for nurse' do
-      Nurse.should_receive(:find_by_id).and_return(@nurse)
+      Nurse.should_receive(:find).and_return(@nurse)
       get :seniority, :nurse_id => @nurse.id
     end
     it 'should assign a list with nurses in descending order by seniority' do
@@ -417,6 +406,5 @@ describe NurseController do
       assigns(:columns).should == ['name']
     end
   end
-  
 
 end

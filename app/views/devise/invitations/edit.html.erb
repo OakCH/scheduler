@@ -1,0 +1,31 @@
+<h2>Set your Email and Password</h2>
+<div id='form'>
+  <%= form_for resource, :as => resource_name, :url => invitation_path(resource_name), :html => { :method => :put } do |f| %>
+  <%= devise_error_messages! %>
+  <%= f.hidden_field :invitation_token %>
+  
+  <div class='left'>
+    <p> If you wish, you can change the email address to use with the application: </p>
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+    
+    <br />  
+    <%= f.label :password %>
+    <%= f.password_field :password %>
+    
+    <br />  
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation %>
+  </div>
+  
+  <div class='right'>
+    <div><%= f.submit :class => 'submit', :value => "Save and Login" %></div>
+  </div>
+
+  <div class='clear'>
+  </div>
+  
+  
+  
+</div>
+<% end %>
