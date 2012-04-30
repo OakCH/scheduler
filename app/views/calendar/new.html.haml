@@ -1,8 +1,8 @@
 :javascript
   $(function() {
     var dates = $( "#event_start_at, #event_end_at" ).datepicker({
-      minDate: "#{Time.now.strftime("%d/%m/%y")}",
-      dateFormat: "dd/mm/yy",
+      minDate: "#{Time.now.strftime("%m/%d/%y")}",
+      dateFormat: "mm/dd/yy",
       changeMonth: true,
       numberOfMonths: 3,
       onSelect: function( selectedDate ) {
