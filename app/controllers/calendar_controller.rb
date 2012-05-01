@@ -160,14 +160,14 @@ class CalendarController < ApplicationController
   
   def destroy
     @event = Event.find_by_id(params[:id])
-    r_month = @event.start_at.month
-    r_year = @event.start_at.year
     if not @event
       flash[:error] = "The vacation you are trying to delete could not be found."
       redirect_to login_path
       return
     end
-    
+
+    r_month = @event.start_at.month
+    r_year = @event.start_at.year
     if not @event.destroy
       flash[:error] = "The vacation could not be deleted."
       redirect_to nurse_calendar_index_path(:month => r_month, :year => r_year)
