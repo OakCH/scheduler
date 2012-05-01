@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120430063102) do
+ActiveRecord::Schema.define(:version => 20120430093026) do
 
   create_table "admins", :force => true do |t|
   end
@@ -29,6 +29,19 @@ ActiveRecord::Schema.define(:version => 20120430063102) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "nurse_id"
+    t.boolean  "pto",        :default => false
+  end
+
+  add_index "events", ["end_at"], :name => "index_events_on_end_at"
+  add_index "events", ["nurse_id"], :name => "index_events_on_nurse_id"
+  add_index "events", ["start_at"], :name => "index_events_on_start_at"
+
+  create_table "nurse_batons", :force => true do |t|
+    t.integer  "nurse_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "shift"
+    t.string   "unit_id"
   end
 
   create_table "nurses", :force => true do |t|
@@ -38,6 +51,8 @@ ActiveRecord::Schema.define(:version => 20120430063102) do
     t.integer "num_weeks_off"
     t.integer "years_worked"
   end
+
+  add_index "nurses", ["unit_id", "shift"], :name => "index_nurses_on_unit_id_and_shift"
 
   create_table "nurses_vacation_days", :id => false, :force => true do |t|
     t.integer "nurse_id"

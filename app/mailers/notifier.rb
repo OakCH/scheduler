@@ -13,4 +13,12 @@ class Notifier < ActionMailer::Base
     subject = "#{nurse.name} has finished scheduling his or her vacation"
     mail(:to => @admin.email, :subject => subject)
   end
+
+  def notify_completion(admin, unit_name, shift)
+    @admin = admin
+    @group = {:unit_name => unit_name, :shift => shift}
+    subject = "[#{unit_name}, #{shift}] All vacations have been scheduled"
+    mail(:to => @admin.email, :subject => subject)
+  end
+
 end

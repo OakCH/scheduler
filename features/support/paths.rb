@@ -38,6 +38,9 @@ module NavigationHelpers
     when /^the Vacation page for "([^"]*)" from "([^"]*)" to "([^"]*)"$/
       nurse_calendar_path(Nurse.find_by_name($1), event_finder($1, $2, $3))
 
+    when /^the Update Vacation page for "([^"]*)" from "([^"]*)" to "([^"]*)"$/
+      edit_nurse_calendar_path(Nurse.find_by_name($1), event_finder($1, $2, $3))
+
     when /^the Rules page$/
       '/admin/rules'
 
@@ -67,6 +70,10 @@ module NavigationHelpers
 
     when /^the Associate Units page/
       admins_units_index_path
+
+    when /^the Add Vacation page for "([^"]*)"$/
+      new_nurse_calendar_path(Nurse.find_by_name($1))
+
 
     # Add more mappings here.
       # Here is an example that pulls values out of the Regexp:

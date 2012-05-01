@@ -5,35 +5,42 @@ class CalendarController < ApplicationController
   
   before_filter :check_nurse_id
   before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
-  
+  before_filter :check_current_nurse, :only => ['new', 'show', 'create', 'edit', 'update']
+
   def index
     setup_index do
       @nurse = Nurse.find_by_id(params[:nurse_id])
       @unit_id = 0
+      @cur_nurse = false
       if @nurse
         @unit_id = @nurse.unit_id
+        @shift = @nurse.shift
+        nurse_baton = NurseBaton.find_by_unit_id_and_shift(@unit_id,@shift)
+        if nurse_baton and current_nurse == nurse_baton.nurse
+          @cur_nurse = true
+        end
       else
         flash[:error] = "An error has occurred."
         redirect_to login_path
         return
       end
-
+      
       @shift = @nurse.shift
     end
-    @col_names = Event.all_display_columns
+    @cur_nurse ? @col_names = Event.all_display_columns : @col_names = Event.read_only_display_columns
   end
-
+  
   def admin_index
     setup_index do
       @shifts = Unit.shifts
       @units = Unit.find(:all)
       @shift = @shifts[0]
       @unit_id = 0
-
+      
       if @units.length > 0
         @unit_id = @units[0].id
       end
-
+      
       if params[:shift]
         if Unit.is_valid_shift(params[:shift])
           session[:shift] = params[:shift]
@@ -81,7 +88,10 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    event = Event.new(:start_at => params[:event][:start_at], :end_at => params[:event][:end_at])
+    
+    start_date = Date.strptime params[:event][:start_at], '%m/%d/%Y'
+    end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    event = Event.new(:start_at => start_date, :end_at => end_at, :pto => params[:event][:pto])
     event.all_day = 1
     event.name = nurse.name
     event.nurse_id = nurse.id
@@ -96,6 +106,12 @@ class CalendarController < ApplicationController
   end
   
   def edit
+    @nurse = Nurse.find_by_id(params[:id])
+    @cur_nurse = false
+    if current_nurse == @nurse
+      @cur_nurse = true
+    end
+
     @event = Event.find_by_id(params[:id])
     if not @event
       flash[:error] = "The vacation you are trying to edit could not be found."
@@ -103,7 +119,7 @@ class CalendarController < ApplicationController
       return
     end
     
-    @nurse_id = params[:nurse_id]
+    @nurse_id = @nurse.id
     @id = params[:id]
   end
   
@@ -116,10 +132,10 @@ class CalendarController < ApplicationController
     end
     
     @event.all_day = 1
-    
-    @event.start_at = params[:event][:start_at]
-    @event.end_at = params[:event][:end_at]
-    
+    @event.start_at = Date.strptime params[:event][:start_at], '%m/%d/%Y'
+    @event.end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    @event.pto = params[:event][:pto]
+
     if not @event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"
       redirect_to nurse_calendar_index_path
@@ -162,6 +178,7 @@ class CalendarController < ApplicationController
     @shift = session[:shift]
     @year_month = Array.new
 # hard-coded => waiting for notion of time to be implemented
+# TODO: change as soon as we know the year the calendar is for
     months = 1..12
     months.each do |m|
       @year_month << [2012, m]
@@ -206,6 +223,42 @@ class CalendarController < ApplicationController
     end
   end
 
+  def finalize_schedule
+    nurse = Nurse.find_by_id(params[:nurse_id])
+    shift = nurse.shift
+    unit = nurse.unit
+    nurse_baton = NurseBaton.find_by_unit_id_and_shift(unit.id,shift)
+    if nurse_baton
+      cur_nurse = Nurse.find_by_id(nurse_baton.nurse)
+      ranked_nurses = Nurse.where(:unit_id => unit.id, :shift => shift).rank('nurse_order')
+      next_nurse = ranked_nurses[ranked_nurses.index(nurse) + 1]
+      nurse_baton.nurse = next_nurse
+      if nurse_baton.save
+        # check to make sure that there is a new next nurse
+        if next_nurse and next_nurse.position > cur_nurse.position
+          Notifier.notify_nurse(next_nurse).deliver
+        else
+          admins = Admin.find(:all)
+          admins.each do |admin|
+            Notifier.notify_completion(admin,unit.name,shift).deliver
+          end
+          nurse_baton.destroy
+        end
+        #refactor this to only admin who are watching
+        admins = Admin.find(:all)
+        admins.each do |admin|
+          Notifier.notify_admin(admin, cur_nurse).deliver
+        end
+        flash[:notice] = "Your schedule has been finalized and you can no longer update your vacations for this year."
+      else
+        flash[:error] = "Unsuccessful finalization."
+      end
+    else
+      flash[:notice] = "The scheduling process has not yet begun."
+    end
+    redirect_to nurse_calendar_index_path
+  end
+
   private
 
   def setup_index
@@ -243,5 +296,13 @@ class CalendarController < ApplicationController
     return if admin_signed_in?
     permission_denied if current_nurse != Event.find(params[:id]).nurse
   end
+
+  def check_current_nurse
+    return if admin_signed_in?
+    nurse = Nurse.find_by_id(params[:nurse_id])
+    baton = NurseBaton.find_by_unit_id_and_shift(nurse.unit_id,nurse.shift)
+    permission_denied if !baton or current_nurse != baton.nurse
+  end
+
 
 end

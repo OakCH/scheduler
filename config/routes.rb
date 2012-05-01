@@ -41,6 +41,7 @@ Scheduler::Application.routes.draw do
   end
 
   scope 'nurse/:nurse_id/' do
+    post 'finalize' => 'calendar#finalize_schedule', :as => 'nurse_finalize'
     resources :calendar, :as => 'nurse_calendar' do
       collection do
         get 'print'

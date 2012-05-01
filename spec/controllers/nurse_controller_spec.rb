@@ -7,7 +7,7 @@ describe NurseController do
     NurseController.skip_before_filter(:authenticate_any!)
     NurseController.skip_before_filter(:check_nurse_id)
   end
-  
+
   describe "Index" do
     describe 'upon clicking Show' do
       context 'with valid inputs' do
@@ -27,38 +27,38 @@ describe NurseController do
           Unit.should_receive(:shifts)
           post :index, {:admin => @admin, :commit => 'Show'}
         end
-        
+
         it 'should assign @unit' do
           #@unit_obj = Unit.create!(:name => @unit)
           Unit.stub(:find_by_name)#.with(@unit).and_return(@unit_obj)
           post :index, {:admin => @admin, :commit => 'Show'}
           assigns[:unit].should == @unit
         end
-        
+
         it 'should assign @shift' do
           post :index, {:admin => @admin, :commit => 'Show'}
           assigns[:shift].should == @shift
         end
-        
+
         it 'should reload the page' do
           post :index, {:admin => @admin, :commit => 'Show'}
           response.should redirect_to nurse_manager_index_path(:admin=> @admin)
         end
       end
-      
+
       context 'with invalid shift' do
         before(:each) do
           @unit = 'Surgery'
           @admin = {:unit => @unit}
         end
-        
+
         it 'should set a flash[:error] message if no shift' do
           @unit_obj = Unit.create!(:name=>@unit)
           Unit.stub(:find_by_name).with(@unit).and_return(@unit_obj)
           post :index, {:admin => @admin, :commit => 'Show'}
           flash[:error].should == ["Invalid shift"]
         end
-        
+
         it 'should set a flash[:error] if the shift does not exist' do
           @unit_obj = Unit.create!(:name=>@unit)
           Unit.stub(:find_by_name).with(@unit).and_return(@unit_obj)
@@ -105,7 +105,7 @@ describe NurseController do
         end
       end
     end
-    
+
     describe 'upon clicking upload' do
       before (:each) do
         @unit = 'Surgery'
@@ -135,7 +135,7 @@ describe NurseController do
         post :upload, {:admin => @admin, :commit => 'Upload'}
         assigns[:file].should == @basic_xls_file
       end
-      
+
       it 'should create the temporary file' do
         String.any_instance.stub(:read)
         NurseController.any_instance.stub(:deleteFile)
@@ -172,7 +172,7 @@ describe NurseController do
         Nurse.should_receive(:parsing_errors).and_return({:messages => []})
         post :upload, {:admin => @admin, :commit => 'Upload'}
       end
-      
+
       it 'should set flash[:error]' do
         NurseController.any_instance.stub(:copyFile)
         Nurse.stub(:parsing_errors).and_return({:messages => ['Some Error']})
@@ -180,7 +180,7 @@ describe NurseController do
         post :upload, {:admin => @admin, :commit => 'Upload'}
         flash[:error].should == ['Some Error']
       end
-      
+
       it 'should render same page' do
         NurseController.any_instance.stub(:copyFile)
         NurseController.any_instance.stub(:deleteFile)
@@ -199,7 +199,7 @@ describe NurseController do
       end
     end
   end
-  
+
   describe 'CRUD for Nurses' do
     before(:each) do
       @unit = FactoryGirl.create(:unit)
@@ -350,9 +350,8 @@ describe NurseController do
       @bad_unit = FactoryGirl.create(:unit)
       @shift = 'Days'
       @bad_shift = 'PMs'
-      @nurse = FactoryGirl.create(:nurse, :unit_id => @unit.id, :shift => @shift)
-      @bad_nurse = FactoryGirl.create(:nurse, :unit_id => @bad_unit, :shift => @bad_shift)
-      @email = "blahblahblah"
+      @nurse = FactoryGirl.create(:nurse, :unit => @unit, :shift => @shift)
+      @bad_nurse = FactoryGirl.create(:nurse, :unit => @bad_unit, :shift => @bad_shift)
     end
     it 'should flash a message indicating success' do
       post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
@@ -368,17 +367,24 @@ describe NurseController do
       @bad_nurse.name = "New Name Editing"
       @bad_nurse.save.should_not be_nil
     end
-   end
+    it 'should create a nurse baton to start the scheduling process' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      NurseBaton.find_by_unit_id_and_shift(@unit.id,@shift).should_not be_nil
+    end
+    it 'should have a valid nurse in the nurse baton' do
+      post :finalize, :admin=>{:unit => @unit.name, :shift => @shift}
+      baton = NurseBaton.find_by_unit_id_and_shift(@unit.id,@shift)
+      baton.nurse.should_not be_nil
+    end
+  end
 
-  
   describe 'Seniority List' do
-    
     before(:each) do
       @unit = FactoryGirl.create(:unit)
       @nurses = FactoryGirl.create_list(:nurse, 5, :unit_id => @unit.id) # FactoryGirl creates this list in seniority order
       @nurse = @nurses[0]
     end
-    
+
     it 'should query the Nurse model for nurse' do
       Nurse.should_receive(:find).and_return(@nurse)
       get :seniority, :nurse_id => @nurse.id
@@ -392,6 +398,5 @@ describe NurseController do
       assigns(:columns).should == ['name']
     end
   end
-  
 
 end

@@ -5,7 +5,8 @@ describe CalendarController do
   
   before(:all) do
     CalendarController.skip_before_filter :authenticate_any!,
-    :authenticate_admin!, :check_nurse_id, :check_event_id
+    :authenticate_admin!, :check_nurse_id, :check_event_id,
+    :check_current_nurse
   end
   
   before(:each) do
@@ -413,9 +414,9 @@ describe CalendarController do
   
   describe "Create" do
     before(:each) do
-      @start = DateTime.parse("4-Apr-2012")
-      @end = DateTime.parse("11-Apr-2012")
-        @new_event = { :start_at => @start, :end_at => @end }
+      @start = "4/4/2012"
+      @end = "4/11/2012"
+      @new_event = { :start_at => @start, :end_at => @end, :pto => "0"}
     end
     
     it 'should increase the count of events assoc with nurse' do
@@ -427,7 +428,8 @@ describe CalendarController do
     
     it 'should redirect' do
       post :create, :nurse_id => @nurse.id, :event => @new_event
-      response.should redirect_to(nurse_calendar_index_path(@nurse, :month => @new_event[:start_at].month, :year => @new_event[:start_at].year) )
+      start_date = Date.strptime @start, '%m/%d/%Y'
+      response.should redirect_to(nurse_calendar_index_path(@nurse, :month => start_date.month, :year => start_date.year) )
     end
     
     it 'should assign the proper start at' do
@@ -435,8 +437,29 @@ describe CalendarController do
       event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
       event.should_not be_nil
     end
-    
-     it 'should assign the proper end time' do
+
+    it 'should assign pto as false' do
+      post :create, :nurse_id => @nurse.id, :event => @new_event
+      event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
+      event.pto.should be_false
+    end
+
+    it 'should not allow pto segment with more than 7 days' do
+      @new_event[:pto] = "1"
+      post :create, :nurse_id => @nurse.id, :event => @new_event
+      event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
+      event.should be_nil
+    end
+
+    it 'should assign pto as true for event with exactly 7 days' do
+      @new_event[:pto] = "1"
+      @new_event[:end_at] = "4/10/2012"
+      post :create, :nurse_id => @nurse.id, :event => @new_event
+      event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
+      event.pto.should be_true
+    end
+
+    it 'should assign the proper end time' do
       post :create, :nurse_id => @nurse.id, :event => @new_event
       event = Event.find_all_by_nurse_id_and_end_at(@nurse.id, @end.to_time - 1)
       event.should_not be_nil
@@ -456,21 +479,10 @@ describe CalendarController do
       event.should be_nil
     end
     
-     it 'should redirect to the nurse calendar index page if nurse.save fails' do
-      invalid_event = {:start_at=>'poppies', :end_at=>'4/5/2012'}
-      post :create, :nurse_id => @nurse.id, :event => invalid_event
-      response.should redirect_to nurse_calendar_index_path
-     end
-    it 'should flash an error message if nurse.save fails' do
-      invalid_event = {:start_at=>'poppies', :end_at=>'4/5/2012'}
-      post :create, :nurse_id => @nurse.id, :event => invalid_event
-      flash[:error].should_not be_empty
-    end
-    
     it 'should allow an admin to create a vacation that is less than one week' do
       controller.stub(:admin_signed_in?).and_return(true)
       event_count = @nurse.events.length
-      event = { :start_at => '5/6/2012', :end_at => '6/6/2012' }
+      event = { :start_at => '6/5/2012', :end_at => '6/6/2012' }
       post :create, :nurse_id => @nurse.id, :event => event
       @nurse.reload
       @nurse.events.length.should == event_count + 1
@@ -499,7 +511,7 @@ describe CalendarController do
   end
   
   describe "Edit" do
-
+    
     context 'Edit with valid event id' do
       before { get :edit, :id => @event.id, :nurse_id => @nurse.id }
       it "should assign id to event.id" do
@@ -507,7 +519,7 @@ describe CalendarController do
       end
       
       it "should assign nurse_id to nurse.id" do
-        assigns(:nurse_id).should == @event.id.to_s
+        assigns(:nurse_id).should == @event.id
       end
       
       it "should assign event to an instance of the event model" do
@@ -542,9 +554,9 @@ describe CalendarController do
   describe "Update" do
     
     before do
-       @start = DateTime.parse("4-Apr-2012")
-      @end = DateTime.parse("11-Apr-2012")
-      @event_attr = { :start_at => @start, :end_at => @end }
+      @start = "4/4/2012"
+      @end = "4/10/2012"
+      @event_attr = { :start_at => @start, :end_at => @end, :pto => "1" }
     end
     
     it 'should call find from Event' do
@@ -560,12 +572,17 @@ describe CalendarController do
     
     it 'should update the start at' do
       put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
-      assigns(:event).start_at.should == @start.to_time
+      assigns(:event).start_at.should == Date.strptime(@start, '%m/%d/%Y')
     end
     
     it 'should update the end at' do
       put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
-      assigns(:event).end_at.should == DateTime.parse("12-Apr-2012").to_time - 1
+      assigns(:event).end_at.should == DateTime.parse("11-Apr-2012").to_time - 1
+    end
+
+    it 'should update pto' do
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
+      assigns(:event).pto.should be_true
     end
     
     it 'should redirect' do
@@ -612,5 +629,20 @@ describe CalendarController do
       response.should redirect_to(nurse_calendar_index_path(@nurse))
     end
   end
-  
+
+  describe 'Finalize Vacation Schedule' do
+    before :each do
+      @shift = 'Days'
+      @unit = FactoryGirl.create(:unit)
+      @nurse = FactoryGirl.create(:nurse, :position=>1,:shift=>@shift,:unit=>@unit)
+      @nurse_next = FactoryGirl.create(:nurse,:position=>2,:shift=>@shift,:unit=>@unit)
+      @nurse_other = FactoryGirl.create(:nurse,:position=>1,:shift=>"PMs",:unit=>@unit)
+      @baton = FactoryGirl.create(:nurse_baton, :unit => @unit, :shift => @shift, :nurse => @nurse)
+      post :finalize_schedule, :nurse_id => @nurse.id
+    end
+    it 'should make the current nurse the next nurse' do
+      baton = NurseBaton.find_by_unit_id_and_shift(@unit.id,@shift)
+      baton.nurse.should == @nurse_next
+    end
+  end
 end
