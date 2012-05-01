@@ -14,8 +14,8 @@ Background:
   | name     | shift | unit    | email        |
   | Jane Doe | PMs   | Surgery | jane@doe.com |
   
-  And the following admins exist:
-  | name       | email          | unit    |
+  And the following admins with units exist:
+  | name       | email          | units    |
   | Jane Admin | jane@admin.com | Surgery |
   | Joe Admin  | joe@admin.com  | Surgery |
   | Bob Admin  | bob@admin.com  | ER      |

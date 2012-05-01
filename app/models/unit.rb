@@ -3,6 +3,7 @@ class Unit < ActiveRecord::Base
   has_many :vacation_days, :dependent => :destroy
   has_many :events, :through => :nurses, :dependent => :destroy
   has_many :unit_and_shifts, :dependent => :destroy
+  has_and_belongs_to_many :admins
 
   validates_uniqueness_of :name
   validates_presence_of :name
@@ -25,7 +26,7 @@ class Unit < ActiveRecord::Base
       return Unit.find_by_id(unit_id) || unit_id == 0
     end
   end
-  
+
   def calculate_max_per_day(unit_id, shift)
     @max_per = {}
     @total_weeks_off = Nurse.sum(:num_weeks_off, :conditions => {:unit_id => unit_id, :shift => shift})
@@ -43,7 +44,7 @@ class Unit < ActiveRecord::Base
     else
       @max_per[:month] = 0
     end
-    
+
     return @max_per
   end
 
