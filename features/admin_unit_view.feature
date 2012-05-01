@@ -13,8 +13,8 @@ Background:
   | NICU    |
 
   Given the following admins with units exist:
-  | name       | units    |
-  | Admin Doe  | Surgery  |
+  | name       | email     | units    |
+  | Admin Doe  | ad@ad.com | Surgery  |
 
   And I am logged in as the Admin "Admin Doe"
   And I am on the Associate Units page

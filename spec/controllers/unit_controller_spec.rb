@@ -7,6 +7,10 @@ describe UnitController do
     @units = [@unit1, @unit2]
   end
 
+  before(:all) do
+    UnitController.skip_before_filter(:authenticate_admin!)
+  end
+
   describe "Index" do
     it 'should call find all for units' do
       Unit.should_receive(:find).with(:all).and_return(@units)

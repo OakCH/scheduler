@@ -21,7 +21,6 @@ class AdminUnitController < ApplicationController
     # Find units with name given
     units = []
     unit_names.each do | name, val |
-      puts "JOAIWJDOAWIJDOWAJD"
       unit = Unit.find_by_name(name)
       if not unit
         flash[:error] = "One or more units could not be added or removed."

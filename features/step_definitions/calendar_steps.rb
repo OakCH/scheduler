@@ -34,7 +34,8 @@ end
 Given /the following admins with units exist/ do |admin_table|
   admin_table.hashes.each do |admin_params|
     # see whether or not the admin exists first...
-    admin = FactoryGirl.create(:admin, :name => admin_params[:name])
+    admin = FactoryGirl.create(:admin, :name => admin_params[:name],
+                               :email => admin_params[:email])
 
     units = admin_params[:units].split(", ")
     units.each do |name|
