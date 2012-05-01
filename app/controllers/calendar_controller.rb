@@ -84,7 +84,7 @@ class CalendarController < ApplicationController
     
     start_date = Date.strptime params[:event][:start_at], '%m/%d/%Y'
     end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
-    event = Event.new(:start_at => start_date, :end_at => end_at)
+    event = Event.new(:start_at => start_date, :end_at => end_at, :pto => params[:event][:pto])
     event.all_day = 1
     event.name = nurse.name
     event.nurse_id = nurse.id
@@ -119,10 +119,10 @@ class CalendarController < ApplicationController
     end
     
     @event.all_day = 1
-    
     @event.start_at = Date.strptime params[:event][:start_at], '%m/%d/%Y'
     @event.end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
-    
+    @event.pto = params[:event][:pto]
+
     if not @event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"
       redirect_to nurse_calendar_index_path
@@ -165,6 +165,7 @@ class CalendarController < ApplicationController
     @shift = session[:shift]
     @year_month = Array.new
 # hard-coded => waiting for notion of time to be implemented
+# TODO: change as soon as we know the year the calendar is for
     months = 1..12
     months.each do |m|
       @year_month << [2012, m]

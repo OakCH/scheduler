@@ -122,6 +122,39 @@ describe Rules do
     end
   end
 
+  describe 'valid_pto?' do
+    before(:each) do
+      @unit1 = FactoryGirl.create(:unit, :name => 'surgery')
+      @shift1 = 'PMs'
+      @nurses_unit1 = FactoryGirl.create_list(:nurse, 50, :shift => @shift1, :unit_id => @unit1.id)
+      @nurse1 = @nurses_unit1[0]
+    end
+    it 'should be true when event is exactly 7 days' do
+      rules = Rules.new(nil)
+      start_at = DateTime.parse("4-Apr-2012")
+      end_at = DateTime.parse("10-Apr-2012")
+      event = Event.new(:start_at => start_at, :end_at => end_at, :pto => true, :nurse_id => @nurse1.id)
+      rules.valid_pto?(event).should be_true
+    end
+    it 'should be false when event is greater than 7 days' do
+      rules = Rules.new(nil)
+      start_at = DateTime.parse("4-Apr-2012")
+      end_at = DateTime.parse("11-Apr-2012")
+      event = Event.new(:start_at => start_at, :end_at => end_at, :pto => true, :nurse_id => @nurse1.id)
+      rules.valid_pto?(event).should be_false
+    end
+    it 'should be false when nurse already has a pto segment' do
+      rules = Rules.new(nil)
+      start_at = DateTime.parse("4-Apr-2012")
+      end_at = DateTime.parse("10-Apr-2012")
+      FactoryGirl.create(:event, :start_at => start_at, :end_at => end_at, :pto => true, :nurse_id => @nurse1.id)
+      start_at = DateTime.parse("4-May-2012")
+      end_at = DateTime.parse("10-May-2012")
+      event = Event.new(:start_at => start_at, :end_at => end_at, :pto => true, :nurse_id => @nurse1.id)
+      rules.valid_pto?(event).should be_false
+    end
+  end
+
   describe 'num_nurses_on_day' do
     before(:each) do
       @unit1 = FactoryGirl.create(:unit, :name => 'surgery')
@@ -202,6 +235,7 @@ describe Rules do
       @nurse = FactoryGirl.create(:nurse, :unit => @unit)
       @nurse_id = @nurse.id
       subject.stub(:nurse_id).and_return(@nurse_id)
+      subject.stub(:pto).and_return(false)
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:start_at).and_return(DateTime.new(2012,3,4,0,0,0))
     end
@@ -229,6 +263,7 @@ describe Rules do
       subject.stub(:nurse_id).and_return(@nurse_id)
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:id).and_return(nil)
+      subject.stub(:pto).and_return(false)
       # add 2 weeks of scheduled vacation into nurse
       @event1 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,4,0,0,0), :end_at => DateTime.new(2012,3,10,0,0,0))
       @event2 = FactoryGirl.create(:event, :start_at => DateTime.new(2012,4,4,0,0,0), :end_at => DateTime.new(2012,4,10,0,0,0))
@@ -260,6 +295,7 @@ describe Rules do
       subject.stub(:nurse_id).and_return(@nurse_id)
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:id).and_return(nil)
+      subject.stub(:pto).and_return(false)
       # make sure @@max_segs = 4
       # add 3 segs in
       @nurse.num_weeks_off = 5
@@ -300,6 +336,7 @@ describe Rules do
         subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
         subject.stub(:nurse).and_return(@nurse1)
         subject.stub(:nurse_id).and_return(@nurse1.id)
+        subject.stub(:pto).and_return(false)
         subject.should be_valid
       end
       it 'should not allow second person to schedule vacation on same day as first' do
@@ -309,6 +346,7 @@ describe Rules do
         subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
         subject.stub(:nurse).and_return(@nurse2)
         subject.stub(:nurse_id).and_return(@nurse2.id)
+        subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:max_day)
       end
     end
@@ -328,6 +366,7 @@ describe Rules do
         subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
         subject.stub(:nurse).and_return(@nurse1)
         subject.stub(:nurse_id).and_return(@nurse1.id)
+        subject.stub(:pto).and_return(false)
         subject.should be_valid
       end
       it 'should allow second person to schedule vacation on overlapping days as first' do
@@ -337,6 +376,7 @@ describe Rules do
         subject.stub(:end_at).and_return(DateTime.new(2012,4,21,0,0,0))
         subject.stub(:nurse).and_return(@nurse2)
         subject.stub(:nurse_id).and_return(@nurse2.id)
+        subject.stub(:pto).and_return(false)
         subject.should be_valid
       end
       it 'should not allow third person to schedule vacation on overlapping days as first' do
@@ -348,6 +388,7 @@ describe Rules do
         subject.stub(:end_at).and_return(DateTime.new(2012,4,18,0,0,0))
         subject.stub(:nurse).and_return(@nurse3)
         subject.stub(:nurse_id).and_return(@nurse3.id)
+        subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:max_day)
       end
     end
@@ -365,6 +406,7 @@ describe Rules do
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(@new_event.id)
+      subject.stub(:pto).and_return(false)
       subject.should have(1).error_on(:overlap)
     end
     it 'should pass with no overlapping vacations' do
@@ -374,6 +416,7 @@ describe Rules do
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(@new_event.id)
+      subject.stub(:pto).and_return(false)
       subject.should be_valid
     end
   end  
@@ -390,6 +433,7 @@ describe Rules do
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(@new_event.id)
+      subject.stub(:pto).and_return(false)
       subject.should be_valid
     end
     it 'should allow when during holidays and 1 nurse allowed' do
@@ -400,6 +444,7 @@ describe Rules do
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(@new_event.id)
+      subject.stub(:pto).and_return(false)
       subject.should be_valid
     end
     
@@ -414,6 +459,7 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
         subject.stub(:id).and_return(@new_event.id)
+        subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:holiday)
       end
       it 'should not allow when date starts outside of holiday' do
@@ -423,6 +469,7 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
         subject.stub(:id).and_return(@new_event.id)
+        subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:holiday)
       end
       it 'should not allow when date ends outside of holiday' do
@@ -432,6 +479,7 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
         subject.stub(:id).and_return(@new_event.id)
+        subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:holiday)
       end
       it 'should not allow with start and end outside of holiday range' do
@@ -441,6 +489,7 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
         subject.stub(:id).and_return(@new_event.id)
+        subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:holiday)
       end
     end
