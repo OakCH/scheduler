@@ -150,8 +150,7 @@ input[type="submit"] {
   border: none;
   font-weight: bold;
   text-transform: uppercase;
-  font-size: 85%;
-  display: block; }
+  font-size: 85%; }
   input[type="submit"]:hover {
     background-color: #a62900;
     cursor: pointer; }
