@@ -9,6 +9,7 @@ $dark-orange: #a62900;
 $white: #ffffff;
 $lite-purple: #410140;
 $purple: #310030;
+$off-white: #e4e3e3;
 
 body {
   background-color: $lite-gray;
@@ -76,6 +77,22 @@ body {
     }
     input.submit:hover {
       background-color: $lite-purple;
+      cursor: pointer;
+    }
+  }
+  input.submit {
+    border-radius: 5px;
+    width: auto;
+    padding: 0 10px;
+    background-color: $orange;
+    color: $white;
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 85%;
+    &:hover {
+      background-color: $dark-orange;
+      cursor: pointer;
     }
   }
 }
@@ -119,6 +136,26 @@ a {
   color: $purple;
   &:hover {
     color: $lite-purple;
+  }
+}
+
+.login-links {
+  font-size: 80%;
+  padding-left: 20px;
+}
+.flash-msg {
+  font-weight: bold;
+  color: $orange;
+  background-color: $off-white;
+  border: 1px solid $orange;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 8px 0;
+  font-size: 90%;
+  text-transform: uppercase;
+  ul {
+    list-style-type: none;
+    padding: 0px;
   }
 }
 

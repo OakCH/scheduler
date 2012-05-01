@@ -105,6 +105,8 @@ a {
   }
 }
 
+
+
 table {
   width: 95%;
   margin: 0 auto;
@@ -170,3 +172,31 @@ label {
 #calendar-links{
   margin-bottom:40px;
 }
+input {
+  border: 1px;
+  font-family: 'Open Sans', sans-serif;
+  background-color: $off-white;
+  margin: 10px 5px 10px 5px;
+  border-radius: 3px;
+  padding: 3px;
+}
+
+
+
+input[type="submit"] {
+  border-radius: 5px;
+  width: auto;
+  padding: 6px 10px;
+  background-color: $orange;
+  color: $white;
+  border: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 85%;
+  display: block;
+  &:hover {
+    background-color: $dark-orange;
+    cursor: pointer;
+  }
+}
+

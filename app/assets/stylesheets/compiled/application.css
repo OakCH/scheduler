@@ -132,3 +132,26 @@ label {
 
 #calendar-links {
   margin-bottom: 40px; }
+
+input {
+  border: 1px;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #e4e3e3;
+  margin: 10px 5px 10px 5px;
+  border-radius: 3px;
+  padding: 3px; }
+
+input[type="submit"] {
+  border-radius: 5px;
+  width: auto;
+  padding: 6px 10px;
+  background-color: #cd3301;
+  color: white;
+  border: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 85%;
+  display: block; }
+  input[type="submit"]:hover {
+    background-color: #a62900;
+    cursor: pointer; }
