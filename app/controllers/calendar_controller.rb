@@ -89,8 +89,15 @@ class CalendarController < ApplicationController
       return
     end
     
-    start_date = Date.strptime params[:event][:start_at], '%m/%d/%Y'
-    end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    begin
+      start_date = Date.strptime params[:event][:start_at], '%m/%d/%Y'
+      end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    rescue
+      flash[:error] = "You entered an date that was not properly formatted."
+      redirect_to login_path
+      return
+    end
+
     event = Event.new(:start_at => start_date, :end_at => end_at, :pto => params[:event][:pto])
     event.all_day = 1
     event.name = nurse.name
@@ -98,11 +105,10 @@ class CalendarController < ApplicationController
     
     if not event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The vacation to schedule was not valid: #{event.errors.full_messages.join(' ')}"
-      redirect_to nurse_calendar_index_path
     else
       flash[:notice] = 'You successfully scheduled your vacation'
-      redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
     end
+    redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
   end
   
   def edit
@@ -131,14 +137,21 @@ class CalendarController < ApplicationController
       return
     end
     
+    begin
+      @event.start_at = Date.strptime params[:event][:start_at], '%m/%d/%Y'
+      @event.end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    rescue
+      flash[:error] = "You entered an date that was not properly formatted."
+      redirect_to login_path
+      return
+    end
+
     @event.all_day = 1
-    @event.start_at = Date.strptime params[:event][:start_at], '%m/%d/%Y'
-    @event.end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
     @event.pto = params[:event][:pto]
 
     if not @event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"
-      redirect_to nurse_calendar_index_path
+      redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
     else
       flash[:error] = 'You successfully scheduled your vacation'
       redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
@@ -152,13 +165,15 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-    
+
+    r_month = @event.start_at.month
+    r_year = @event.start_at.year
     if not @event.destroy
       flash[:error] = "The vacation could not be deleted."
-      redirect_to nurse_calendar_index_path
+      redirect_to nurse_calendar_index_path(:month => r_month, :year => r_year)
     else
       flash[:notice] = "That vacation segment has been deleted."
-      redirect_to nurse_calendar_index_path
+      redirect_to nurse_calendar_index_path(:month => r_month, :year => r_year)
     end
   end
 
