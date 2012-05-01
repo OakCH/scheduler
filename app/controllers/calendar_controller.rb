@@ -89,8 +89,15 @@ class CalendarController < ApplicationController
       return
     end
     
-    start_date = Date.strptime params[:event][:start_at], '%m/%d/%Y'
-    end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    begin
+      start_date = Date.strptime params[:event][:start_at], '%m/%d/%Y'
+      end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    rescue
+      flash[:error] = "You entered an date that was not properly formatted."
+      redirect_to login_path
+      return
+    end
+
     event = Event.new(:start_at => start_date, :end_at => end_at, :pto => params[:event][:pto])
     event.all_day = 1
     event.name = nurse.name
@@ -130,9 +137,16 @@ class CalendarController < ApplicationController
       return
     end
     
+    begin
+      @event.start_at = Date.strptime params[:event][:start_at], '%m/%d/%Y'
+      @event.end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
+    rescue
+      flash[:error] = "You entered an date that was not properly formatted."
+      redirect_to login_path
+      return
+    end
+
     @event.all_day = 1
-    @event.start_at = Date.strptime params[:event][:start_at], '%m/%d/%Y'
-    @event.end_at = Date.strptime params[:event][:end_at], '%m/%d/%Y'
     @event.pto = params[:event][:pto]
 
     if not @event.save(:validate => (not admin_signed_in?))
