@@ -44,4 +44,10 @@ FactoryGirl.define do
     pto false
     nurse
   end
+
+  factory :nurse_baton do
+    nurse
+    shift 'PMs'
+    unit
+  end
 end

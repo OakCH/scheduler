@@ -1,30 +1,36 @@
-:javascript
-  $(function() {
-    $.datepicker.setDefaults({dateFormat: 'mm/dd/yy'});
-    var dates = $( "#event_start_at, #event_end_at" ).datepicker({
-      minDate: "#{Time.now.strftime("%m/%d/%y")}",
-      defaultDate: "#{@event.start_at.strftime("%m/%d/%y")}",
-      changeMonth: true,
-      numberOfMonths: 3,
-      onSelect: function( selectedDate ) {
-        var option = this.id == "event_start_at" ? "minDate" : "maxDate",
-        instance = $( this ).data( "datepicker" ),
-        date = $.datepicker.parseDate(
-          instance.settings.dateFormat ||
-          $.datepicker._defaults.dateFormat,
-          selectedDate, instance.settings );
-        dates.not( this ).datepicker( "option", option, date );
-      }
+-if @cur_nurse
+
+  :javascript
+    $(function() {
+      $.datepicker.setDefaults({dateFormat: 'mm/dd/yy'});
+      var dates = $( "#event_start_at, #event_end_at" ).datepicker({
+        minDate: "#{Time.now.strftime("%m/%d/%y")}",
+        defaultDate: "#{@event.start_at.strftime("%m/%d/%y")}",
+        changeMonth: true,
+        numberOfMonths: 3,
+        onSelect: function( selectedDate ) {
+          var option = this.id == "event_start_at" ? "minDate" : "maxDate",
+          instance = $( this ).data( "datepicker" ),
+          date = $.datepicker.parseDate(
+            instance.settings.dateFormat ||
+            $.datepicker._defaults.dateFormat,
+            selectedDate, instance.settings );
+          dates.not( this ).datepicker( "option", option, date );
+        }
+      });
     });
-  });
-  
-%h1
-  Change
-  
-= form_tag nurse_calendar_path(:nurse_id=>@nurse_id, :id=>@id), :method => :put do
-  = render :partial => 'event_form'
-  = submit_tag 'Update vacation time'
-  
-= link_to 'Back to nurse calendar', nurse_calendar_index_path
-- if admin_signed_in?
-  = link_to 'Back to admin calendar', admin_calendar_path
+    
+  %h1
+    Change
+    
+  = form_tag nurse_calendar_path(:nurse_id=>@nurse_id, :id=>@id), :method => :put do
+    = render :partial => 'event_form'
+    = submit_tag 'Update vacation time'
+    
+  = link_to 'Back to nurse calendar', nurse_calendar_index_path
+  - if admin_signed_in?
+    = link_to 'Back to admin calendar', admin_calendar_path
+-else
+  %h2 Change
+  %p
+    You cannot schedule your vacations at this time.
