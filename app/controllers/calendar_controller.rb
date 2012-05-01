@@ -91,11 +91,10 @@ class CalendarController < ApplicationController
     
     if not event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The vacation to schedule was not valid: #{event.errors.full_messages.join(' ')}"
-      redirect_to nurse_calendar_index_path
     else
       flash[:notice] = 'You successfully scheduled your vacation'
-      redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
     end
+    redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
   end
   
   def edit
@@ -125,7 +124,7 @@ class CalendarController < ApplicationController
 
     if not @event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"
-      redirect_to nurse_calendar_index_path
+      redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
     else
       flash[:error] = 'You successfully scheduled your vacation'
       redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
@@ -134,6 +133,8 @@ class CalendarController < ApplicationController
   
   def destroy
     @event = Event.find_by_id(params[:id])
+    r_month = @event.start_at.month
+    r_year = @event.start_at.year
     if not @event
       flash[:error] = "The vacation you are trying to delete could not be found."
       redirect_to login_path
@@ -142,10 +143,10 @@ class CalendarController < ApplicationController
     
     if not @event.destroy
       flash[:error] = "The vacation could not be deleted."
-      redirect_to nurse_calendar_index_path
+      redirect_to nurse_calendar_index_path(:month => r_month, :year => r_year)
     else
       flash[:notice] = "That vacation segment has been deleted."
-      redirect_to nurse_calendar_index_path
+      redirect_to nurse_calendar_index_path(:month => r_month, :year => r_year)
     end
   end
 
