@@ -4,22 +4,26 @@ As an admin,
 I want to be associated with certain units
 
 Background:
-  Given the following admin unit relations exist
-  | admin_name | unit_name     |
-  | Admin Doe  | Surgery       |
 
-  Given the following units exist
+  Given the following units exist:
   | name    |
+  | Trauma  |
   | Surgery |
   | ICU     |
-  | Trauma  |
+  | NICU    |
+
+  Given the following admins with units exist:
+  | name       | units    |
+  | Admin Doe  | asdfSurgery  |
 
   And I am logged in as an Admin
   And I am on the Associate Units page
 
 Scenario: Seeing all the units
-  I should see "Surgery"
-  And I should see "ICU"
+  I should see "ICU"
+  And I should see "Surgery"
+  And I should see "NICU"
+  And I should see "Trauma"
 
 Scenario: I should see the Surgery checkbox marked
   The "Surgery" checkbox should be checked
