@@ -626,7 +626,7 @@ describe CalendarController do
     
     it 'should redirect' do
       delete :destroy, :id => @event.id, :nurse_id => @nurse.id
-      response.should redirect_to(nurse_calendar_index_path(@nurse))
+      response.should redirect_to(nurse_calendar_index_path(@nurse, :month => @event.start_at.month, :year => @event.start_at.year))
     end
   end
 
