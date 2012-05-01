@@ -1,13 +1,13 @@
 %h2
   = "Details about #{@event.nurse.name} vacation week"
-
+  
 %ul
   %li
     Start date:
-    = @event.start_at.strftime("%d/%m/%y")
+    = @event.start_at.strftime("%m/%d/%y")
   %li
     End date:
-    = @event.end_at.strftime("%d/%m/%y")
+    = @event.end_at.strftime("%m/%d/%y")
   %li
     -if @event.pto
       This is a PTO segment

@@ -48,5 +48,5 @@ Examples:
 Scenario: Requesting a password reset
   And I follow "Forgot your password?"
   And I fill in "Email" with "jane@doe.com"
-  And I press "Send me reset password instructions"
+  And I press "Reset password"
   Then "jane@doe.com" should receive an email
