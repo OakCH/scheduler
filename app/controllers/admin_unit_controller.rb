@@ -4,7 +4,6 @@ class AdminUnitController < ApplicationController
 
   def index
     @units = Unit.find(:all)
-    puts @units.map { |a| a.name }
     @admin_units = current_admin.units
   end
 

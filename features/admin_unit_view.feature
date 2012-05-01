@@ -25,6 +25,7 @@ Scenario: Seeing all the units
   And I should see "NICU"
   And I should see "Trauma"
 
+
 Scenario: I should see the Surgery checkbox marked
   The "Surgery" checkbox should be checked
   And the "ICU" checkbox should not be checked
