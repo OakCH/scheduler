@@ -1,0 +1,20 @@
+%h1 Associate Units
+
+- if @units and @admin_units
+  %h2 Units
+  %table
+    %thead
+      %tr
+        %th name
+        %th select
+    %tbody
+      - form_tag(:controller => "admin_unit", :action => "update", :method => "put") do
+        - @units.each do |unit|   
+          %p unit.name
+          %tr{:class => cycle("even", "odd")}
+            %td= link_to(unit.name, edit_unit_path(unit))
+            %td= check_box_tag(unit.name, true, checked = @admin_units.include?(unit))
+- else
+  %h2 Imposter! You are not an admin
+
+
