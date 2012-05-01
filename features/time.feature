@@ -19,5 +19,5 @@ Scenario: Changing current time
   When I am on the Set Time page
   And when I select "2008" from "Year"
   And I press "Submit"
-  I should see "2008"
+  Then I should see "2008"
 

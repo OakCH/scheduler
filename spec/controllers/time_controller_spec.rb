@@ -25,6 +25,11 @@ describe TimeController do
       put :update, :time => "2012"
       response.should redirect_to(time_index_path)
     end
+
+    it 'should flash with an invalid year' do
+      put :update, :time => "jsoefj039tj2340egjf"
+      flash[:error].should_not be_empty
+    end
   end
 end
 
