@@ -26,11 +26,6 @@ describe AdminUnitController do
       get :index
     end
 
-    it 'should assign admin_units from admin' do
-      assigns(:admin_units) { @admin.units }
-      get :index
-    end
-
     it 'should assign units from all units' do
       assigns(:units) { Unit.find(:all) }
       get :index
@@ -42,33 +37,33 @@ describe AdminUnitController do
   describe "update" do
     it 'should redirect to index' do
       put :update
-      response.should redirect_to(admins_units_index_path)
+      response.should redirect_to(admin_unit_index_path)
     end
 
     it 'add unit to admin' do
       @unit4 = FactoryGirl.create(:unit)
       new_units = (@admin.units + [@unit4]).map { |u| u.name }
-      put :update, :units => { new_units[0] => true, new_units[1] => true,
-                               new_units[2] => true, new_units[3] => true }
+      put :update, :units => { new_units[0] => "1", new_units[1] => "1",
+                               new_units[2] => "1", new_units[3] => "1" }
       @admin.units.length.should == 4
     end
 
     it 'errors trying to add nonexistent units' do
-      put :update, :units => { "aojoiajwef230f240efrrf" => true }
+      put :update, :units => { "aojoiajwef230f240efrrf" => "true" }
       flash[:error].should_not be_empty
     end
 
     it 'remove unit from admin' do
       new_units = @admin.units[0..3].map { |u| u.name }
       put :update, :units => {
-        new_units[0] => true, new_units[1] => true,
-        new_units[2] => false
+        new_units[0] => "1", new_units[1] => "1",
+        new_units[2] => "0"
       }
       @admin.units.length.should == 2
     end
 
     it 'errors trying to remove a nonexistent unit' do
-      put :update, :units => { "sjoeifjosejf" => false }
+      put :update, :units => { "sjoeifjosejf" => "0" }
       flash[:error].should_not be_empty
     end
 
@@ -77,8 +72,8 @@ describe AdminUnitController do
       temp_unit = @admin.units[2]
       new_units = (@admin.units[0..3] + [other_unit]).map { |u| u.name }
       put :update, :units => {
-        new_units[0] => true, new_units[1] => true,
-        new_units[2] => false, new_units[3] => true,
+        new_units[0] => "1", new_units[1] => "1",
+        new_units[2] => "0", new_units[3] => "1"
       }
 
       @admin.units.length.should == 3

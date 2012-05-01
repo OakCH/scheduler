@@ -35,8 +35,8 @@ Scheduler::Application.routes.draw do
     # match ':action' => 'admin#:action', :as => :admin
     resources :unit, :as => 'units'
 
-    get 'admins_units_index' => 'admin_unit#index', :as => 'admins_units_index'
-    put 'admins_units_update' => 'admin_unit#update', :as => 'admins_units_update'
+    get 'admin_unit_index' => 'admin_unit#index', :as => 'admin_unit_index'
+    put 'admin_unit_update' => 'admin_unit#update', :as => 'admin_unit_update'
 
   end
 

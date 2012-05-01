@@ -69,7 +69,7 @@ module NavigationHelpers
       finalize_nurse_manager_index_path
 
     when /^the Associate Units page/
-      admins_units_index_path
+      admin_unit_index_path
 
     when /^the Add Vacation page for "([^"]*)"$/
       new_nurse_calendar_path(Nurse.find_by_name($1))
