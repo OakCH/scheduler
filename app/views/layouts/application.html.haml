@@ -27,8 +27,9 @@
         - if nurse_signed_in?
           = render 'users/nurse_navigation'
         .clear
-      #flash
-        = render 'shared/flash', :flash => flash
+      -if flash and not flash.to_hash.values.flatten.empty?
+        #flash
+          = render 'shared/flash', :flash => flash
       #content
         = yield
       .separator
