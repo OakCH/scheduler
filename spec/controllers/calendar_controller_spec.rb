@@ -5,7 +5,8 @@ describe CalendarController do
   
   before(:all) do
     CalendarController.skip_before_filter :authenticate_any!,
-    :authenticate_admin!, :check_nurse_id, :check_event_id
+    :authenticate_admin!, :check_nurse_id, :check_event_id,
+    :check_current_nurse
   end
   
   before(:each) do
@@ -518,7 +519,7 @@ describe CalendarController do
       end
       
       it "should assign nurse_id to nurse.id" do
-        assigns(:nurse_id).should == @event.id.to_s
+        assigns(:nurse_id).should == @event.id
       end
       
       it "should assign event to an instance of the event model" do
@@ -628,5 +629,20 @@ describe CalendarController do
       response.should redirect_to(nurse_calendar_index_path(@nurse))
     end
   end
-  
+
+  describe 'Finalize Vacation Schedule' do
+    before :each do
+      @shift = 'Days'
+      @unit = FactoryGirl.create(:unit)
+      @nurse = FactoryGirl.create(:nurse, :position=>1,:shift=>@shift,:unit=>@unit)
+      @nurse_next = FactoryGirl.create(:nurse,:position=>2,:shift=>@shift,:unit=>@unit)
+      @nurse_other = FactoryGirl.create(:nurse,:position=>1,:shift=>"PMs",:unit=>@unit)
+      @baton = FactoryGirl.create(:nurse_baton, :unit => @unit, :shift => @shift, :nurse => @nurse)
+      post :finalize_schedule, :nurse_id => @nurse.id
+    end
+    it 'should make the current nurse the next nurse' do
+      baton = NurseBaton.find_by_unit_id_and_shift(@unit.id,@shift)
+      baton.nurse.should == @nurse_next
+    end
+  end
 end

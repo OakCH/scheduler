@@ -1,0 +1,6 @@
+%p
+  Hello #{@admin.name},
+%p
+  All vacations have been scheduled for the #{@group[:unit_name]} unit, #{@group[:shift]} shift. 
+  To view the current calendar, please log in here
+%p= link_to 'current calendar', admin_calendar_url
