@@ -5,7 +5,7 @@ class CalendarController < ApplicationController
   
   before_filter :check_nurse_id
   before_filter :check_event_id, :only => [:show, :edit, :update, :destroy]
-  before_filter :check_current_nurse, :only => ['new', 'create', 'edit', 'update']
+  before_filter :check_current_nurse, :only => ['new', 'show', 'create', 'edit', 'update']
 
   def index
     setup_index do
@@ -27,7 +27,7 @@ class CalendarController < ApplicationController
       
       @shift = @nurse.shift
     end
-    @col_names = Event.all_display_columns
+    @cur_nurse ? @col_names = Event.all_display_columns : @col_names = Event.read_only_display_columns
   end
   
   def admin_index
@@ -234,14 +234,18 @@ class CalendarController < ApplicationController
       nurse_baton.nurse = next_nurse
       if nurse_baton.save
         # check to make sure that there is a new next nurse
-        if next_nurse or next_nurse.position < cur_nurse.position
+        if next_nurse and next_nurse.position > cur_nurse.position
           Notifier.notify_nurse(next_nurse).deliver
         else
+          admins = Admin.find(:all)
+          admins.each do |admin|
+            Notifier.notify_completion(admin,unit.name,shift).deliver
+          end
           nurse_baton.destroy
         end
         #refactor this to only admin who are watching
-        admin_list = Admin.find(:all)
-        admin_list.each do |admin|
+        admins = Admin.find(:all)
+        admins.each do |admin|
           Notifier.notify_admin(admin, cur_nurse).deliver
         end
         flash[:notice] = "Your schedule has been finalized and you can no longer update your vacations for this year."

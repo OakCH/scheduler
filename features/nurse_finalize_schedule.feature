@@ -60,8 +60,12 @@ Scenario: After finalizing schedule, next nurse should be able to edit a vacatio
   And I follow "Edit vacation segment"
   Then I should see "Change"
 
-Scenario: After finalizing schedule, nurse should not be able to edit a vacation segment
+Scenario: After finalizing schedule, nurse should not be able to add a vacation segment
   When I am on the Add Vacation page for "Jane Doe"
+  Then I should see "You cannot access that page"
+
+Scenario: After finalizing schedule, nurse should not be able to edit a vacation segment
+  When I am on the Update Vacation page for "Jane Doe" from "11-Apr-2012" to "19-Apr-2012"
   Then I should see "You cannot access that page"
 
 Scenario: After finalizing schedule, next nurse should receive an email sent from admin
@@ -75,4 +79,14 @@ Scenario: After finalizing schedule, admin should receive an email indicating th
   And I open the email
   Then I should see "Jane Doe has finished scheduling his or her vacation" in the email subject
   Then I should see "The calendar has moved on to the next nurse" in the email body
+  #But "joe@admin.com" should not receive an email
+
+Scenario: After every nurse in a Unit and Shift has been finalized, admin should receive an email
+  When I log out
+  And I am logged in as the Nurse "John Doe"
+  And I am on the Nurse Calendar page for "John Doe" in "April" of "2012"
+  And I press "finalize_schedule"
+  Then "jane@admin.com" should receive an email with subject "[Surgery, PMs] All vacations have been scheduled"
+  And I open the email with subject "[Surgery, PMs] All vacations have been scheduled"
+  Then I should see "All vacations have been scheduled for the Surgery unit, PMs shift." in the email body
   #But "joe@admin.com" should not receive an email

@@ -13,6 +13,10 @@ class Event < ActiveRecord::Base
     ['start date', 'end date', 'Change vacation', '']
   end
 
+  def self.read_only_display_columns
+    ['start date', 'end date']
+  end
+
 # the way the event_calendar gem handles colors for events
 # on the calendar is with 'color' in the model. this sets the
 # default color to gray
