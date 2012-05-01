@@ -39,6 +39,27 @@ class Rules < ActiveModel::Validator
       record.errors[:holiday] << 'There are no more availabilities for this day due to the holidays'
     end
 
+    unless valid_pto?(record)
+      record.errors[:pto] << 'You have selected more than one week of PTO'
+    end
+  end
+
+  def valid_pto?(record)
+    if record.pto == false
+      return true
+    end
+    if calculate_length(record) != 7
+      return false
+    end
+    record.nurse.events.each do |e|
+      if e.id = record.id
+        next
+      end
+      if e.pto == true
+        return false
+      end
+    end
+    return true
   end
 
   #dates should be formatted properly

@@ -41,6 +41,7 @@ FactoryGirl.define do
     end_at DateTime.new(2012,3,10,0,0,0)
     created_at DateTime.new(2012,1,1,0,0,0)
     all_day true
+    pto false
     nurse
   end
 end

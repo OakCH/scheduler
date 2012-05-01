@@ -415,7 +415,7 @@ describe CalendarController do
     before(:each) do
       @start = "4/4/2012"
       @end = "4/11/2012"
-      @new_event = { :start_at => @start, :end_at => @end }
+      @new_event = { :start_at => @start, :end_at => @end, :pto => "0"}
     end
     
     it 'should increase the count of events assoc with nurse' do
@@ -436,8 +436,29 @@ describe CalendarController do
       event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
       event.should_not be_nil
     end
-    
-     it 'should assign the proper end time' do
+
+    it 'should assign pto as false' do
+      post :create, :nurse_id => @nurse.id, :event => @new_event
+      event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
+      event.pto.should be_false
+    end
+
+    it 'should not allow pto segment with more than 7 days' do
+      @new_event[:pto] = "1"
+      post :create, :nurse_id => @nurse.id, :event => @new_event
+      event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
+      event.should be_nil
+    end
+
+    it 'should assign pto as true for event with exactly 7 days' do
+      @new_event[:pto] = "1"
+      @new_event[:end_at] = "4/10/2012"
+      post :create, :nurse_id => @nurse.id, :event => @new_event
+      event = Event.find_by_nurse_id_and_start_at(@nurse.id, @start.to_time)
+      event.pto.should be_true
+    end
+
+    it 'should assign the proper end time' do
       post :create, :nurse_id => @nurse.id, :event => @new_event
       event = Event.find_all_by_nurse_id_and_end_at(@nurse.id, @end.to_time - 1)
       event.should_not be_nil
@@ -533,8 +554,8 @@ describe CalendarController do
     
     before do
       @start = "4/4/2012"
-      @end = "4/11/2012"
-      @event_attr = { :start_at => @start, :end_at => @end }
+      @end = "4/10/2012"
+      @event_attr = { :start_at => @start, :end_at => @end, :pto => "1" }
     end
     
     it 'should call find from Event' do
@@ -555,7 +576,12 @@ describe CalendarController do
     
     it 'should update the end at' do
       put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
-      assigns(:event).end_at.should == DateTime.parse("12-Apr-2012").to_time - 1
+      assigns(:event).end_at.should == DateTime.parse("11-Apr-2012").to_time - 1
+    end
+
+    it 'should update pto' do
+      put :update, :id => @event.id, :nurse_id => @nurse.id, :event => @event_attr
+      assigns(:event).pto.should be_true
     end
     
     it 'should redirect' do

@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20120430063252) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "nurse_id"
+    t.boolean  "pto",        :default => false
   end
 
   add_index "events", ["end_at"], :name => "index_events_on_end_at"
