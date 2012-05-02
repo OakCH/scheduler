@@ -10,18 +10,16 @@
 #form
   = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
     .left
-    
-      = f.label :email    
+      = f.label :email
       = f.email_field :email
-    
-      = f.label :password    
+      = f.label :password
       = f.password_field :password
-      
-      - if devise_mapping.rememberable?
-        = f.check_box :remember_me
-        = f.label :remember_me
-      
-    .right        
-      %div= f.submit "Sign in", :class=>'submit'
+    .right
+      %div{:id=>'signup'}= f.submit "Sign in", :class=>'submit'
     .clear
+    - if devise_mapping.rememberable?
+      %table{:id=>'remember-me'}
+        %tr
+          %td{:class=>'checkbox'}= f.check_box :remember_me
+          %td= f.label :remember_me 
 = render "links"

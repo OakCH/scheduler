@@ -1,19 +1,13 @@
 /* application.scss */
 $dark-gray: #454545;
 $lite-gray: #d5d0cf;
+$off-white: #e4e3e3;
 $gray: #7c7c7c;
-$teal: #47a19c;
-$dark-teal: #00a198;
 $orange: #cd3301;
 $dark-orange: #a62900;
 $white: #ffffff;
-
-body {
-  background-color: $lite-gray;
-  color: $dark-gray;
-  font-family: 'Open Sans', sans-serif;
-
-}
+$lite-purple: #410140;
+$purple: #310030;
 
 #container {
   margin: 80px auto 0 auto;
@@ -57,13 +51,13 @@ body {
 #navigation {
   ul {
     float: right;
-    margin-top: -2px;
+    margin-top: 6px;
     margin-left: 0;
     padding-left: 0;
     display: inline;
     li {
-      padding: 0px 10px;
-      border-left: 1px solid $dark-gray;
+      padding: 8px 10px 0px 10px;
+      border-left: 2px solid $gray;
       list-style: none;
       display: inline;
     }
@@ -74,9 +68,6 @@ body {
 }
 
 #content {padding: 0 0 30px 0;}
-
-
-.clear {clear: both;}
 
 .separator {
   width: 100%;
@@ -138,11 +129,6 @@ label {
   padding: 20px;
 }
 
-#flash {
-  .error { color: red; }
-  .notice { color: $orange; }
-}
-
 #add-seg {
   width:500px; 
   float:left;
@@ -157,3 +143,17 @@ label {
 #calendar-links{
   margin-bottom:40px;
 }
+input {
+  border: 1px;
+  font-family: 'Open Sans', sans-serif;
+  background-color: $off-white;
+  margin: 10px 5px 10px 5px;
+  border-radius: 3px;
+  padding: 3px;
+}
+
+.delete-button {
+  width: 80px;
+}
+
+
