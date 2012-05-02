@@ -80,6 +80,9 @@ a {
   a:hover {
     color: #410140; }
 
+#login input[type='checkbox'] {
+  width: 30px; }
+
 .login-links {
   font-size: 80%;
   padding-left: 20px; }
