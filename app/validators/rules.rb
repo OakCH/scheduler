@@ -52,7 +52,7 @@ class Rules < ActiveModel::Validator
       return false
     end
     record.nurse.events.each do |e|
-      if e.id = record.id
+      if e.id == record.id
         next
       end
       if e.pto == true
