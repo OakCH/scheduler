@@ -184,43 +184,43 @@ describe Rules do
     it 'should check the number of events on April 4 for unit1, PMs' do
       rules = Rules.new(nil)
       test_date =  DateTime.new(2012,4,4,0,0,0)
-      rules.num_nurses_on_day(test_date, @shift1, @unit1.id).should == 1
+      rules.num_nurses_on_day(test_date, @shift1, @unit1.id, 0).should == 1
     end
 
     it 'should check the number of events on April 10 for unit1, PMs' do
       rules = Rules.new(nil)
       test_date = DateTime.new(2012,4,10,0,0,0)
-      rules.num_nurses_on_day(test_date, @shift1,  @unit1.id).should == 2
+      rules.num_nurses_on_day(test_date, @shift1,  @unit1.id, 0).should == 2
     end
 
     it 'should check the number of events on April 21 for unit1, PMs' do
       rules = Rules.new(nil)
       test_date = DateTime.new(2012,4,21,0,0,0)
-      rules.num_nurses_on_day(test_date, @shift1, @unit1.id).should == 0
+      rules.num_nurses_on_day(test_date, @shift1, @unit1.id, 0).should == 0
     end
 
     it 'should check the number of events on April 4 for unit2, PMs' do
       rules = Rules.new(nil)
       test_date =  DateTime.new(2012,4,4,0,0,0)
-      rules.num_nurses_on_day(test_date, @shift1, @unit2.id).should == 0
+      rules.num_nurses_on_day(test_date, @shift1, @unit2.id, 0).should == 0
     end
 
     it 'should check the number of events on April 10 for unit2, PMs' do
       rules = Rules.new(nil)
       test_date = DateTime.new(2012,4,10,0,0,0)
-      rules.num_nurses_on_day(test_date, @shift1,  @unit2.id).should == 0
+      rules.num_nurses_on_day(test_date, @shift1,  @unit2.id, 0).should == 0
     end
 
     it 'should check the number of events on April 21 for unit2, PMs' do
       rules = Rules.new(nil)
       test_date = DateTime.new(2012,4,21,0,0,0)
-      rules.num_nurses_on_day(test_date, @shift1, @unit2.id).should == 1
+      rules.num_nurses_on_day(test_date, @shift1, @unit2.id, 0).should == 1
     end
 
     it 'should check the number of events on April 22 for unit2, PMs' do
       rules = Rules.new(nil)
       test_date = DateTime.new(2012,4,22,0,0,0)
-      rules.num_nurses_on_day(test_date, @shift1, @unit2.id).should == 0
+      rules.num_nurses_on_day(test_date, @shift1, @unit2.id, 0).should == 0
     end
 
   end
@@ -238,6 +238,7 @@ describe Rules do
       subject.stub(:pto).and_return(false)
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:start_at).and_return(DateTime.new(2012,3,4,0,0,0))
+      subject.stub(:id).and_return(nil)
     end
 
     it 'should return true given event of one week' do
@@ -337,6 +338,7 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse1)
         subject.stub(:nurse_id).and_return(@nurse1.id)
         subject.stub(:pto).and_return(false)
+        subject.stub(:id).and_return(nil)
         subject.should be_valid
       end
       it 'should not allow second person to schedule vacation on same day as first' do
@@ -347,7 +349,30 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse2)
         subject.stub(:nurse_id).and_return(@nurse2.id)
         subject.stub(:pto).and_return(false)
+        subject.stub(:id).and_return(nil)
         subject.should have(1).error_on(:max_day)
+      end
+      it 'should allow a valid schedule to be edited if result is valid' do
+        @event = FactoryGirl.create(:event, :start_at=>DateTime.new(2012,4,12,0,0,0), :end_at => DateTime.new(2012,4,18,0,0,0))
+        @nurse1.events << @event
+        subject.stub(:start_at).and_return(@event.start_at)
+        subject.stub(:end_at).and_return(@event.end_at)
+        subject.stub(:id).and_return(@event.id)
+        subject.stub(:nurse).and_return(@nurse1)
+        subject.stub(:nurse_id).and_return(@nurse1.id)
+        subject.stub(:pto).and_return(false)
+        subject.should be_valid
+      end
+      it 'should not allow a valid schedule to be edited if result is invalid' do
+        @event = FactoryGirl.create(:event, :start_at=>DateTime.new(2012,4,12,0,0,0), :end_at => DateTime.new(2012,4,18,0,0,0))
+        @nurse1.events << @event
+        subject.stub(:start_at).and_return(DateTime.new(2012,4,12,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,4,13,0,0,0))
+        subject.stub(:id).and_return(@event.id)
+        subject.stub(:nurse).and_return(@nurse1)
+        subject.stub(:nurse_id).and_return(@nurse1.id)
+        subject.stub(:pto).and_return(false)
+        subject.should have(1).error_on(:end_at)
       end
     end
     
@@ -367,6 +392,7 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse1)
         subject.stub(:nurse_id).and_return(@nurse1.id)
         subject.stub(:pto).and_return(false)
+        subject.stub(:id).and_return(nil)
         subject.should be_valid
       end
       it 'should allow second person to schedule vacation on overlapping days as first' do
@@ -377,6 +403,7 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse2)
         subject.stub(:nurse_id).and_return(@nurse2.id)
         subject.stub(:pto).and_return(false)
+        subject.stub(:id).and_return(nil)
         subject.should be_valid
       end
       it 'should not allow third person to schedule vacation on overlapping days as first' do
@@ -389,6 +416,7 @@ describe Rules do
         subject.stub(:nurse).and_return(@nurse3)
         subject.stub(:nurse_id).and_return(@nurse3.id)
         subject.stub(:pto).and_return(false)
+        subject.stub(:id).and_return(nil)
         subject.should have(1).error_on(:max_day)
       end
     end
@@ -458,7 +486,7 @@ describe Rules do
         subject.stub(:end_at).and_return(@new_event.end_at)
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
-        subject.stub(:id).and_return(@new_event.id)
+        subject.stub(:id).and_return(nil)
         subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:holiday)
       end
@@ -468,7 +496,7 @@ describe Rules do
         subject.stub(:end_at).and_return(@new_event.end_at)
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
-        subject.stub(:id).and_return(@new_event.id)
+        subject.stub(:id).and_return(nil)
         subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:holiday)
       end
@@ -478,7 +506,7 @@ describe Rules do
         subject.stub(:end_at).and_return(@new_event.end_at)
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
-        subject.stub(:id).and_return(@new_event.id)
+        subject.stub(:id).and_return(nil)
         subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:holiday)
       end
@@ -488,7 +516,7 @@ describe Rules do
         subject.stub(:end_at).and_return(@new_event.end_at)
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
-        subject.stub(:id).and_return(@new_event.id)
+        subject.stub(:id).and_return(nil)
         subject.stub(:pto).and_return(false)
         subject.should have(1).error_on(:holiday)
       end
