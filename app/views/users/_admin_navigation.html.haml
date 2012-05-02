@@ -10,6 +10,9 @@
   %li
     = link_to_unless_current 'Units', units_path
   %li
+    = link_to_unless_current 'Follow Units', admin_unit_index_path
+  %li
     = link_to "Logout", destroy_user_session_path, :method => :delete
   %li
     = "#{current_admin.name} (Admin)"
+    

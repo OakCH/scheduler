@@ -97,7 +97,7 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-
+    
     event = Event.new(:start_at => start_date, :end_at => end_at, :pto => params[:event][:pto])
     event.all_day = 1
     event.name = nurse.name
@@ -106,7 +106,7 @@ class CalendarController < ApplicationController
     if not event.save(:validate => (not admin_signed_in?))
       flash[:error] = "The vacation to schedule was not valid: #{event.errors.full_messages.join(' ')}"
     else
-      flash[:notice] = 'You successfully scheduled your vacation'
+      flash[:notice] = 'You successfully scheduled a vacation segment'
     end
     redirect_to nurse_calendar_index_path(:month => event.start_at.month, :year => event.start_at.year)
   end
@@ -145,7 +145,7 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-
+    
     @event.all_day = 1
     @event.pto = params[:event][:pto]
 
@@ -153,7 +153,7 @@ class CalendarController < ApplicationController
       flash[:error] = "The update failed for the following reasons: #{@event.errors.full_messages.join(' ')}"
       redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
     else
-      flash[:error] = 'You successfully scheduled your vacation'
+      flash[:error] = 'You successfully updated a vacation segment'
       redirect_to nurse_calendar_index_path(:month => @event.start_at.month, :year => @event.start_at.year)
     end
   end
@@ -165,7 +165,7 @@ class CalendarController < ApplicationController
       redirect_to login_path
       return
     end
-
+    
     r_month = @event.start_at.month
     r_year = @event.start_at.year
     if not @event.destroy
@@ -227,7 +227,7 @@ class CalendarController < ApplicationController
         @year_month << date_arr
       end
     end
-
+    
     @strips = Array.new
     @year_month.each do |ym|
       cmonth = Date.civil(ym[0], ym[1])
@@ -276,7 +276,7 @@ class CalendarController < ApplicationController
   def setup_index
     @month = (params[:month] || (Time.zone || Time).now.month).to_i
     @year = (params[:year] || (Time.zone || Time).now.year).to_i
-
+    
     if @month == 0 or @year == 0
       flash[:error] = "An error has occurred."
       redirect_to login_path

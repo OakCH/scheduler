@@ -2,9 +2,20 @@
 
 - if @units
   %h2 Units
-  = form_tag admin_unit_update_path, :method => 'put' do 
-    - @units.each do |unit, check|
-      %p= unit.name
-      = label_tag "units[#{unit.name}]", unit.name
-      = check_box_tag("units[#{unit.name}]", "1", check)
+  %p Select or de-select units to manage which units you receive updates for:
+  = form_tag admin_unit_update_path, :method => 'put' do
+    %table#units
+      %thead
+        %tr
+          %th= ""
+          %th Name
+          %th Following?
+      %tbody
+        - count = 1
+        - @units.each do |unit, check|
+          %tr{:class => cycle("even", "odd")}
+            %td= count
+            - count += 1
+            %td= label_tag "units[#{unit.name}]", unit.name
+            %td= check_box_tag("units[#{unit.name}]", "1", check)  
     = submit_tag "Submit"
