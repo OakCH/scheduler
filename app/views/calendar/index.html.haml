@@ -16,7 +16,7 @@
       = link_to_function("Print this month", "javascript:print()") + " or " + link_to('View and print entire schedule', print_nurse_calendar_index_path)
 #calendar
   = raw(event_calendar)
-
+  
 #calendar-dashboard
   - if @nurse and (@nurse.events.length > 0)
     %h2= "Vacations segments for #{@nurse.name}"
@@ -33,10 +33,10 @@
             - if @cur_nurse
               %td= link_to 'Edit vacation segment', edit_nurse_calendar_path(e.nurse, e)
               %td= button_to 'Delete', nurse_calendar_path(e.nurse, e), :method => 'delete', :confirm => 'Are you sure?', :class => 'delete-button'
-    - if @cur_nurse
-      %h2
-        Finalize Your Vacation Segments
-      = button_to 'Finalize Your Vacation', nurse_finalize_path(@nurse), :confirm => 'Are you sure?', :id => 'finalize_schedule'
+  - if @cur_nurse
+    %h2
+      Finalize Your Vacation Segments
+    = button_to 'Finalize Your Vacation', nurse_finalize_path(@nurse), :confirm => 'Are you sure?', :id => 'finalize_schedule'
   - elsif @nurse
     %h2 There are no vacation segments scheduled.
   - else

@@ -1,8 +1,11 @@
 require 'date'
 
 class Admin < ActiveRecord::Base
-  
+
+  has_and_belongs_to_many :units
+
   include Personable
+
 
   def self.show_events_for_month(month,year,selectors)
     unit_id = selectors[:unit_id]

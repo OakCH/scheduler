@@ -3,19 +3,11 @@ $dark-gray: #454545;
 $lite-gray: #d5d0cf;
 $off-white: #e4e3e3;
 $gray: #7c7c7c;
-$teal: #47a19c;
-$dark-teal: #00a198;
 $orange: #cd3301;
 $dark-orange: #a62900;
 $white: #ffffff;
-$purple: #791275;
-
-body {
-  background-color: $lite-gray;
-  color: $dark-gray;
-  font-family: 'Open Sans', sans-serif;
-
-}
+$lite-purple: #410140;
+$purple: #310030;
 
 #container {
   margin: 80px auto 0 auto;
@@ -77,9 +69,6 @@ body {
 
 #content {padding: 0 0 30px 0;}
 
-
-.clear {clear: both;}
-
 .separator {
   width: 100%;
   margin: 0 auto;
@@ -104,8 +93,6 @@ a {
     td { color: $dark-orange; }
   }
 }
-
-
 
 table {
   width: 95%;
@@ -142,22 +129,6 @@ label {
   padding: 20px;
 }
 
-.flash-msg {
-  font-weight: bold;
-  color: $orange;
-  background-color: $off-white;
-  border: 1px solid $orange;
-  border-radius: 5px;
-  padding: 5px 10px;
-  margin: 8px 0;
-  font-size: 90%;
-  text-transform: uppercase;
-  ul {
-    list-style-type: none;
-    padding: 0px;
-  }
-}
-
 #add-seg {
   width:500px; 
   float:left;
@@ -179,22 +150,6 @@ input {
   margin: 10px 5px 10px 5px;
   border-radius: 3px;
   padding: 3px;
-}
-
-input[type="submit"] {
-  border-radius: 5px;
-  width: auto;
-  padding: 6px 10px;
-  background-color: $orange;
-  color: $white;
-  border: none;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 85%;
-  &:hover {
-    background-color: $dark-orange;
-    cursor: pointer;
-  }
 }
 
 .delete-button {

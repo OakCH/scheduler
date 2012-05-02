@@ -2,8 +2,6 @@
 $dark-gray: #454545;
 $lite-gray: #d5d0cf;
 $gray: #7c7c7c;
-$teal: #23bbb3;
-$dark-teal: #00a198;
 $orange: #cd3301;
 $dark-orange: #a62900;
 $white: #ffffff;
@@ -11,16 +9,11 @@ $lite-purple: #410140;
 $purple: #310030;
 $off-white: #e4e3e3;
 
-body {
-  background-color: $lite-gray;
-}
-
 #login {
   width: 600px;
 }
 
 #container {
-  font-family: 'Open Sans', sans-serif;
   color: $white;
   background-image:url('../mascot.png');
   background-position: right bottom;
@@ -29,7 +22,7 @@ body {
   width: 880px;
   height: 490px;
 }
-  
+
 
 #login #header {
   font-size: 50px;
@@ -80,45 +73,20 @@ body {
       cursor: pointer;
     }
   }
-  input.submit {
-    border-radius: 5px;
-    width: auto;
-    padding: 0 10px;
-    background-color: $orange;
-    color: $white;
-    border: none;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 85%;
-    &:hover {
-      background-color: $dark-orange;
-      cursor: pointer;
-    }
+}
+
+#login {
+  .left {
+    width: 60%;
+    float: left;
+  }
+  .right {
+    position: absolute; 
+    bottom: 40px;
+    right: 0;
+    float: right;
   }
 }
-
-.left {
-  float: left;
-}
-
-.right {
-  float: right;
-}
-
-#login .left {
-  width: 60%;
-}
-
-#login .right {
-  position: absolute; 
-  bottom: 33px;
-  right: 0;
-}
-
-.clear { 
-  clear: both;
-}
-
 #login #form {
   position: relative;
 }
@@ -143,30 +111,4 @@ a {
   font-size: 80%;
   padding-left: 20px;
 }
-.flash-msg {
-  font-weight: bold;
-  color: $orange;
-  background-color: $off-white;
-  border: 1px solid $orange;
-  border-radius: 5px;
-  padding: 5px 10px;
-  margin: 8px 0;
-  font-size: 90%;
-  text-transform: uppercase;
-  ul {
-    list-style-type: none;
-    padding: 0px;
-  }
-}
 
-.remember-left {
-  float: left;
-  width: 30px;
-}
-.remember-right {
-  float: left;
-  position: absolute;
-  left: 30px;
-  bottom: 6px;
-  
-}
