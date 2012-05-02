@@ -50,9 +50,14 @@ class Rules < ActiveModel::Validator
   
   def in_year?(record)
     year = CurrentYear.first.year
-    if record.start_at.to_date.year == year && record.start_at.to_date.month >= 2 &&
-      (record.end_at.to_date.year == year || record.end_at.to_date.year == year+1 &&
-      record.end_at.to_date.month < 2)
+    # vacation segment is from Mar of this year to Feb of next year
+    if record.start_at.year == year && record.start_at.month >= 3 &&
+      (record.end_at.year == year || record.end_at.year == year+1 &&
+      record.end_at.month < 3)
+      return true
+    # vacation is from start of next year to Feb of next year
+    elsif record.start_at.year == year + 1 && record.start_at.month < 3 &&
+      record.end_at.year == year + 1 && record.end_at.month < 3
       return true
     else return false
     end

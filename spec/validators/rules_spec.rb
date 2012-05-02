@@ -528,9 +528,18 @@ describe Rules do
     before(:each) do
       @nurse = FactoryGirl.create(:nurse, :unit => @unit, :shift => 'Days')
     end
-    it 'should allow you to schedule a vacation in the year' do
+    it 'should allow you to schedule a vacation in the year example 1' do
       subject.stub(:start_at).and_return(DateTime.new(2012,3,19,0,0,0))
       subject.stub(:end_at).and_return(DateTime.new(2012,3,25,0,0,0))
+      subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:nurse_id).and_return(@nurse.id)
+      subject.stub(:id).and_return(nil)
+      subject.stub(:pto).and_return(false)
+      subject.should be_valid
+    end
+    it 'should allow you to schedule a vacation in the year example 2' do
+      subject.stub(:start_at).and_return(DateTime.new(2013,2,19,0,0,0))
+      subject.stub(:end_at).and_return(DateTime.new(2013,2,25,0,0,0))
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(nil)
