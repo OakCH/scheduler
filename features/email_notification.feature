@@ -28,7 +28,6 @@ Background:
 Scenario: Next nurse receiving email after previous nurse has submitted vacation schedule
   And I am logged in as the Nurse "Jane Doe"
   And I am on the Nurse Calendar page for "Jane Doe"
-  Then show me the page
   And I press "Finalize Your Vacation"
   And I log out
   Then "john@doe.com" should receive an email
