@@ -233,6 +233,7 @@ describe Rules do
   subject {Validatable.new}
   before(:each) do
     @unit = FactoryGirl.create(:unit, :name => 'Surgery')
+    FactoryGirl.create(:current_year, :year => 2012)
   end
 
   describe 'checking is_week?' do
@@ -458,13 +459,11 @@ describe Rules do
   describe 'checking holiday_restriction?' do
     before(:each) do
       @nurse = FactoryGirl.create(:nurse, :unit => @unit, :shift => 'Days')
-      FactoryGirl.create(:current_year, :year => 2012)
     end
     
     it 'should allow when not during holidays, no holiday restriction' do
-      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,4,7,0,0,0), :end_at => DateTime.new(2012,4,13,0,0,0))
-      subject.stub(:start_at).and_return(@new_event.start_at)
-      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:start_at).and_return(DateTime.new(2012,4,7,0,0,0))
+      subject.stub(:end_at).and_return(DateTime.new(2012,4,13,0,0,0))
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(nil)
@@ -473,9 +472,8 @@ describe Rules do
     end
     it 'should allow when during holidays and 1 nurse allowed' do
       UnitAndShift.create(:unit => @unit, :shift => 'Days', :holiday => 1)
-      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,21,0,0,0), :end_at => DateTime.new(2012,12,27,0,0,0))
-      subject.stub(:start_at).and_return(@new_event.start_at)
-      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:start_at).and_return(DateTime.new(2012,12,21,0,0,0))
+      subject.stub(:end_at).and_return(DateTime.new(2012,12,27,0,0,0))
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(nil)
@@ -488,9 +486,8 @@ describe Rules do
         UnitAndShift.create(:unit => @unit, :shift => 'Days', :holiday => 0)
       end
       it 'should not allow with dates completely inside holiday' do
-        @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,21,0,0,0), :end_at => DateTime.new(2012,12,27,0,0,0))
-        subject.stub(:start_at).and_return(@new_event.start_at)
-        subject.stub(:end_at).and_return(@new_event.end_at)
+        subject.stub(:start_at).and_return(DateTime.new(2012,12,21,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,12,27,0,0,0))
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
         subject.stub(:id).and_return(nil)
@@ -498,9 +495,8 @@ describe Rules do
         subject.should have(1).error_on(:holiday)
       end
       it 'should not allow when date starts outside of holiday' do
-        @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,19,0,0,0), :end_at => DateTime.new(2012,12,27,0,0,0))
-        subject.stub(:start_at).and_return(@new_event.start_at)
-        subject.stub(:end_at).and_return(@new_event.end_at)
+        subject.stub(:start_at).and_return(DateTime.new(2012,12,19,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2012,12,27,0,0,0))
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
         subject.stub(:id).and_return(nil)
@@ -508,9 +504,8 @@ describe Rules do
         subject.should have(1).error_on(:holiday)
       end
       it 'should not allow when date ends outside of holiday' do
-        @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,25,0,0,0), :end_at => DateTime.new(2013,1,3,0,0,0))
-        subject.stub(:start_at).and_return(@new_event.start_at)
-        subject.stub(:end_at).and_return(@new_event.end_at)
+        subject.stub(:start_at).and_return(DateTime.new(2012,12,25,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2013,1,3,0,0,0))
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
         subject.stub(:id).and_return(nil)
@@ -518,9 +513,8 @@ describe Rules do
         subject.should have(1).error_on(:holiday)
       end
       it 'should not allow with start and end outside of holiday range' do
-        @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,12,19,0,0,0), :end_at => DateTime.new(2013,1,3,0,0,0))
-        subject.stub(:start_at).and_return(@new_event.start_at)
-        subject.stub(:end_at).and_return(@new_event.end_at)
+        subject.stub(:start_at).and_return(DateTime.new(2012,12,19,0,0,0))
+        subject.stub(:end_at).and_return(DateTime.new(2013,1,3,0,0,0))
         subject.stub(:nurse).and_return(@nurse)
         subject.stub(:nurse_id).and_return(@nurse.id)
         subject.stub(:id).and_return(nil)
@@ -533,12 +527,10 @@ describe Rules do
   describe 'current_year?' do
     before(:each) do
       @nurse = FactoryGirl.create(:nurse, :unit => @unit, :shift => 'Days')
-      FactoryGirl.create(:current_year, :year => 2012)
     end
     it 'should allow you to schedule a vacation in the year' do
-      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,19,0,0,0), :end_at => DateTime.new(2012,3,25,0,0,0))
-      subject.stub(:start_at).and_return(@new_event.start_at)
-      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:start_at).and_return(DateTime.new(2012,3,19,0,0,0))
+      subject.stub(:end_at).and_return(DateTime.new(2012,3,25,0,0,0))
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(nil)
@@ -546,9 +538,8 @@ describe Rules do
       subject.should be_valid
     end
     it 'should not allow you to schedule a vacation outside the year' do
-      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2011,3,19,0,0,0), :end_at => DateTime.new(2011,3,25,0,0,0))
-      subject.stub(:start_at).and_return(@new_event.start_at)
-      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:start_at).and_return(DateTime.new(2011,3,19,0,0,0))
+      subject.stub(:end_at).and_return(DateTime.new(2011,3,25,0,0,0))
       subject.stub(:nurse).and_return(@nurse)
       subject.stub(:nurse_id).and_return(@nurse.id)
       subject.stub(:id).and_return(nil)

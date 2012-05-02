@@ -50,7 +50,9 @@ class Rules < ActiveModel::Validator
   
   def in_year?(record)
     year = CurrentYear.first.year
-    if record.start_at.to_date.year == year && record.end_at.to_date.year == year
+    if record.start_at.to_date.year == year && record.start_at.to_date.month >= 2 &&
+      (record.end_at.to_date.year == year || record.end_at.to_date.year == year+1 &&
+      record.end_at.to_date.month < 2)
       return true
     else return false
     end
