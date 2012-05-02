@@ -5,7 +5,7 @@ I want to be able to select vacation times
 
 Background:
 
-  Given the following year exists
+  Given the following current years exist
   | year |
   | 2012 |
 
@@ -18,7 +18,6 @@ Background:
   And the following vacations exist:
   | name       | start_at    | end_at      | pto |
   | Rob Ronney | 11-Apr-2012 | 17-Apr-2012 | 1   |
-  | John Doe   | 11-Apr-2012 | 17-Apr-2012 | 0   |
 
   And the following nurse batons exist
   | unit | shift   | nurse    |
@@ -28,18 +27,24 @@ Background:
   And I am on the Nurse Calendar page for "Jane Doe" in "April" of "2012"
 
 Scenario: Add a vacation
-  When I add a vacation from "18-Apr-2012" to "25-Apr-2012"
-  And I press submit
+  When I follow "Add a vacation segment"
+  And I fill in "start_at" with "18-Apr-2012"
+  And I fill in "end_at" with "25-Apr-2012"
+  And I press "Save Changes"
   Then I should see the vacation belonging to "Jane Doe" from "18-Apr-2012" to "25-Apr-2012"
 
 Scenario: Add a vacation that overlaps
-  When I add a vacation from "11-Apr-2012" to "17-Apr-2012"
-  And I press submit
-  I should see "The vacation to schedule was not valid"
+  When I follow "Add a vacation segment"
+  And I fill in "start_at" with "11-Apr-2012"
+  And I fill in "end_at" with "17-Apr-2012"
+  And I press "Save Changes"
+  Then I should see "The vacation to schedule was not valid"
 
-Scenario: Add a vacation that is for a wrong time
-  When I add a vacation from "11-Apr-2005" to "17-Apr-205"
-  And I press submit
-  I should see "The vacation to schedule was not valid"
+Scenario: Add a vacation that is for a wrong year
+  When I follow "Add a vacation segment"
+  And I fill in "start_at" with "18-Apr-2019"
+  And I fill in "end_at" with "25-Apr-2019"
+  And I press "Save Changes"
+  Then I should see "The vacation to schedule was not valid"
 
 
