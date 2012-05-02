@@ -1,9 +1,4 @@
 /* application.scss */
-body {
-  background-color: #d5d0cf;
-  color: #454545;
-  font-family: 'Open Sans', sans-serif; }
-
 #container {
   margin: 80px auto 0 auto;
   width: 960px; }
@@ -39,13 +34,13 @@ body {
 
 #navigation ul {
   float: right;
-  margin-top: -2px;
+  margin-top: 6px;
   margin-left: 0;
   padding-left: 0;
   display: inline; }
   #navigation ul li {
-    padding: 0px 10px;
-    border-left: 1px solid #454545;
+    padding: 8px 10px 0px 10px;
+    border-left: 2px solid #7c7c7c;
     list-style: none;
     display: inline; }
   #navigation ul li.first {
@@ -53,9 +48,6 @@ body {
 
 #content {
   padding: 0 0 30px 0; }
-
-.clear {
-  clear: both; }
 
 .separator {
   width: 100%;
@@ -107,11 +99,6 @@ label {
   text-align: center;
   padding: 20px; }
 
-#flash .error {
-  color: red; }
-#flash .notice {
-  color: #cd3301; }
-
 #add-seg {
   width: 500px;
   float: left; }
@@ -123,3 +110,14 @@ label {
 
 #calendar-links {
   margin-bottom: 40px; }
+
+input {
+  border: 1px;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #e4e3e3;
+  margin: 10px 5px 10px 5px;
+  border-radius: 3px;
+  padding: 3px; }
+
+.delete-button {
+  width: 80px; }
