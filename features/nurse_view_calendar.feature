@@ -6,6 +6,10 @@ So that I can start planning my vacation time
 
 Background:
 
+  Given the following current years exist
+  | year |
+  | 2012 |
+
   Given the following nurses exist:
   | name               | shift | unit       |
   | Jane Doe           | PMs   | Surgery    |
