@@ -6,6 +6,10 @@ So I can use it when I'm using a computer.
 
 Background:
 
+  Given the following current years exist
+  | year |
+  | 2012 |
+
   Given the following nurses exist:
   | name               | shift | unit       |
   | Jane Doe           | PMs   | Surgery    |

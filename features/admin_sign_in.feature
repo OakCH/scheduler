@@ -6,6 +6,10 @@ So that I will be able to access scheduling information
 
 Background:
 
+  Given the following current years exist
+  | year |
+  | 2012 |
+
   Given the following nurses exist
   | name     | email        |
   | Jane Doe | jane@doe.com |

@@ -25,26 +25,24 @@ Background:
 
   And I am logged in as the Nurse "Jane Doe"
   And I am on the Nurse Calendar page for "Jane Doe" in "April" of "2012"
+  And I follow "Add a vacation segment"
 
 Scenario: Add a vacation
-  When I follow "Add a vacation segment"
-  And I fill in "start_at" with "18-Apr-2012"
+  When I fill in "start_at" with "18-Apr-2012"
   And I fill in "end_at" with "25-Apr-2012"
   And I press "Save Changes"
   Then I should see the vacation belonging to "Jane Doe" from "18-Apr-2012" to "25-Apr-2012"
 
 Scenario: Add a vacation that overlaps
-  When I follow "Add a vacation segment"
-  And I fill in "start_at" with "11-Apr-2012"
+  When I fill in "start_at" with "11-Apr-2012"
   And I fill in "end_at" with "17-Apr-2012"
   And I press "Save Changes"
-  Then I should see "The vacation to schedule was not valid"
+  Then I should see "You have selected a day that has no more availability"
 
 Scenario: Add a vacation that is for a wrong year
-  When I follow "Add a vacation segment"
-  And I fill in "start_at" with "18-Apr-2019"
+  When I fill in "start_at" with "18-Apr-2019"
   And I fill in "end_at" with "25-Apr-2019"
   And I press "Save Changes"
-  Then I should see "The vacation to schedule was not valid"
+  Then I should see "Please select a vacation for the currently scheduled year"
 
 
