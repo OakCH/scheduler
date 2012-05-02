@@ -28,7 +28,6 @@ Background:
 Scenario: Next nurse receiving email after previous nurse has submitted vacation schedule
   And I am logged in as the Nurse "Jane Doe"
   And I am on the Nurse Calendar page for "Jane Doe"
-  Then show me the page
   And I press "Finalize Your Vacation"
   And I log out
   Then "john@doe.com" should receive an email
@@ -46,9 +45,9 @@ Scenario: Admin receives email when a nurse is done scheduling
   And I press "Finalize Your Vacation"
   And I log out
   And I am logged in as the Admin "Jane Admin"
-  Then "jane@admin.com" should receive an email
+  Then "bob@admin.com" should receive no email
   And "joe@admin.com" should receive an email
-  And "bob@admin.com" should receive no email
+  And "jane@admin.com" should receive an email
   And I open the email
   Then I should see "Jane Doe has finished scheduling his or her vacation" in the email subject
   And I should see the email delivered from "admin@chovacationsched.com"
