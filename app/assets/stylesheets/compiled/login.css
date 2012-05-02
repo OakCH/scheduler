@@ -95,6 +95,9 @@ body {
   text-align: right;
   font-size: 90%; }
 
+#remember-me .checkbox {
+  width: 30px; }
+
 a {
   font-weight: bold;
   text-decoration: none;

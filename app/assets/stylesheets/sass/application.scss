@@ -181,8 +181,6 @@ input {
   padding: 3px;
 }
 
-
-
 input[type="submit"] {
   border-radius: 5px;
   width: auto;
@@ -198,4 +196,9 @@ input[type="submit"] {
     cursor: pointer;
   }
 }
+
+.delete-button {
+  width: 80px;
+}
+
 

@@ -154,3 +154,6 @@ input[type="submit"] {
   input[type="submit"]:hover {
     background-color: #a62900;
     cursor: pointer; }
+
+.delete-button {
+  width: 80px; }
