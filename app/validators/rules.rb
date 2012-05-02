@@ -43,9 +43,17 @@ class Rules < ActiveModel::Validator
       record.errors[:pto] << 'You have selected more than one week of PTO'
     end
     
-    #unless in_year?(record)
-    #  record.errors[:year] << 'Please select a vacation for the currently scheduled year'
-    #end
+    unless in_year?(record)
+      record.errors[:year] << 'Please select a vacation for the currently scheduled year'
+    end
+  end
+  
+  def in_year?(record)
+    year = CurrentYear.first.year
+    if record.start_at.to_date.year == year && record.end_at.to_date.year == year
+      return true
+    else return false
+    end
   end
 
   def valid_pto?(record)

@@ -531,7 +531,29 @@ describe Rules do
   end
   
   describe 'current_year?' do
-    it 'should allow you to schedule a vacation in the year'
-    it 'should not allow you to schedule a vacation outside the year'
+    before(:each) do
+      @nurse = FactoryGirl.create(:nurse, :unit => @unit, :shift => 'Days')
+      FactoryGirl.create(:current_year, :year => 2012)
+    end
+    it 'should allow you to schedule a vacation in the year' do
+      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2012,3,19,0,0,0), :end_at => DateTime.new(2012,3,25,0,0,0))
+      subject.stub(:start_at).and_return(@new_event.start_at)
+      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:nurse_id).and_return(@nurse.id)
+      subject.stub(:id).and_return(nil)
+      subject.stub(:pto).and_return(false)
+      subject.should be_valid
+    end
+    it 'should not allow you to schedule a vacation outside the year' do
+      @new_event = FactoryGirl.create(:event, :start_at => DateTime.new(2011,3,19,0,0,0), :end_at => DateTime.new(2011,3,25,0,0,0))
+      subject.stub(:start_at).and_return(@new_event.start_at)
+      subject.stub(:end_at).and_return(@new_event.end_at)
+      subject.stub(:nurse).and_return(@nurse)
+      subject.stub(:nurse_id).and_return(@nurse.id)
+      subject.stub(:id).and_return(nil)
+      subject.stub(:pto).and_return(false)
+      subject.should have(1).error_on(:year)
+    end
   end
 end
