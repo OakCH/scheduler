@@ -9,8 +9,9 @@ FactoryGirl.define do
       "admin#{n}@admin.com"
     end
     password 'admin_pw'
+
   end
-  
+
   factory :nurse do
     sequence :name do |n|
       "NURSATRONIC SERIAL NO:#{n}"
@@ -26,13 +27,14 @@ FactoryGirl.define do
     unit
     password 'nurse_pw'
   end
-  
+
   factory :unit do
     sequence :name do |n|
       "Bender Unit #{n}"
     end
+
   end
-  
+
   factory :event do
     sequence :name do |n|
       "NURSATRONIC SERIAL NO:#{n}"
@@ -50,4 +52,6 @@ FactoryGirl.define do
     shift 'PMs'
     unit
   end
+
+
 end

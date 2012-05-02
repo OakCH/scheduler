@@ -1,4 +1,7 @@
 class UnitController < ApplicationController
+
+  before_filter :authenticate_admin!
+
   def index
     @units = Unit.find(:all)
   end
