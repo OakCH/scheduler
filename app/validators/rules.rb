@@ -165,11 +165,6 @@ class Rules < ActiveModel::Validator
   
   # admins can limit how many nurses can be off during the holidays
   def holiday_restriction?(record)
-    if Event.find_by_id(record.id)
-      update = 1 #true
-    else
-      update = 0 #false
-    end
     @unit = record.nurse.unit_id
     @shift = record.nurse.shift
     holiday_limit = UnitAndShift.get_holiday_obj(@unit, @shift)
