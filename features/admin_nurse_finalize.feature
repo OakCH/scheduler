@@ -13,7 +13,7 @@ Background:
   Given the following nurses exist:
   | name     | shift | unit      | email        |
   | Jane Doe | PMs   | Surgery   | jane@doe.com |
-  | John Doe | PMs   | Surgery   | joe@doe.com  |
+  | John Doe | PMs   | Surgery   | john@doe.com |
   | Santa C  | Days  | Pediatric | santa@np.com |
 
   And the following admins exist:
@@ -31,14 +31,14 @@ Scenario: After finalizing, show that the list has been finalized.
   Then I should see "This nurse list has been finalized and account creation emails have been sent for nurses in Unit Surgery, PMs."
 
 Scenario: Nurses in given unit and shift should receive email sent from admin
-  Then "jane@doe.com" should receive an email
+  Then "john@doe.com" should receive an email
   And I open the email
   Then I should see "Instructions to set up your Vacation Scheduler account" in the email subject
   And I should see "Your nurse administrator has set up an account for you" in the email body
 
 Scenario: Nurse can finish creating account based on email
   And I log out
-  And "jane@doe.com" should receive an email
+  And "john@doe.com" should receive an email
   And I open the email
   And I follow "Accept invitation" in the email
   And I fill in "Email" with "changed_mail@doe.com"
