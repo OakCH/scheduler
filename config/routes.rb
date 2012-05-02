@@ -38,6 +38,9 @@ Scheduler::Application.routes.draw do
     get 'admin_unit_index' => 'admin_unit#index', :as => 'admin_unit_index'
     put 'admin_unit_update' => 'admin_unit#update', :as => 'admin_unit_update'
 
+    get 'current_year_index' => 'current_year#index', :as => 'current_year_index'
+    put 'current_year_update' => 'current_year#update', :as => 'current_year_update'
+
   end
 
   scope 'nurse/:nurse_id/' do
