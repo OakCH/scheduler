@@ -1,0 +1,8 @@
+%h2 Current Year
+
+%p= @current_year.year
+
+= form_tag current_year_update_path, :method => 'put' do
+  = text_field_tag "year", "", :id => "year_field"
+  = submit_tag "Submit"
+

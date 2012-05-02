@@ -71,6 +71,9 @@ module NavigationHelpers
     when /^the Associate Units page/
       admin_unit_index_path
 
+    when /^the Current Year page/
+      current_year_index_path
+
     when /^the Add Vacation page for "([^"]*)"$/
       new_nurse_calendar_path(Nurse.find_by_name($1))
 
