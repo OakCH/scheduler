@@ -58,7 +58,7 @@
   float: left; }
 #login .right {
   position: absolute;
-  bottom: 40px;
+  bottom: 53px;
   right: 0;
   float: right; }
 
@@ -79,6 +79,9 @@ a {
   color: #310030; }
   a:hover {
     color: #410140; }
+
+#login input[type='checkbox'] {
+  width: 30px; }
 
 .login-links {
   font-size: 80%;

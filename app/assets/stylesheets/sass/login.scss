@@ -82,7 +82,7 @@ $off-white: #e4e3e3;
   }
   .right {
     position: absolute; 
-    bottom: 40px;
+    bottom: 53px;
     right: 0;
     float: right;
   }
@@ -106,6 +106,8 @@ a {
     color: $lite-purple;
   }
 }
+
+#login input[type='checkbox'] { width: 30px; }
 
 .login-links {
   font-size: 80%;
