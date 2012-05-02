@@ -458,6 +458,7 @@ describe Rules do
   describe 'checking holiday_restriction?' do
     before(:each) do
       @nurse = FactoryGirl.create(:nurse, :unit => @unit, :shift => 'Days')
+      FactoryGirl.create(:current_year, :year => 2012)
     end
     
     it 'should allow when not during holidays, no holiday restriction' do
@@ -527,5 +528,10 @@ describe Rules do
         subject.should have(1).error_on(:holiday)
       end
     end
+  end
+  
+  describe 'current_year?' do
+    it 'should allow you to schedule a vacation in the year'
+    it 'should not allow you to schedule a vacation outside the year'
   end
 end
