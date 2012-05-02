@@ -27,3 +27,12 @@ Given /^I press delete for "([^"]*)"$/ do |name|
   step %Q{I press "#{user}_delete"}
 end
 
+Given /^I finalize the nurse list for the "([^"]*)" unit, "([^"]*)" shift$/ do |unit, shift|
+  step %Q{I am logged in as an Admin}
+  step %Q{I am on the Manage Nurses page}
+  step %Q{I select "#{shift}" from "Shift"}
+  step %Q{I select "#{unit}" from "Unit"}
+  step %Q{I press "Show"}
+  step %Q{I press "Finalize Nurses"}
+  step %Q{I log out}
+end
