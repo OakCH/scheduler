@@ -3,11 +3,9 @@
   = devise_error_messages!
 #form
   = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f|
-    .left
-      = f.label :email    
-      = f.email_field :email
-
-    .right      
-      %div= f.submit "Reset password", :class => 'submit'
-    .clear
+    = f.label :email
+    = f.email_field :email
+    %br
+    = f.submit "Reset password", :class => 'submit'
 = render "links"
+

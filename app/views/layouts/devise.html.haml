@@ -2,6 +2,7 @@
 %html
   %head
     %title Nurse Scheduler
+    = stylesheet_link_tag 'compiled/shared'
     = stylesheet_link_tag 'compiled/login'
     = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,600'
     = csrf_meta_tags
@@ -14,4 +15,4 @@
         #content.container
           = yield
         #footer
-          (c) 2012 Team Awesome
+          (c) 2012 Team 16 for the nurses at the Oakland Children's Hospital
