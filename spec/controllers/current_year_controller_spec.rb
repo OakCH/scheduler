@@ -4,7 +4,7 @@ describe CurrentYearController do
 
   before(:each) do
     FactoryGirl.create(:current_year, :year => 2010)
-    @time = CurrentYear.find(:all)[0] # should only be one
+    @time = CurrentYear.find(:all).first # should only be one
   end
 
   before(:all) do
@@ -21,7 +21,7 @@ describe CurrentYearController do
   describe "Update" do
     it 'should change the year' do
       put :update, :year => "2012"
-      @time = CurrentYear.find(:all)[0]
+      @time = CurrentYear.find(:all).first
       assert(@time)
       @time.year.should == 2012
     end

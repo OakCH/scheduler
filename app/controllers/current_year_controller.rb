@@ -3,7 +3,7 @@ class CurrentYearController < ApplicationController
   before_filter :authenticate_admin!
 
   def index
-    @current_year = CurrentYear.find(:all)[0]
+    @current_year = CurrentYear.find(:all).first
   end
 
   def update
@@ -11,7 +11,7 @@ class CurrentYearController < ApplicationController
     new_year = params[:year]
     current_year = CurrentYear.find(:all)
     begin
-      current_year[0].year = Integer(new_year)
+      current_year.first.year = Integer(new_year)
     rescue
       flash[:error] = "Invalid year entered"
     end
