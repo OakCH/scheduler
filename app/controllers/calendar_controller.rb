@@ -112,7 +112,7 @@ class CalendarController < ApplicationController
   end
   
   def edit
-    @nurse = Nurse.find_by_id(params[:id])
+    @nurse = Nurse.find_by_id(params[:nurse_id])
     @cur_nurse = false
     if current_nurse == @nurse
       @cur_nurse = true
