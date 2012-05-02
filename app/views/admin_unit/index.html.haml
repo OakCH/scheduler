@@ -1,0 +1,10 @@
+%h1 Associate Units
+
+- if @units
+  %h2 Units
+  = form_tag admin_unit_update_path, :method => 'put' do 
+    - @units.each do |unit, check|
+      %p= unit.name
+      = label_tag "units[#{unit.name}]", unit.name
+      = check_box_tag("units[#{unit.name}]", "1", check)
+    = submit_tag "Submit"

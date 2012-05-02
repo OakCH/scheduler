@@ -16,10 +16,10 @@ Background:
   | John Doe | PMs   | Surgery   | joe@doe.com  |
   | Santa C  | Days  | Pediatric | santa@np.com |
 
-  And the following admins exist:
-  | name       | email          |
-  | Jane Admin | jane@admin.com |
-  | John Admin | joe@admin.com  |
+  And the following admins with units exist:
+  | name       | email          | units     |
+  | Jane Admin | jane@admin.com | Surgery   |
+  | John Admin | joe@admin.com  | Pediatric |
 
   And the following vacations exist:
   | name               | start_at    | end_at      |
@@ -79,7 +79,7 @@ Scenario: After finalizing schedule, admin should receive an email indicating th
   And I open the email
   Then I should see "Jane Doe has finished scheduling his or her vacation" in the email subject
   Then I should see "The calendar has moved on to the next nurse" in the email body
-  #But "joe@admin.com" should not receive an email
+  But "joe@admin.com" should have no emails
 
 Scenario: After every nurse in a Unit and Shift has been finalized, admin should receive an email
   When I log out
@@ -89,4 +89,4 @@ Scenario: After every nurse in a Unit and Shift has been finalized, admin should
   Then "jane@admin.com" should receive an email with subject "[Surgery, PMs] All vacations have been scheduled"
   And I open the email with subject "[Surgery, PMs] All vacations have been scheduled"
   Then I should see "All vacations have been scheduled for the Surgery unit, PMs shift." in the email body
-  #But "joe@admin.com" should not receive an email
+  But "joe@admin.com" should have no emails

@@ -16,6 +16,11 @@ ActiveRecord::Schema.define(:version => 20120430093026) do
   create_table "admins", :force => true do |t|
   end
 
+  create_table "admins_units", :id => false, :force => true do |t|
+    t.integer "admin_id"
+    t.integer "unit_id"
+  end
+
   create_table "events", :force => true do |t|
     t.string   "name"
     t.datetime "start_at"
