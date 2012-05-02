@@ -286,4 +286,3 @@ end
 Given /^I log out$/ do
   visit '/users/sign_out'
 end
-
