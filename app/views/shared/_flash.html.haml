@@ -1,9 +1,6 @@
 - flash.sort.each do |key,msgs|
   - if msgs.respond_to?(:each)
-    %div{:id => key}
-      %ul
-        - msgs.each do |msg|
-          %li= msg
+    - msgs.each do |msg|
+      %div{:id => key, :class=>'flash-msg'}= msg
   - else
-    %div{:id => key}= msgs
-
+    %div{:id => key, :class=>'flash-msg'}= msgs
