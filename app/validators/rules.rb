@@ -132,18 +132,13 @@ class Rules < ActiveModel::Validator
   end
 
   def less_than_max_per_day?(record)
-    if Event.find_by_id(record.id)
-      update = 1 #true
-    else
-      update = 0 #false
-    end
     @shift = record.nurse.shift
     @unit_id = record.nurse.unit.id
     @max_per = record.nurse.unit.calculate_max_per_day(@unit_id, @shift)
     start_date = record.start_at.to_date
     end_date = record.end_at.to_date
     while start_date <= end_date do
-      @num_on_this_day = num_nurses_on_day(start_date, @shift, @unit_id, update)
+      @num_on_this_day = num_nurses_on_day(start_date, @shift, @unit_id, record.id)
       if @num_on_this_day < @max_per[:year]
         start_date = start_date.next_day
       elsif less_than_max_in_additional_month?(start_date)
@@ -179,7 +174,7 @@ class Rules < ActiveModel::Validator
     @shift = record.nurse.shift
     holiday_limit = UnitAndShift.get_holiday_obj(@unit, @shift)
     if holiday_limit != nil && during_holidays(record)# no holiday restriction
-      num_today = num_nurses_on_day(record.start_at, @shift, @unit, update)
+      num_today = num_nurses_on_day(record.start_at, @shift, @unit, record.id)
       return num_today < holiday_limit.holiday
     else return true
     end
@@ -197,7 +192,7 @@ class Rules < ActiveModel::Validator
     return @rtn_months
   end
     
-  def num_nurses_on_day(start_date, shift, unit_id, update)
+  def num_nurses_on_day(start_date, shift, unit_id, id)
     max_weeks = 6 
     range_buffer = (max_weeks * 7) + 1
 
@@ -212,12 +207,16 @@ class Rules < ActiveModel::Validator
 
     num_nurses = 0 
     events.each do |e|
-    if (e.start_at.to_date <= start_date) and (start_date <= e.end_at.to_date)
-          num_nurses += 1
-        end
+      if e.id == id
+        next
+      end
+      
+      if (e.start_at.to_date <= start_date) and (start_date <= e.end_at.to_date)
+        num_nurses += 1
+      end
     end
 
-    return num_nurses - update
+    return num_nurses
   end
 
   def calculate_length (event)
