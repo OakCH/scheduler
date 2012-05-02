@@ -253,14 +253,14 @@ class CalendarController < ApplicationController
         if next_nurse and next_nurse.position > cur_nurse.position
           Notifier.notify_nurse(next_nurse).deliver
         else
-          admins = Admin.find(:all)
+          admins = unit.admins
           admins.each do |admin|
             Notifier.notify_completion(admin,unit.name,shift).deliver
           end
           nurse_baton.destroy
         end
         #refactor this to only admin who are watching
-        admins = Admin.find(:all)
+        admins = unit.admins
         admins.each do |admin|
           Notifier.notify_admin(admin, cur_nurse).deliver
         end
