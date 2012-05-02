@@ -27,6 +27,7 @@ class NurseController < ApplicationController
       flash[:error] = @nurse.errors.full_messages
       params[:nurse][:unit] = unit_name
       render :action => 'new'
+      flash[:error] = nil
     else
       flash[:notice] = "#{@nurse.name} was successfully added."
       redirect_to nurse_manager_index_path(:admin => {:shift => params[:nurse][:shift], :unit => unit_name}) and return
@@ -124,6 +125,13 @@ class NurseController < ApplicationController
     Nurse.create_nurse_invites!(unit,shift)
     first_nurse = Nurse.where(:unit_id => unit.id, :shift => shift).rank(:nurse_order).first
     NurseBaton.create!(:unit=>unit,:shift=>shift, :nurse=>first_nurse)
+    if first_nurse
+      Notifier.notify_nurse(first_nurse).deliver
+    else
+      unit.admins.each do |admin|
+        Notifier.notify_completion(admin, unit.name, shift).deliver
+      end
+    end
     flash[:notice] = "This nurse list has been finalized and account creation emails have been sent for nurses in Unit #{unit.name}, #{shift}."
     redirect_to nurse_manager_index_path(:admin => {:shift => params[:admin][:shift], :unit => params[:admin][:unit].strip})
   end

@@ -1,12 +1,8 @@
 /* login.scss */
-body {
-  background-color: #d5d0cf; }
-
 #login {
   width: 600px; }
 
 #container {
-  font-family: 'Open Sans', sans-serif;
   color: white;
   background-image: url("../mascot.png");
   background-position: right bottom;
@@ -42,10 +38,10 @@ body {
   padding-left: 7px;
   padding-right: 7px; }
 
-#login input.submit {
+#login #signup input.submit {
   width: 200px;
   height: 106px;
-  background-color: #00a198;
+  background-color: #310030;
   border: none;
   color: #FFFFFF;
   font-weight: 600;
@@ -53,26 +49,18 @@ body {
   border-radius: 10px;
   padding-left: 7px;
   padding-right: 7px; }
-
-#login input.submit:hover {
-  background-color: #01b0a6; }
-
-.left {
-  float: left; }
-
-.right {
-  float: right; }
+#login #signup input.submit:hover {
+  background-color: #410140;
+  cursor: pointer; }
 
 #login .left {
-  width: 60%; }
-
+  width: 60%;
+  float: left; }
 #login .right {
   position: absolute;
-  bottom: 0;
-  right: 0; }
-
-.clear {
-  clear: both; }
+  bottom: 40px;
+  right: 0;
+  float: right; }
 
 #login #form {
   position: relative; }
@@ -82,27 +70,16 @@ body {
   text-align: right;
   font-size: 90%; }
 
-ul {
-  margin-left: 0;
-  padding-left: 0;
-  display: inline; }
-  ul li {
-    padding: 0px 15px;
-    border-left: 1px solid #454545;
-    list-style: none;
-    display: inline; }
-  ul li.first {
-    border-left: 0px; }
-  ul a {
-    color: #cd3301;
-    text-decoration: none;
-    font-weight: bold; }
-    ul a:hover {
-      color: #a62900; }
+#remember-me .checkbox {
+  width: 30px; }
 
-#tempnavi {
-  text-transform: uppercase;
-  font-family: 'Open Sans', serif;
-  top: 20px;
-  right: 20px;
-  position: absolute; }
+a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #310030; }
+  a:hover {
+    color: #410140; }
+
+.login-links {
+  font-size: 80%;
+  padding-left: 20px; }
