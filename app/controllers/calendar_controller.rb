@@ -15,8 +15,8 @@ class CalendarController < ApplicationController
       if @nurse
         @unit_id = @nurse.unit_id
         @shift = @nurse.shift
-        nurse_baton = NurseBaton.find_by_unit_id_and_shift(@unit_id,@shift)
-        if nurse_baton and current_nurse == nurse_baton.nurse
+        @nurse_baton = NurseBaton.find_by_unit_id_and_shift(@unit_id,@shift)
+        if @nurse_baton and current_nurse == @nurse_baton.nurse
           @cur_nurse = true
         end
       else
