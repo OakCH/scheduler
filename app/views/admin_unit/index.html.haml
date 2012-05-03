@@ -1,8 +1,9 @@
-%h1 Associate Units
+%h1 Follow Units
 
+%p
+  If you would like to receive emails regarding vacation scheduling progress for a certain unit, please check the boxes next to the units you would like to receive updates for. 
 - if @units
   %h2 Units
-  %p Select or de-select units to manage which units you receive updates for:
   = form_tag admin_unit_update_path, :method => 'put' do
     %table#units
       %thead

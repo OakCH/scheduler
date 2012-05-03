@@ -29,3 +29,4 @@
     %p#holidays= 'If you would like to limit the number of nurses during the time frame Dec 20-Jan 2, please indicate how many nurses off per day you would like.'
     = select :admin, :holiday, ["N/A", 0, 1, 2, 3, 4, 5], :selected => @max_holidays
     = submit_tag 'Done with Holidays'
+    %p= "Once you are done, please proceed to Year to specify the year you are currently scheduling vacations for"
