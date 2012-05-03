@@ -115,12 +115,6 @@ describe CalendarController do
       get :index, :nurse_id => @nurse.id
       assigns(:nurse_baton).should == baton
     end
-    
-    it 'should assign @cur_nurse to true if current nurse has baton' do
-      FactoryGirl.create(:nurse_baton, :nurse => @nurse, :shift => @nurse.shift, :unit => @nurse.unit)
-      get :index, :nurse_id => @nurse.id
-      assigns(:cur_nurse).should be_true
-    end
   end
   
   describe 'invalid nurse' do
