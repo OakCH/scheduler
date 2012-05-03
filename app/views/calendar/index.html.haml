@@ -41,6 +41,6 @@
     %h2 There are no vacation segments scheduled.
   - else
     %h2 Impostor! You are not a nurse.
-
+  
 - if admin_signed_in?
   = link_to 'Back to Admin Calendar', admin_calendar_path(:month => params[:month], :year => params[:year])

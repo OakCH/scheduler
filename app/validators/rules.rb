@@ -42,6 +42,25 @@ class Rules < ActiveModel::Validator
     unless valid_pto?(record)
       record.errors[:pto] << 'You have selected more than one week of PTO'
     end
+    
+    unless in_year?(record)
+      record.errors[:year] << 'Please select a vacation for the currently scheduled year'
+    end
+  end
+  
+  def in_year?(record)
+    year = CurrentYear.first.year
+    # vacation segment is from Mar of this year to Feb of next year
+    if record.start_at.year == year && record.start_at.month >= 3 &&
+      (record.end_at.year == year || record.end_at.year == year+1 &&
+      record.end_at.month < 3)
+      return true
+    # vacation is from start of next year to Feb of next year
+    elsif record.start_at.year == year + 1 && record.start_at.month < 3 &&
+      record.end_at.year == year + 1 && record.end_at.month < 3
+      return true
+    else return false
+    end
   end
 
   def valid_pto?(record)
@@ -221,7 +240,7 @@ class Rules < ActiveModel::Validator
   end
 
   def during_holidays(record)
-    @year = 2012 # TODO: need to replace when we have notion of time
+    @year = CurrentYear.first.year
     @holiday_start = Date.new(@year, 12, 20)
     @holiday_end =  Date.new(@year+1, 1, 2)
     if record.start_at.to_date >= @holiday_start &&

@@ -20,6 +20,10 @@ Background:
   | Jane Admin | jane@admin.com | Surgery |
   | Joe Admin  | joe@admin.com  | Surgery |
   | Bob Admin  | bob@admin.com  | ER      |
+  
+  And the following nurse batons exist:
+  | nurse    | shift | unit    |
+  | Jane Doe | PMs   | Surgery |
 
 Scenario: After an admin finalizes the nurse list, the first nurse should receive an email
   And I finalize the nurse list for the "Surgery" unit, "PMs" shift  
