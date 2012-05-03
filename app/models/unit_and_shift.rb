@@ -1,6 +1,6 @@
 class UnitAndShift < ActiveRecord::Base
   validates_presence_of :shift
-  belongs_to :unit, :dependent => :destroy
+  belongs_to :unit
   
   # returns a list of all starting months for each segment
   # list.length == num_segments
