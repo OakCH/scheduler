@@ -19,14 +19,14 @@ Scenario: Viewing list of units
   And I should see "Pediatrics"
 
 Scenario: Adding a unit
-  When I follow "Add unit"
+  When I follow "Add a unit"
   And I fill in "Unit Name" with "Cardiology"
   And I press "Submit"
   Then I should see "Cardiology"
   And I should see "Surgery"
 
 Scenario: Adding an existing unit
-  When I follow "Add unit"
+  When I follow "Add a unit"
   And I fill in "Unit Name" with "Surgery"
   And I press "Submit"
   Then I should see "Name has already been taken"
