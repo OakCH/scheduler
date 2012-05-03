@@ -24,7 +24,7 @@ class NurseController < ApplicationController
     @nurse = Nurse.new(params[:nurse].except(:rank))
     if not @nurse.save
       @rank = params[:nurse][:rank]
-      flash[:error] = @nurse.errors.full_messages
+      flash.now[:error] = @nurse.errors.full_messages
       params[:nurse][:unit] = unit_name
       render :action => 'new'
     else
