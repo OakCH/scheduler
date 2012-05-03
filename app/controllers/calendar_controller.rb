@@ -192,11 +192,11 @@ class CalendarController < ApplicationController
     @unit_id = session[:unit_id]
     @shift = session[:shift]
     @year_month = Array.new
-# hard-coded => waiting for notion of time to be implemented
-# TODO: change as soon as we know the year the calendar is for
-    months = 1..12
-    months.each do |m|
-      @year_month << [2012, m]
+    m = 3 #vacation scheduling starts in March
+    year = CurrentYear.first.year
+    12.times do
+      @year_month << [year + m.div(13), m%13 + m.div(13)]
+      m += 1
     end
     @strips = Array.new
     @year_month.each do |ym|
