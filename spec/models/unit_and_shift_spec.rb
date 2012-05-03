@@ -19,4 +19,12 @@ describe 'Class methods' do
   it 'should return one record when queried for holiday_objs' do
     UnitAndShift.get_holiday_obj(@unit.id, @shift).should == @holiday_obj
   end
+  
+  describe 'destroy unit dependencies' do
+    it 'should remove unit_and_shift when unit destroyed' do
+      unit_id = @unit.id
+      @unit.destroy
+      UnitAndShift.find_all_by_unit_id(unit_id).should be_empty
+    end
+  end
 end
