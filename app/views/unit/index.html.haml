@@ -1,7 +1,10 @@
-%h1 Create, Update and Delete Units
+%h1 Manage Units
 
+%p
+  Use this page to add, edit, or delete hospital units. Click the unit name to modify details.
+  
 - if @units
-  %h2 Your units
+  %h2 Current units
   %table{:style=>'width:400px;'}
     %thead
       %tr
@@ -15,5 +18,5 @@
 - else
   %h2 Imposter! You are not an admin.
 
-= link_to 'Add unit', new_unit_path
+= link_to 'Add a unit', new_unit_path
 
