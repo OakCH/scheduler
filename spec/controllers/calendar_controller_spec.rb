@@ -111,7 +111,7 @@ describe CalendarController do
     end
     
     it 'should find a nurse_baton when one exists' do
-      baton = FactoryGirl.create(:nurse_baton, :nurse => @nurse, :shift => @nurse.shift, :unit_id => @nurse.unit.id)
+      baton = FactoryGirl.create(:nurse_baton, :nurse => @nurse, :shift => @nurse.shift, :unit => @nurse.unit)
       get :index, :nurse_id => @nurse.id
       assigns(:nurse_baton).should == baton
     end
