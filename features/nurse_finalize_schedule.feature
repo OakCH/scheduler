@@ -10,6 +10,10 @@ So that I can keep track of the scheduling process.
 
 Background:
 
+  Given the following current years exist
+  | year |
+  | 2012 |
+
   Given the following nurses exist in this seniority order:
   | name     | shift | unit      | email        |
   | Jane Doe | PMs   | Surgery   | jane@doe.com |
