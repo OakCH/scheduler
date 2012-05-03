@@ -31,7 +31,7 @@ body {
   }
 }
 .clear {clear: both;}
-input[type="submit"] {
+input[type="submit"], #login input[type="submit"] {
   border-radius: 5px;
   width: auto;
   padding: 6px 10px;

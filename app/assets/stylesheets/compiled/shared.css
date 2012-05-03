@@ -21,7 +21,7 @@ body {
 .clear {
   clear: both; }
 
-input[type="submit"] {
+input[type="submit"], #login input[type="submit"] {
   border-radius: 5px;
   width: auto;
   padding: 6px 10px;
@@ -31,6 +31,6 @@ input[type="submit"] {
   font-weight: bold;
   text-transform: uppercase;
   font-size: 85%; }
-  input[type="submit"]:hover {
+  input[type="submit"]:hover, #login input[type="submit"]:hover {
     background-color: #a62900;
     cursor: pointer; }
