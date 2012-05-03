@@ -1,6 +1,6 @@
 %h2 Current Year
 
-%p= @current_year.year
+%p= "The vacation year currently being scheduled is #{@current_year}. To change this, please submit a new year below."
 
 = form_tag current_year_update_path, :method => 'put' do
   = text_field_tag "year", "", :id => "year_field"
