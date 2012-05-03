@@ -274,8 +274,8 @@ class CalendarController < ApplicationController
   private
 
   def setup_index
-    @month = (params[:month] || (Time.zone || Time).now.month).to_i
-    @year = (params[:year] || (Time.zone || Time).now.year).to_i
+    @month = (params[:month] || 3).to_i
+    @year = (params[:year] || CurrentYear.first.year).to_i
     
     if @month == 0 or @year == 0
       flash[:error] = "An error has occurred."
