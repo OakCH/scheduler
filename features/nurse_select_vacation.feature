@@ -12,7 +12,6 @@ Background:
   Given the following nurses exist:
   | name       | shift | unit    |
   | Jane Doe   | PMs   | Surgery |
-  | John Doe   | PMs   | Surgery |
   | Rob Ronney | PMs   | Surgery |    
   
   And the following vacations exist:
