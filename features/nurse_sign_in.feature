@@ -6,6 +6,10 @@ So that I will be directed to the proper calendar page
 
 Background:
 
+  Given the following current years exist
+  | year |
+  | 2012 |
+
   Given the following nurses exist
   | name     | email        | password  | unit    | shift |
   | Jane Doe | jane@doe.com | nurse_pw  | Surgery | PMs   |
