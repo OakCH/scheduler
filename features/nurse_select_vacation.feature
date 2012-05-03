@@ -20,8 +20,8 @@ Background:
   | Rob Ronney | 11-Apr-2012 | 17-Apr-2012 | 1   |
 
   And the following nurse batons exist
-  | unit | shift   | nurse    |
-  | PMs  | Surgery | Jane Doe |
+  | unit    | shift | nurse    |
+  | Surgery | PMs   | Jane Doe |
 
   And I am logged in as the Nurse "Jane Doe"
   And I am on the Nurse Calendar page for "Jane Doe" in "April" of "2012"
