@@ -2,22 +2,18 @@
 $dark-gray: #454545;
 $lite-gray: #d5d0cf;
 $gray: #7c7c7c;
-$teal: #23bbb3;
-$dark-teal: #00a198;
 $orange: #cd3301;
 $dark-orange: #a62900;
 $white: #ffffff;
-
-body {
-  background-color: $lite-gray;
-}
+$lite-purple: #410140;
+$purple: #310030;
+$off-white: #e4e3e3;
 
 #login {
   width: 600px;
 }
 
 #container {
-  font-family: 'Open Sans', sans-serif;
   color: $white;
   background-image:url('../mascot.png');
   background-position: right bottom;
@@ -26,7 +22,7 @@ body {
   width: 880px;
   height: 490px;
 }
-  
+
 
 #login #header {
   font-size: 50px;
@@ -58,45 +54,39 @@ body {
   padding-right: 7px;
 }
 
-#login input.submit {
-  width: 200px;
-  height: 106px;
-  background-color: $dark-teal;
-  border: none;
-  color: #FFFFFF;
-  font-weight: 600;
-  font-size: 120%;
-  border-radius: 10px;
-  padding-left: 7px;
-  padding-right: 7px;
+#login {
+  #signup {
+    input.submit {
+      width: 200px;
+      height: 106px;
+      background-color: $purple;
+      border: none;
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 120%;
+      border-radius: 10px;
+      padding-left: 7px;
+      padding-right: 7px;
+    }
+    input.submit:hover {
+      background-color: $lite-purple;
+      cursor: pointer;
+    }
+  }
 }
 
-#login input.submit:hover {
-  background-color: #01b0a6;
+#login {
+  .left {
+    width: 60%;
+    float: left;
+  }
+  .right {
+    position: absolute; 
+    bottom: 53px;
+    right: 0;
+    float: right;
+  }
 }
-
-.left {
-  float: left;
-}
-
-.right {
-  float: right;
-}
-
-#login .left {
-  width: 60%;
-}
-
-#login .right {
-  position: absolute; 
-  bottom: 0;
-  right: 0;
-}
-
-.clear { 
-  clear: both;
-}
-
 #login #form {
   position: relative;
 }
@@ -107,34 +97,20 @@ body {
   font-size: 90%;
 }
 
-ul {
-  margin-left: 0;
-  padding-left: 0;
-  display: inline;
-  li {
-    padding: 0px 15px;
-    border-left: 1px solid $dark-gray;
-    list-style: none;
-    display: inline;
-  }
-  li.first {
-    border-left: 0px;
-  }
-
-  a {
-    color: $orange;
-    text-decoration: none;
-    font-weight: bold;
-    &:hover {
-      color: $dark-orange;
-    }
+#remember-me .checkbox { width: 30px; }
+a {
+  font-weight: bold;
+  text-decoration: none;
+  color: $purple;
+  &:hover {
+    color: $lite-purple;
   }
 }
 
-#tempnavi {
-  text-transform: uppercase;
-  font-family: 'Open Sans', serif;
-  top: 20px;
-  right: 20px;
-  position: absolute;
+#login input[type='checkbox'] { width: 30px; }
+
+.login-links {
+  font-size: 80%;
+  padding-left: 20px;
 }
+

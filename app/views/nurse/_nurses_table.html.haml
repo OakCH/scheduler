@@ -3,11 +3,11 @@
 %table#nurses
   %thead
     %tr
-      %th= ""
+      %th
       - Nurse.all_columns.each do |col_name|
         %th= col_name
-      %th= ""
-      %th= ""
+      %th
+      %th{:class=>'delete-button'}
   %tbody
     - if @nurses
       - @nurses.each_with_index do |nurse,i|

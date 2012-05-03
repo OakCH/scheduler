@@ -1,12 +1,12 @@
-%h1 Units
+%h1 Create, Update and Delete Units
 
 - if @units
   %h2 Your units
-  %table
+  %table{:style=>'width:400px;'}
     %thead
       %tr
         %th name
-        %th delete
+        %th{:class=>'delete-button'}
     %tbody
       - @units.each do |unit|
         %tr{:class => cycle("even", "odd")}
