@@ -358,11 +358,9 @@ describe CalendarController do
         assigns(:unit_id).should == @unit.id.to_s
       end
       it 'should assign an array with all months and years in entire schedule' do
-        test_year_month = Array.new
-        months = 1..12
-        months.each do |m|
-          test_year_month << [2012, m]
-        end
+        year = CurrentYear.first.year
+        test_year_month = [[year, 3], [year, 4], [year, 5], [year, 6], [year, 7], [year, 8],
+        [year, 9], [year, 10], [year, 11], [year, 12], [year+1, 1], [year+1, 2]]
         get :admin_print
         assigns(:year_month).should == test_year_month
       end

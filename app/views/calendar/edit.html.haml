@@ -29,6 +29,7 @@
     
   = link_to 'Back to nurse calendar', nurse_calendar_index_path
   - if admin_signed_in?
+    %br
     = link_to 'Back to admin calendar', admin_calendar_path
 -else
   %h2 Change

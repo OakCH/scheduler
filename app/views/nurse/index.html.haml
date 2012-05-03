@@ -1,8 +1,7 @@
 %h1 Manage Nurses
 
 = form_tag nurse_manager_index_path, :method => :get, :multipart => true do
-
-  %p#instruction1= 'Please select your Unit and Shift, then click "Show"'
+  %p= 'Use this page to manage the list of nurses in each unit and shift. First, select your Unit and Shift, then click "Show"'
   = label :admin, :unit, 'Unit'
   = select :admin, :unit, @units, :selected => @unit
   
@@ -12,21 +11,22 @@
   = submit_tag 'Show'
 
 - if @readyToUpload
+  %p= 'You can either upload an excel spreadsheet of nurses, or add in nurses individually'
   = render :partial => 'nurses_table'
   %h2 Upload Nurses
   %h3 Bulk Upload
-  %p#instruction2
+  %p#instr
     = "Please upload a .xls or .xlsx file where the columns are labeled #{Nurse.required_columns.join(', ')} and optionally #{Nurse.optional_columns.join(', ')}. Then click 'Upload'."
     = link_to "Click here to download a sample spreadsheet that can be filled out", "/sample_spreadsheet.xls"
     
-  %p#warning= 'Note that if you upload a file, it will delete the nurses/vacations in the unit and shift selected'
+  %p#warning= 'Note that if you upload a file, it will delete all the nurses/vacations in the unit and shift selected'
   = form_tag upload_nurse_manager_index_path, :multipart => true do
     = label :admin, :select_file, 'Select file'
     = file_field :admin, :upload
     = hidden_field_tag "admin[shift]", @shift
     = hidden_field_tag "admin[unit]", @unit
     = submit_tag 'Upload'#, :confirm => 'Are you sure?'
-  %h3
+  %h3 
   = link_to 'Add A Single Nurse', new_nurse_manager_path(:admin => { :unit => @unit, :shift => @shift })
   
   %h1 Finalize Nurses
@@ -39,5 +39,8 @@
     = hidden_field_tag "admin[shift]", @shift
     = hidden_field_tag "admin[unit]", @unit
     = submit_tag 'Finalize Nurses'
+    
+    %p
+      Once you are done editing nurses, please proceed to Rules.
     
     

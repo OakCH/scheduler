@@ -18,6 +18,8 @@ class CalendarController < ApplicationController
         @nurse_baton = NurseBaton.find_by_unit_id_and_shift(@unit_id,@shift)
         if @nurse_baton and current_nurse == @nurse_baton.nurse
           @cur_nurse = true
+        elsif admin_signed_in?
+          @cur_nurse = true
         end
       else
         flash[:error] = "An error has occurred."
@@ -116,6 +118,8 @@ class CalendarController < ApplicationController
     @cur_nurse = false
     if current_nurse == @nurse
       @cur_nurse = true
+    elsif admin_signed_in?
+      @cur_nurse = true
     end
 
     @event = Event.find_by_id(params[:id])
@@ -192,11 +196,11 @@ class CalendarController < ApplicationController
     @unit_id = session[:unit_id]
     @shift = session[:shift]
     @year_month = Array.new
-# hard-coded => waiting for notion of time to be implemented
-# TODO: change as soon as we know the year the calendar is for
-    months = 1..12
-    months.each do |m|
-      @year_month << [2012, m]
+    m = 3 #vacation scheduling starts in March
+    year = CurrentYear.first.year
+    12.times do
+      @year_month << [year + m.div(13), m%13 + m.div(13)]
+      m += 1
     end
     @strips = Array.new
     @year_month.each do |ym|
@@ -274,8 +278,12 @@ class CalendarController < ApplicationController
   private
 
   def setup_index
-    @month = (params[:month] || (Time.zone || Time).now.month).to_i
-    @year = (params[:year] || (Time.zone || Time).now.year).to_i
+    year = nil
+    if CurrentYear.first
+      year = CurrentYear.first.year
+    end
+    @month = (params[:month] || 3).to_i
+    @year = (params[:year] || year || (Time.zone || Time).now.year).to_i
     
     if @month == 0 or @year == 0
       flash[:error] = "An error has occurred."
