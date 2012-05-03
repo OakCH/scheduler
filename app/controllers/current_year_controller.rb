@@ -1,15 +1,14 @@
 class CurrentYearController < ApplicationController
-
+  
   before_filter :authenticate_admin!
-
+  
   def index
     if CurrentYear.first
       @current_year = CurrentYear.first.year
     end
   end
-
+  
   def update
-    # hack hack hack hack
     new_year = params[:year]
     current_year = CurrentYear.first
     begin
