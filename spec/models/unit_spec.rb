@@ -91,4 +91,16 @@ describe 'Unit' do
       Unit.is_valid_unit_id(unit1.id).should be_true
     end
   end
+
+  describe 'destroys dependencies' do
+    before(:each) do
+      @unit = FactoryGirl.create(:unit)
+      @nurse_baton = FactoryGirl.create(:nurse_baton, :unit => @unit)
+    end
+    it 'should remove nurse batons associated with given unit' do
+      unit_id = @unit.id
+      @unit.destroy
+      NurseBaton.find_all_by_unit_id(unit_id).should be_empty
+    end
+  end
 end
