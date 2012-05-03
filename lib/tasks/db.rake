@@ -13,6 +13,7 @@ namespace :db do
   end
 
   def preload_data
+    FactoryGirl.create(:current_year, :year => 2012)  
     unit = FactoryGirl.create(:unit, :name => 'TestUnit1')
     nurses = FactoryGirl.create_list(:nurse, 6, :unit_id => unit.id)
     FactoryGirl.create(:nurse, :shift => 'Days', :unit_id => unit.id)
