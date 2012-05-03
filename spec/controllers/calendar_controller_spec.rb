@@ -7,6 +7,7 @@ describe CalendarController do
     CalendarController.skip_before_filter :authenticate_any!,
     :authenticate_admin!, :check_nurse_id, :check_event_id,
     :check_current_nurse
+    FactoryGirl.create(:current_year, :year => 2012)
   end
   
   before(:each) do
@@ -66,6 +67,16 @@ describe CalendarController do
       assigns(:nurse).should be_nil
     end
     
+    it 'should assign the correct unit' do
+      get :index, :nurse_id => @nurse.id
+      assigns(:unit_id).should == @unit.id
+    end
+
+    it 'should assign the correct shift' do
+      get :index, :nurse_id => @nurse.id
+      assigns(:shift).should == @nurse.shift
+    end
+    
     it 'should get an event strip for only the current nurse, if id given' do
       other_nurse = FactoryGirl.create(:nurse)
       month = 5
@@ -97,6 +108,12 @@ describe CalendarController do
           e.should be_nil
         end
       end
+    end
+    
+    it 'should find a nurse_baton when one exists' do
+      baton = FactoryGirl.create(:nurse_baton, :nurse => @nurse, :shift => @nurse.shift, :unit => @nurse.unit)
+      get :index, :nurse_id => @nurse.id
+      assigns(:nurse_baton).should == baton
     end
   end
   

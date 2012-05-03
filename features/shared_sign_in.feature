@@ -6,6 +6,10 @@ So that I can access pages available to me while other pages are protected
 
 Background:
 
+  Given the following current years exist
+  | year |
+  | 2012 |
+  
   Given the following nurses exist
   | name     | email        |
   | Jane Doe | jane@doe.com |
