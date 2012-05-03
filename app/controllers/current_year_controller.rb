@@ -9,7 +9,6 @@ class CurrentYearController < ApplicationController
   end
 
   def update
-    # hack hack hack hack
     new_year = params[:year]
     current_year = CurrentYear.first
     begin
