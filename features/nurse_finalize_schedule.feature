@@ -94,3 +94,40 @@ Scenario: After every nurse in a Unit and Shift has been finalized, admin should
   And I open the email with subject "[Surgery, PMs] All vacations have been scheduled"
   Then I should see "All vacations have been scheduled for the Surgery unit, PMs shift." in the email body
   But "joe@admin.com" should have no emails
+
+Scenario: Admin should be able to add vacations if baton exists
+  When I log out
+  And I am logged in as the Admin "Jane Admin"
+  And I am on the Nurse Calendar page for "John Doe" in "April" of "2012"
+  And I follow "Add a vacation segment"
+  When I fill in "event_start_at" with "06/18/2012"
+  And I fill in "event_end_at" with "06/25/2012"
+  And I press "Save Changes"
+  Then I should see the vacation belonging to "John Doe" from "18-June-2012" to "25-June-2012"
+
+Scenario: Admin should be able to add vacations if baton doesn't exist
+  When I log out
+  And I am logged in as the Admin "Jane Admin"
+  And I am on the Nurse Calendar page for "Santa C" in "April" of "2012"
+  And I follow "Add a vacation segment"
+  When I fill in "event_start_at" with "06/18/2012"
+  And I fill in "event_end_at" with "06/25/2012"
+  And I press "Save Changes"
+  Then I should see the vacation belonging to "Santa C" from "18-June-2012" to "25-June-2012"
+
+Scenario: Admin should be able to delete vacations regardless of batons.
+  When I log out
+  And I am logged in as the Admin "Jane Admin"
+  And I am on the Nurse Calendar page for "Santa C" in "April" of "2012"
+  And I press "Delete"
+  Then I should not see "Vacation Segments for Santa C"
+
+Scenario: Admin should be able to edit vacations if baton exists
+  When I log out
+  And I am logged in as the Admin "Jane Admin"
+  And I am on the Nurse Calendar page for "John Doe" in "April" of "2012"
+  And I follow "Edit vacation segment"
+  And I fill in "event_start_at" with "06/18/2012"
+  And I fill in "event_end_at" with "06/25/2012"
+  And I press "Update vacation time"
+  Then I should see the vacation belonging to "John Doe" from "18-June-2012" to "25-June-2012"

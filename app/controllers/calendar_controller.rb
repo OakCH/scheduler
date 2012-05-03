@@ -18,6 +18,8 @@ class CalendarController < ApplicationController
         @nurse_baton = NurseBaton.find_by_unit_id_and_shift(@unit_id,@shift)
         if @nurse_baton and current_nurse == @nurse_baton.nurse
           @cur_nurse = true
+        elsif admin_signed_in?
+          @cur_nurse = true
         end
       else
         flash[:error] = "An error has occurred."
@@ -115,6 +117,8 @@ class CalendarController < ApplicationController
     @nurse = Nurse.find_by_id(params[:nurse_id])
     @cur_nurse = false
     if current_nurse == @nurse
+      @cur_nurse = true
+    elsif admin_signed_in?
       @cur_nurse = true
     end
 
