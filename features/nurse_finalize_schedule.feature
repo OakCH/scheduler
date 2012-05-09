@@ -42,6 +42,7 @@ Background:
 
 Scenario: After finalizing schedule, nurse can no longer edit vacation segments.
   Then I should not see "Add a vacation segment"
+  And I should not see "There are no vacation segments scheduled"
   And I should not see "Finalize Your Vacation"
 
 Scenario: After finalizing schedule, next nurse should be able to see edit options.
