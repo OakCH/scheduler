@@ -40,10 +40,8 @@
       Finalize Your Vacation Segments
     %p= "When you are all done selecting your vacation, please click the Finalize button below. Once you do this, you will not be able to edit your vacation time without contacting your nurse administrator."
     = button_to 'Finalize Your Vacation', nurse_finalize_path(@nurse), :confirm => 'Are you sure?', :id => 'finalize_schedule'
-  - elsif @nurse
+  - elsif @nurse.events.length == 0
     %h2 There are no vacation segments scheduled.
-  - else
-    %h2 Impostor! You are not a nurse.
   
 - if admin_signed_in?
   = link_to 'Back to Admin Calendar', admin_calendar_path(:month => params[:month], :year => params[:year])

@@ -31,6 +31,7 @@ Scenario: Add a vacation
   And I fill in "event_end_at" with "04/25/2012"
   And I press "Save Changes"
   Then I should see the vacation belonging to "Jane Doe" from "18-Apr-2012" to "25-Apr-2012"
+  And I should not see "There are no vacation segments scheduled."
 
 Scenario: Add a vacation that overlaps
   When I fill in "event_start_at" with "04/11/2012"
