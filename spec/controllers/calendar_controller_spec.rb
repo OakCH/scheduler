@@ -7,10 +7,10 @@ describe CalendarController do
     CalendarController.skip_before_filter :authenticate_any!,
     :authenticate_admin!, :check_nurse_id, :check_event_id,
     :check_current_nurse
-    FactoryGirl.create(:current_year, :year => 2012)
   end
   
   before(:each) do
+    FactoryGirl.create(:current_year, :year => 2012)
     @unit = FactoryGirl.create(:unit)
     @nurse = FactoryGirl.create(:nurse, :unit => @unit)
     @event = FactoryGirl.create(:event, :nurse_id => @nurse.id)

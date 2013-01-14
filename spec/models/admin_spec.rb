@@ -2,12 +2,9 @@ require 'spec_helper'
 require 'date'
 
 describe Admin do
-  before(:each) do
-    #@admin = FactoryGirl.create(:admin)
-    #@nurse = FactoryGirl.create(:nurse)
-  end
   describe 'view events for one month' do
     before(:each) do
+      FactoryGirl.create(:current_year, :year => 2012)
       @unit3 = FactoryGirl.create(:unit)
       @unit2 = FactoryGirl.create(:unit)
       nurses = []
