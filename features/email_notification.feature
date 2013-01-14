@@ -25,7 +25,7 @@ Scenario: After an admin finalizes the nurse list, the first nurse should receiv
   And I finalize the nurse list for the "Surgery" unit, "PMs" shift  
   Then "jane@doe.com" should receive 2 emails
   And I open the email with subject "It is now your turn to schedule your vacation"
-  And I should see the email delivered from "admin@chovacationsched.com"
+  And I should see the email delivered from "admin@chovacations.herokuapp.com"
   And I should see "Please log in to schedule your vacation:" in the email body
 
 Scenario: If there are no nurses, vacations should be immediately complete
@@ -45,7 +45,7 @@ Scenario: Next nurse receiving email after previous nurse has submitted vacation
   And I press "Finalize Your Vacation"
   Then "john@doe.com" should receive 2 emails
   And I open the email with subject "It is now your turn to schedule your vacation"
-  And I should see the email delivered from "admin@chovacationsched.com"
+  And I should see the email delivered from "admin@chovacations.herokuapp.com"
   And I should see "Please log in to schedule your vacation:" in the email body
 
 Scenario: Admin receives email when a nurse is done scheduling
@@ -59,7 +59,7 @@ Scenario: Admin receives email when a nurse is done scheduling
   And "joe@admin.com" should receive an email
   And I open the email
   Then I should see "Jane Doe has finished scheduling his or her vacation" in the email subject
-  And I should see the email delivered from "admin@chovacationsched.com"
+  And I should see the email delivered from "admin@chovacations.herokuapp.com"
   And I should see "The calendar has moved on to the next nurse." in the email body
 
 Scenario: Admin receives email when all nurses are done scheduling
