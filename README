@@ -1,6 +1,8 @@
 == Oakland Children's Hospital
 == Vacation Scheduler
 
+This team's first Rails app, built for the nurses at the Children's Hospital of Oakland.
+
 Rake Task to reset the database and preload some nurses, admins, and vacations:
 rake db:reset_and_seed
 The previous command should put 7 nurses, 1 unit, 1 admin, and 3 vacations into the development database (all as defined in FactoryGirl). Please view lib/tasks/db.rake for more information.
